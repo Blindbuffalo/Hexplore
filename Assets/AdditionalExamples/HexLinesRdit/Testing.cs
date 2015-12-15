@@ -25,7 +25,7 @@ public class Testing : MonoBehaviour {
             LastPosition = Position;
              t = this.GetComponent<HexLinesGrid>();
              Hexes = t.DrawOrbit(PointyHexPoint.Zero, OrbitRadius);
-             Debug.Log(NumberOfPositions);
+             //Debug.Log(NumberOfPositions);
         }
         g += Time.deltaTime * 500;
         //Debug.Log(g);

@@ -15,6 +15,9 @@ public class HexLinesGrid : GridBehaviour<PointyHexPoint>
         Debug.Log("InitGird");
         int Radius = 4;
 
+        //PointyHexTileGridBuilder H = this.GetComponentInParent<PointyHexTileGridBuilder>();
+
+        //H.Size = 25;
 
         startNode = PointyHexPoint.Zero;
 
@@ -57,18 +60,15 @@ public class HexLinesGrid : GridBehaviour<PointyHexPoint>
 
         return Hexes;
     }
-    void update()
-    {
 
-    }
-    public void OnLeftClick(PointyHexPoint clickedPoint)
-    {
-        DrawOrbit(startNode, 4);
-    }
+    //public void OnLeftClick(PointyHexPoint clickedPoint)
+    //{
+    //    DrawOrbit(startNode, 4);
+    //}
 
-    public void OnRightClick(PointyHexPoint clickedPoint)
-    {
-        ClearGrid();
-    }
+    //public void OnRightClick(PointyHexPoint clickedPoint)
+    //{
+    //    ClearGrid();
+    //}
 
 }
