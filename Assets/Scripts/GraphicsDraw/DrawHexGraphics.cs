@@ -34,8 +34,9 @@ public class DrawHexGraphics : MonoBehaviour {
 
         }
     }
-    public void ChangeHexesColor(string HexName, Color color)
+    public void ChangeHexesColor(Hex h, Color color)
     {
+        string HexName = Utility.HexNameStr(h);
         if (HexGraphics.ContainsKey(HexName))
         {
             GameObject HexGO = HexGraphics[HexName];
@@ -47,7 +48,7 @@ public class DrawHexGraphics : MonoBehaviour {
     {
         foreach (Hex h in Planet.Orbit)
         {
-            ChangeHexesColor(Utility.HexNameStr(h), OrbitColor);
+            ChangeHexesColor(h, OrbitColor);
         }
 
         //return Hexes;
@@ -62,8 +63,8 @@ public class DrawHexGraphics : MonoBehaviour {
             Planet.CurrentPosition = Planet.CurrentPosition - Planet.Orbit.Count;
 
         }
-        ChangeHexesColor(Utility.HexNameStr(Planet.Orbit[Planet.LastPosition]), OrbitColor);
-        ChangeHexesColor(Utility.HexNameStr(Planet.Orbit[Planet.CurrentPosition]), Planet.Col);
+        ChangeHexesColor(Planet.Orbit[Planet.LastPosition], OrbitColor);
+        ChangeHexesColor(Planet.Orbit[Planet.CurrentPosition], Planet.Col);
 
         Planet.LastPosition = Planet.CurrentPosition;
     }
