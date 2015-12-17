@@ -4,12 +4,6 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 
-
-
-
-
-
-
 struct Point
 {
     public Point(double x, double y)
