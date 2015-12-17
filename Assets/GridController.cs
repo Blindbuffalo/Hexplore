@@ -31,16 +31,17 @@ public class GridController : MonoBehaviour
         Hex Sun = new Hex(0, 0, 0);
         List<Planet> Planets = new List<Planet>();
 
-        Planets.Add(new Planet("Mercury", 4, Sun, 2, Color.cyan, 1));
-        Planets.Add(new Planet("Venus", 6, Sun, 2, Color.green, 1));
-        Planets.Add(new Planet("Earth", 11, Sun, 2, Color.blue, 0));
-        Planets.Add(new Planet("Mars", 16, Sun, 2, Color.red, 1));
-        Planets.Add(new Planet("Jupitor", 30, Sun, 2, Color.magenta, 1));
-        Planets.Add(new Planet("Saturn", 40, Sun, 2, Color.magenta, 1));
-        Planets.Add(new Planet("Uranus", 50, Sun, 2, Color.magenta, 1));
-        Planets.Add(new Planet("Neptune", 70, Sun, 2, Color.magenta, 1));
+        Planets.Add(new Planet("Mercury", 2, Sun, 1, Color.cyan, 1));
+        Planets.Add(new Planet("Venus", 4, Sun, 1, Color.green, 1));
+        Planets.Add(new Planet("Earth", 6, Sun, 1, Color.blue, 0));
+        Planets.Add(new Planet("Mars", 9, Sun, 1, Color.red, 1));
+        Planets.Add(new Planet("Jupitor", 31, Sun, 2, Color.magenta, 1));
+        Planets.Add(new Planet("Saturn", 57, Sun, 3, Color.magenta, 1));
+        Planets.Add(new Planet("Uranus", 85, Sun, 4, Color.magenta, 1));
+        Planets.Add(new Planet("Neptune", 110, Sun, 5, Color.magenta, 1));
+        Planets.Add(new Planet("Pluto", 145, Sun, 6, Color.magenta, 1));
 
-        Sol = new SolarSystem("Sol", Sun, 3, Planets);
+        Sol = new SolarSystem("Sol", Sun, 2, Planets);
 
 
         foreach (Planet P in Sol.Planets)
@@ -48,7 +49,7 @@ public class GridController : MonoBehaviour
             DrawOrbit(P);
         }
 
-        PlacePrefab(Prefab, 3, new Vector3(Sol.Sun.q, Sol.Sun.r, Sol.Sun.s), Color.yellow);
+        PlacePrefab(Prefab, Sol.SunRadius, new Vector3(Sol.Sun.q, Sol.Sun.r, Sol.Sun.s), Color.yellow);
 	}
     void Update()
     {

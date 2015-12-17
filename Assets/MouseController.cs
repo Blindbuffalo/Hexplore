@@ -27,7 +27,7 @@ public class MouseController : MonoBehaviour {
         {
             Camera.main.orthographicSize -= 1;
         }
-        Camera.main.orthographicSize = Mathf.Clamp(Camera.main.orthographicSize, 1f, 25f);
+        Camera.main.orthographicSize = Mathf.Clamp(Camera.main.orthographicSize, 1f, 50f);
         lastCamPositionX = Camera.main.ScreenToWorldPoint(Input.mousePosition).x;
         lastCamPositionY = Camera.main.ScreenToWorldPoint(Input.mousePosition).y;
 	}

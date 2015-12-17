@@ -1,0 +1,33 @@
+Initialize engine version: 5.2.2f1 (3757309da7e7)
+GfxDevice: creating device client; threaded=1
+Direct3D:
+    Version:  Direct3D 11.0 [level 11.0]
+    Renderer: NVIDIA GeForce GTX 780 (ID=0x1004)
+    Vendor:   NVIDIA
+    VRAM:     2979 MB
+Begin MonoManager ReloadAssembly
+Platform assembly: C:\Users\blindbuffalo\Documents\GitHub\Hexplore\testBuild_Data\Managed\UnityEngine.dll (this message is harmless)
+Loading C:\Users\blindbuffalo\Documents\GitHub\Hexplore\testBuild_Data\Managed\UnityEngine.dll into Unity Child Domain
+Platform assembly: C:\Users\blindbuffalo\Documents\GitHub\Hexplore\testBuild_Data\Managed\Assembly-CSharp.dll (this message is harmless)
+Loading C:\Users\blindbuffalo\Documents\GitHub\Hexplore\testBuild_Data\Managed\Assembly-CSharp.dll into Unity Child Domain
+Platform assembly: C:\Users\blindbuffalo\Documents\GitHub\Hexplore\testBuild_Data\Managed\UnityEngine.UI.dll (this message is harmless)
+Loading C:\Users\blindbuffalo\Documents\GitHub\Hexplore\testBuild_Data\Managed\UnityEngine.UI.dll into Unity Child Domain
+Platform assembly: C:\Users\blindbuffalo\Documents\GitHub\Hexplore\testBuild_Data\Managed\UnityEngine.Networking.dll (this message is harmless)
+Loading C:\Users\blindbuffalo\Documents\GitHub\Hexplore\testBuild_Data\Managed\UnityEngine.Networking.dll into Unity Child Domain
+Platform assembly: C:\Users\blindbuffalo\Documents\GitHub\Hexplore\testBuild_Data\Managed\System.Core.dll (this message is harmless)
+- Completed reload, in  0.039 seconds
+desktop: 1920x1080 60Hz; virtual: 3520x1200 at -1600,0
+<RI> Initializing input.
+<RI> Input initialized.
+<RI> Initialized touch support.
+Platform assembly: C:\Users\blindbuffalo\Documents\GitHub\Hexplore\testBuild_Data\Managed\System.dll (this message is harmless)
+hexgraphics Start
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 64)
+
+start
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 64)
+
+Setting up 1 worker threads for Enlighten.
+  Thread -> id: d6c0 -> priority: 1 
