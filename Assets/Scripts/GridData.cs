@@ -40,23 +40,5 @@ public class GridData  {
                 Xcheck--;
             }
         }
-
-
-
-
-
-
-
-        //for (int x = -radius; x <= radius; x++)
-        //{
-        //    for (int y = -radius; y <= radius; y++)
-        //    {
-        //        Hex f = new Hex(x, y, -x - y);
-        //        HexData.Add(f);
-        //    }
-        //}
-
     }
-
-
 }

@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 
 public class SolarSystem  {
+    public Color OrbitColor = new Color(.05f, .05f, .05f, 1f);
     public SolarSystem(string name, Hex sun, int sunradius, List<Planet> planets)
     {
         Name = name;

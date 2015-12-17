@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 public class DrawHexGraphics : MonoBehaviour {
     public Dictionary<string, GameObject> HexGraphics = null;
-    public Utilites Utility = new Utilites();
+    public Utilites Utility;
     void Start()
     {
         Debug.Log("hexgraphics Start");
@@ -17,12 +17,6 @@ public class DrawHexGraphics : MonoBehaviour {
 
         foreach (Hex h in Hexes)
         {
-           
-            //if (h.q == 0f && h.r == 0f && h.s == 0f)
-            //{
-            //    Hex TestHex = Hex.Neighbor(h, 0);
-            //    Debug.Log(TestHex.q + " " + TestHex.r + " " + TestHex.s);
-            //}
             Point p = Layout.HexToPixel(L, h);
 
             if (HexGraphics.ContainsKey(Utility.HexNameStr(h)))
@@ -34,6 +28,7 @@ public class DrawHexGraphics : MonoBehaviour {
 
                 GameObject g = (GameObject)Instantiate(Prefab, new Vector3((float)p.x, (float)p.y, 0), Quaternion.identity);
                 g.name = Utility.HexNameStr(h);
+                g.transform.SetParent(this.transform);
                 HexGraphics.Add(Utility.HexNameStr(h), g);
             }
 
@@ -47,5 +42,29 @@ public class DrawHexGraphics : MonoBehaviour {
             HexGO.GetComponent<SpriteRenderer>().color = color;
             HexGraphics[HexName] = HexGO;
         }
+    }
+    public void DrawOrbit(Planet Planet, Color OrbitColor)
+    {
+        foreach (Hex h in Planet.Orbit)
+        {
+            ChangeHexesColor(Utility.HexNameStr(h), OrbitColor);
+        }
+
+        //return Hexes;
+    }
+
+    public void DrawPlanet(Planet Planet, Color OrbitColor)
+    {
+        Planet.CurrentPosition = Planet.CurrentPosition + Planet.NumberOfMoves;
+
+        if (Planet.CurrentPosition >= Planet.Orbit.Count)
+        {
+            Planet.CurrentPosition = Planet.CurrentPosition - Planet.Orbit.Count;
+
+        }
+        ChangeHexesColor(Utility.HexNameStr(Planet.Orbit[Planet.LastPosition]), OrbitColor);
+        ChangeHexesColor(Utility.HexNameStr(Planet.Orbit[Planet.CurrentPosition]), Planet.Col);
+
+        Planet.LastPosition = Planet.CurrentPosition;
     }
 }
