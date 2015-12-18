@@ -64,24 +64,37 @@ public class CharController : MonoBehaviour {
                     shipMoving = true;
                     MainShip.ShipMoved(ClickedHex);
 
-                placeShipOnHex(ClickedHex);
+                    placeShipOnHex(ClickedHex);
 
                 }
             }
         //}
     }
 
-    private void moveShipToHex(Hex h)
-    {
-        Point P2 = Layout.HexToPixel(L, h);
-        this.transform.position = new Vector3((float)P2.x, (float)P2.y, 0f);
+    //private void moveShipToHex(Hex h)
+    //{
+    //    Point P2 = Layout.HexToPixel(L, h);
+    //    this.transform.position = new Vector3((float)P2.x, (float)P2.y, 10f);
 
-        this.transform.Translate(new Vector3((float)P2.x, (float)P2.y, 0).normalized * Time.deltaTime);
-    }
+    //    this.transform.Translate(new Vector3((float)P2.x, (float)P2.y, 10f).normalized * Time.deltaTime);
+    //}
     private void placeShipOnHex(Hex h)
     {
+
+
+
         Point P2 = Layout.HexToPixel(L, h);
-        this.transform.position = new Vector3((float)P2.x, (float)P2.y, 0f);
+
+        //Vector3 dir = Utility.HexToVector3(h) -this.transform.position;
+
+        //float speed = 1;
+
+        //float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
+        //Quaternion q = Quaternion.AngleAxis(angle, Vector3.left);
+        //transform.rotation = q;
+
+        this.transform.position = new Vector3((float)P2.x, (float)P2.y, 10f);
+        
     }
     void RedrawMovementHexes()
     {
@@ -89,7 +102,11 @@ public class CharController : MonoBehaviour {
 
         foreach (Transform child in transform)
         {
-            GameObject.Destroy(child.gameObject);
+            if (!child.name.StartsWith("ship"))
+            {
+                GameObject.Destroy(child.gameObject);
+            }
+            
         }
 
         HexG.CreateMovementHexGraphics(Reachable, Prefab, this.transform.gameObject);

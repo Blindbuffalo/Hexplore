@@ -47,7 +47,7 @@ public class GameController : MonoBehaviour {
         Planets.Add(new Planet("Earth", 6, Sun, 1, Color.blue, 0, .6f));
         Planets.Add(new Planet("Mars", 9, Sun, 1, Color.red, 1, .55f));
         Planets.Add(new Planet("Jupitor", 31, Sun, 2, Color.magenta, 1, 1.8f));
-        Planets.Add(new Planet("Saturn", 57, Sun, 3, Color.magenta, 55, 1.5f, new Rings(2f, Utility.RGBcolor(159, 183, 195, 115))));
+        Planets.Add(new Planet("Saturn", 57, Sun, 3, Utility.RGBcolor(176, 159, 114, 255), 55, 1.5f, new Rings(1f, Utility.RGBcolor(159, 183, 195, 115))));
         Planets.Add(new Planet("Uranus", 85, Sun, 3, Color.magenta, 250, 1.1f));
         Planets.Add(new Planet("Neptune", 110, Sun, 3, Color.magenta, 119, 1.1f));
         Planets.Add(new Planet("Pluto", 145, Sun, 2, Color.magenta, 350, .2f));
