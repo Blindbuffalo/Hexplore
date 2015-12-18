@@ -28,6 +28,8 @@ public class GameController : MonoBehaviour {
     public CharController charController;
 
     private GameObject SunGO;
+
+    public MissionController MissionController = new MissionController();
     // Use this for initialization
     void Start()
     {
@@ -63,8 +65,9 @@ public class GameController : MonoBehaviour {
             HexG.DrawPlanetObject(P, PlanetPreFab, SunGO, Rings);
         }
 
-        
-        
+        MissionController.InitMissions();
+
+
     }
     void Update()
     {
@@ -79,6 +82,9 @@ public class GameController : MonoBehaviour {
         text.text = CurrentTurn.ToString() + " " + days;
 
         charController.MainShip.MovesLeft = charController.MainShip.Movement;
+
+        MissionController.SpawnMissions();
+
 
         foreach (Planet P in Sol.Planets)
         {
