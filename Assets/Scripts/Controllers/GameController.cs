@@ -22,7 +22,9 @@ public class GameController : MonoBehaviour {
     public SolarSystem Sol;
     public float g = 0f;
 
-   
+    public CharController charController;
+
+
     // Use this for initialization
     void Start()
     {
@@ -30,6 +32,7 @@ public class GameController : MonoBehaviour {
         Debug.Log("start");
 
         Grid.GenerateGridData(GridRadius);
+
         Hexes = Grid.HexData;
         HexG.GenerateGraphics(Hexes, Prefab);
 
@@ -41,10 +44,10 @@ public class GameController : MonoBehaviour {
         Planets.Add(new Planet("Earth", 6, Sun, 1, Color.blue, 0));
         Planets.Add(new Planet("Mars", 9, Sun, 1, Color.red, 1));
         Planets.Add(new Planet("Jupitor", 31, Sun, 2, Color.magenta, 1));
-        Planets.Add(new Planet("Saturn", 57, Sun, 3, Color.magenta, 1));
-        Planets.Add(new Planet("Uranus", 85, Sun, 4, Color.magenta, 1));
-        Planets.Add(new Planet("Neptune", 110, Sun, 5, Color.magenta, 1));
-        Planets.Add(new Planet("Pluto", 145, Sun, 6, Color.magenta, 1));
+        Planets.Add(new Planet("Saturn", 57, Sun, 3, Color.magenta, 55));
+        Planets.Add(new Planet("Uranus", 85, Sun, 3, Color.magenta, 250));
+        Planets.Add(new Planet("Neptune", 110, Sun, 3, Color.magenta, 119));
+        Planets.Add(new Planet("Pluto", 145, Sun, 2, Color.magenta,350));
 
         Sol = new SolarSystem("Sol", Sun, 2, Planets);
 
@@ -58,11 +61,19 @@ public class GameController : MonoBehaviour {
         Utility.PlacePrefab(Prefab, Sol.SunRadius, new Vector3(Sol.Sun.q, Sol.Sun.r, Sol.Sun.s), Color.yellow);
         
     }
+    void Update()
+    {
+        if (Input.GetKeyDown("space"))
+            NextTurnButton_Click();
+
+    }
     public void NextTurnButton_Click()
     {
         CurrentTurn++;
         days = SolarSystemDayMultiplier * CurrentTurn;
         text.text = CurrentTurn.ToString() + " " + days;
+
+        charController.MainShip.MovesLeft = charController.MainShip.Movement;
 
         foreach (Planet P in Sol.Planets)
         {

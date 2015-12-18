@@ -14,7 +14,6 @@ public class DrawHexGraphics : MonoBehaviour {
     {
         HexGraphics = new Dictionary<string, GameObject>();
         Layout L = new Layout(Layout.pointy, new Point(.52, .52), new Point(0, 0));
-
         foreach (Hex h in Hexes)
         {
             Point p = Layout.HexToPixel(L, h);
@@ -30,7 +29,22 @@ public class DrawHexGraphics : MonoBehaviour {
                 g.name = Utility.HexNameStr(h);
                 g.transform.SetParent(this.transform);
                 HexGraphics.Add(Utility.HexNameStr(h), g);
+
             }
+
+        }
+    }
+    public void CreateMovementHexGraphics(List<Hex> Hexes, GameObject Prefab, GameObject parent)
+    {
+        Layout L = new Layout(Layout.pointy, new Point(.52, .52), new Point(0, 0));
+        foreach (Hex h in Hexes)
+        {
+            Point p = Layout.HexToPixel(L, h);
+
+            GameObject g = (GameObject)Instantiate(Prefab, new Vector3((float)p.x, (float)p.y, 0), Quaternion.identity);
+            g.name = Utility.HexNameStr(h);
+            g.transform.SetParent(parent.transform);
+                
 
         }
     }
@@ -56,6 +70,7 @@ public class DrawHexGraphics : MonoBehaviour {
 
     public void DrawPlanet(Planet Planet, Color OrbitColor)
     {
+        Debug.Log(Planet.NumberOfMoves);
         Planet.CurrentPosition = Planet.CurrentPosition + Planet.NumberOfMoves;
 
         if (Planet.CurrentPosition >= Planet.Orbit.Count)
