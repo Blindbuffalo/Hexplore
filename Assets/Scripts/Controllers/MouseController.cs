@@ -5,7 +5,7 @@ using System.Collections.Generic;
 public class MouseController : MonoBehaviour {
     float lastCamPositionY;
     float lastCamPositionX;
-    public GameObject Ship;
+    
     public Utilites Utility;
     public DrawHexGraphics HexG;
 	// Use this for initialization
@@ -24,29 +24,7 @@ public class MouseController : MonoBehaviour {
             Camera.main.transform.Translate(new Vector3(0, lastCamPositionY, 0) - new Vector3(0, currentCamPositionY, 0));
         }
 
-        if (Input.GetMouseButton(0)) //left mouse button
-        {
-            Point P = new Point(currentCamPositionX, currentCamPositionY);
-            FractionalHex FH = Layout.PixelToHex(L, P);
-            Hex h = FractionalHex.HexRound(FH);
-            Debug.Log(h.q + " " + h.r + " " + h.s);
-            Point P2 = Layout.HexToPixel(L, h);
-            Ship.transform.position = new Vector3((float)P2.x, (float)P2.y, 0f);
-            List<Hex> H = new List<Hex>();
-            for (int dx = -3; dx <= 3; dx++)
-            {
-                for (int dy = Mathf.Max(-3, -dx-3); dy <= Mathf.Min(3, -dx+3); dy++)
-                {
-                    int dz = -dx - dy;
-                    H.Add(Hex.Add(h, new Hex(dx, dy, dz)));
-                }
-            }
-            foreach (Hex r in H)
-            {
-                HexG.ChangeHexesColor(r, Color.red);
-            }
 
-        }
         if (Input.GetAxis("Mouse ScrollWheel") < 0) //back
         {
             Camera.main.orthographicSize += 1;

@@ -56,6 +56,7 @@ public class GameController : MonoBehaviour {
         }
 
         Utility.PlacePrefab(Prefab, Sol.SunRadius, new Vector3(Sol.Sun.q, Sol.Sun.r, Sol.Sun.s), Color.yellow);
+        
     }
     public void NextTurnButton_Click()
     {

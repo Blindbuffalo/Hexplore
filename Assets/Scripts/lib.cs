@@ -52,12 +52,55 @@ public struct Hex
         return Hex.directions[direction];
     }
 
-
+    static public List<Hex> Neighbors(Hex Center)
+    {
+        List<Hex> Ns = new List<Hex>();
+        for (int i = 0; i < 6; i++)
+        {
+            Ns.Add(Neighbor(Center, i));
+        }
+        
+        return Ns;
+    }
     static public Hex Neighbor(Hex hex, int direction)
     {
         return Hex.Add(hex, Hex.Direction(direction));
     }
+    static public List<Hex> Reachable(Hex start, int Movement)
+    {
 
+        List<Hex> Reachable = new List<Hex>();
+        List<Hex> Fringes = new List<Hex>();
+        List<Hex> Ns = new List<Hex>();
+
+        Fringes.Add(start);
+        Reachable.Add(start);
+        for (int l = 0; l < Movement; l++)
+        {
+            //step loop
+            Ns = new List<Hex>();
+            foreach (Hex h in Fringes)
+            {
+
+                foreach (Hex n in Neighbors(h))
+                {
+                    Ns.Add(n);
+                    if (Reachable.Contains(n))
+                    {
+                        //dont do anything, hex is already in the array
+
+                    }
+                    else
+                    {
+                        Reachable.Add(n);
+                    }
+                }
+            }
+            Fringes.Clear();
+            Fringes = Ns;
+        }
+        return Reachable;
+    }
     static public List<Hex> diagonals = new List<Hex>{new Hex(2, -1, -1), new Hex(1, -2, 1), new Hex(-1, -1, 2), new Hex(-2, 1, 1), new Hex(-1, 2, -1), new Hex(1, 1, -2)};
 
     static public Hex DiagonalNeighbor(Hex hex, int direction)
