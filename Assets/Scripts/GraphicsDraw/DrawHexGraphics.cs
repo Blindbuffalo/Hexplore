@@ -5,6 +5,7 @@ using System.Collections.Generic;
 public class DrawHexGraphics : MonoBehaviour {
     public Dictionary<string, GameObject> HexGraphics = null;
     public Utilites Utility;
+    private Layout L = new Layout(Layout.pointy, new Point(.52, .52), new Point(0, 0));
     void Start()
     {
         Debug.Log("hexgraphics Start");
@@ -13,7 +14,6 @@ public class DrawHexGraphics : MonoBehaviour {
     public void GenerateGraphics(List<Hex> Hexes, GameObject Prefab)
     {
         HexGraphics = new Dictionary<string, GameObject>();
-        Layout L = new Layout(Layout.pointy, new Point(.52, .52), new Point(0, 0));
         foreach (Hex h in Hexes)
         {
             Point p = Layout.HexToPixel(L, h);
@@ -36,7 +36,7 @@ public class DrawHexGraphics : MonoBehaviour {
     }
     public void CreateMovementHexGraphics(List<Hex> Hexes, GameObject Prefab, GameObject parent)
     {
-        Layout L = new Layout(Layout.pointy, new Point(.52, .52), new Point(0, 0));
+        
         foreach (Hex h in Hexes)
         {
             Point p = Layout.HexToPixel(L, h);
@@ -68,9 +68,8 @@ public class DrawHexGraphics : MonoBehaviour {
         //return Hexes;
     }
 
-    public void DrawPlanet(Planet Planet, Color OrbitColor)
+    public void DrawPlanetHex(Planet Planet, Color OrbitColor)
     {
-        Debug.Log(Planet.NumberOfMoves);
         Planet.CurrentPosition = Planet.CurrentPosition + Planet.NumberOfMoves;
 
         if (Planet.CurrentPosition >= Planet.Orbit.Count)
@@ -82,5 +81,42 @@ public class DrawHexGraphics : MonoBehaviour {
         ChangeHexesColor(Planet.Orbit[Planet.CurrentPosition], Planet.Col);
 
         Planet.LastPosition = Planet.CurrentPosition;
+    }
+    public void DrawPlanetObject(Planet planet, GameObject PlanetPrefab, GameObject Sun, GameObject Rings)
+    {
+        Point p = Layout.HexToPixel(L, planet.Orbit[planet.CurrentPosition]);
+
+        GameObject GO = (GameObject)Instantiate(PlanetPrefab, new Vector3((float)p.x, (float)p.y, 10f), Quaternion.identity);
+        GO.name = planet.Name + "_GO";
+        GO.transform.localScale *= planet.Size;
+
+        if (planet.Rings != null)
+        {
+            GameObject RingsGO = (GameObject)Instantiate(Rings, new Vector3((float)p.x, (float)p.y, 10f), Quaternion.identity);
+            RingsGO.name = planet.Name + "_Rings";
+            RingsGO.GetComponent<SpriteRenderer>().color = planet.Rings.RingColor;
+            RingsGO.transform.SetParent(GO.transform);
+            RingsGO.transform.localScale = new Vector3( planet.Rings.RingsScale, planet.Rings.RingsScale, planet.Rings.RingsScale);
+        }
+
+        
+        GO.transform.SetParent(Sun.transform);
+    }
+    public void MovePlanetObject(Planet planet, GameObject Sun)
+    {
+        Point p = Layout.HexToPixel(L, planet.Orbit[planet.CurrentPosition]);
+        string planetNameCheck = planet.Name + "_GO";
+
+        for (int i = 0; i < Sun.transform.childCount; i++)
+        {
+            GameObject pGO = Sun.transform.GetChild(i).gameObject;
+            if (pGO.name == planetNameCheck)
+            {
+                pGO.transform.position = new Vector3((float)p.x, (float)p.y, 10f);
+                break;
+            }
+        }
+        
+        
     }
 }

@@ -1,15 +1,28 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+public class Rings
+{
+    public Rings(float ringscale, Color ringcolor)
+    {
+        RingsScale = ringscale;
+        RingColor = ringcolor;
+    }
+    public float RingsScale { get; private set; }
+    public Color RingColor { get; private set; }
+}
+public class Planet {
 
-public class Planet  {
-
-    public Planet(string name, int orbitRadius, Hex parent, int numberofmoves, Color color, int position)
+    public Planet(string name, int orbitRadius, Hex parent, int numberofmoves, Color color, int position, float size, Rings rings = null)
     {
         Name = name;
         OrbitRadius = orbitRadius;
         Parent = parent;
-        Orbit= CalcOrbit();
+        Orbit = CalcOrbit();
+
+        Size = size;
+
+        Rings = rings;
 
         NumberOfMoves = numberofmoves;
         Col = color;
@@ -23,6 +36,10 @@ public class Planet  {
     public Hex Parent { get; private set; }
 
     public List<Hex> Orbit { get; private set; }
+
+    public float Size { get; private set; }
+
+    public Rings Rings {get; set;}
 
     public Color Col { get; set; }
     public int NumberOfMoves { get; set; }
