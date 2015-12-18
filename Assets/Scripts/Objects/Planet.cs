@@ -27,7 +27,6 @@ public class Planet {
         NumberOfMoves = numberofmoves;
         Col = color;
 
-
         LastPosition = position;
         CurrentPosition = position;
     }
