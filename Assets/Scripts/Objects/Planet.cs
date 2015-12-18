@@ -19,7 +19,7 @@ public class Planet {
         OrbitRadius = orbitRadius;
         Parent = parent;
         Orbit = CalcOrbit();
-
+    
         Size = size;
 
         Rings = rings;
