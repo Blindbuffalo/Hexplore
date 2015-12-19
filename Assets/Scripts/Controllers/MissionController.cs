@@ -1,11 +1,14 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
-
+using System.Linq;
 public class MissionController : MonoBehaviour{
 
     public List<MainStoryMission> MainStoryMissions;
 
+    public Utilites Utility;
+    private Layout L = new Layout(Layout.pointy, new Point(.52, .52), new Point(0, 0));
+    public GameObject MissionMarkerPrefab;
     public int CurrentMSMission = -1;
     public int _MSMissionStep = 0;
     public int MSMissionStep
@@ -30,6 +33,21 @@ public class MissionController : MonoBehaviour{
             Debug.Log(MainStoryMissions[CurrentMSMission].Name);
 
             MainStoryMissions[CurrentMSMission].Start(MainStoryMissions[CurrentMSMission]);
+
+            Planet P = (from s in Sol.Planets
+                        where s.Name.ToLower() == MainStoryMissions[CurrentMSMission].LocationName.ToLower()
+                        select s).FirstOrDefault();
+            if (P == null)
+            {
+                Debug.Log("oops");
+            }
+            else
+            {
+                Point v = Layout.HexToPixel(L, P.Orbit[P.CurrentPosition]);
+                Instantiate(MissionMarkerPrefab, new Vector3((float)v.x, (float)v.y, 10f), Quaternion.identity);
+                //MissionMarkerPrefab.transform.position = new Vector3((float)v.x, (float)v.y, 10f);
+            }
+            
 
             MSMissionCompleted = false;
         }
