@@ -29,7 +29,8 @@ public class GameController : MonoBehaviour {
 
     private GameObject SunGO;
 
-    public MissionController MissionController = new MissionController();
+    public MissionController MissionController;
+
     // Use this for initialization
     void Start()
     {
@@ -43,7 +44,7 @@ public class GameController : MonoBehaviour {
 
         Hex Sun = new Hex(0, 0, 0);
         List<Planet> Planets = new List<Planet>();
-
+        
         Planets.Add(new Planet("Mercury", 2, Sun, 1, Color.cyan, 1, .5f));
         Planets.Add(new Planet("Venus", 4, Sun, 1, Color.green, 1, .5f));
         Planets.Add(new Planet("Earth", 6, Sun, 1, Color.blue, 0, .6f));
@@ -73,6 +74,10 @@ public class GameController : MonoBehaviour {
     {
         if (Input.GetKeyDown("space"))
             NextTurnButton_Click();
+        if (Input.GetKeyDown("backspace"))
+            MissionController.MSMissionStep++;
+
+        //MissionController.CheckMissionStatus(Sol);
 
     }
     public void NextTurnButton_Click()
@@ -83,8 +88,7 @@ public class GameController : MonoBehaviour {
 
         charController.MainShip.MovesLeft = charController.MainShip.Movement;
 
-        MissionController.SpawnMissions();
-
+        MissionController.SpawnMissions(Sol);
 
         foreach (Planet P in Sol.Planets)
         {
