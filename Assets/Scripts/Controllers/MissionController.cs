@@ -44,8 +44,8 @@ public class MissionController : MonoBehaviour{
             else
             {
                 Point v = Layout.HexToPixel(L, P.Orbit[P.CurrentPosition]);
-                Instantiate(MissionMarkerPrefab, new Vector3((float)v.x, (float)v.y, 10f), Quaternion.identity);
-                //MissionMarkerPrefab.transform.position = new Vector3((float)v.x, (float)v.y, 10f);
+                GameObject MissionMarker = (GameObject) Instantiate(MissionMarkerPrefab, new Vector3((float)v.x, (float)(v.y + .4f), 10.2f), Quaternion.identity);
+                MissionMarker.transform.localScale = new Vector3(.5f, .5f, .5f);
             }
             
 

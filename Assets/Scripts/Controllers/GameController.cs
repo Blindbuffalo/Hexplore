@@ -88,12 +88,15 @@ public class GameController : MonoBehaviour {
 
         charController.MainShip.MovesLeft = charController.MainShip.Movement;
 
-        MissionController.SpawnMissions(Sol);
-
         foreach (Planet P in Sol.Planets)
         {
             HexG.DrawPlanetHex(P, Sol.OrbitColor);
             HexG.MovePlanetObject(P, SunGO);
         }
+
+
+        MissionController.SpawnMissions(Sol);
+
+
     }
 }
