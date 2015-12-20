@@ -1,5 +1,5 @@
 // Generated code -- http://www.redblobgames.com/grids/hexagons/
-
+using UnityEngine;
 using System;
 using System.Linq;
 using System.Collections.Generic;
@@ -101,6 +101,7 @@ public struct Hex
         }
         return Reachable;
     }
+ 
     static public List<Hex> diagonals = new List<Hex>{new Hex(2, -1, -1), new Hex(1, -2, 1), new Hex(-1, -1, 2), new Hex(-2, 1, 1), new Hex(-1, 2, -1), new Hex(1, 1, -2)};
 
     static public Hex DiagonalNeighbor(Hex hex, int direction)

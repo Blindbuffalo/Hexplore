@@ -18,7 +18,7 @@ public class MouseController : MonoBehaviour {
 	void Update () {
         float currentCamPositionY = Camera.main.ScreenToWorldPoint(Input.mousePosition).y;
         float currentCamPositionX = Camera.main.ScreenToWorldPoint(Input.mousePosition).x;
-        if (Input.GetMouseButton(1) || Input.GetMouseButton(2)) //middle or right mouse button
+        if (Input.GetMouseButton(2) || Input.GetMouseButton(0)) //middle or left mouse button
         {
             Camera.main.transform.Translate(-(new Vector3( lastCamPositionX, 0, 0) - new Vector3( currentCamPositionX, 0, 0)));
             Camera.main.transform.Translate(new Vector3(0, lastCamPositionY, 0) - new Vector3(0, currentCamPositionY, 0));

@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 using System;
 public class Ship  {
     Action CB_MovesLeftChanged;
@@ -34,5 +35,11 @@ public class Ship  {
         }
     }
     public Hex CurrentHexPosition { get; set; }
-
+    public Hex TargetHex { get; private set; }
+    public void SetTargetHex(Hex hex)
+    {
+        TargetHex = hex;
+        PathToTarget = FractionalHex.HexLinedraw(this.CurrentHexPosition, TargetHex);
+    }
+    public List<Hex> PathToTarget { get; protected set; }
 }

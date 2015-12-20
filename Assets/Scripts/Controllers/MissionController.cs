@@ -9,6 +9,7 @@ public class MissionController : MonoBehaviour{
     public Utilites Utility;
     private Layout L = new Layout(Layout.pointy, new Point(.52, .52), new Point(0, 0));
     public GameObject MissionMarkerPrefab;
+    public DrawHexGraphics HexG;
     public int CurrentMSMission = -1;
     public int _MSMissionStep = 0;
     public int MSMissionStep
@@ -24,7 +25,7 @@ public class MissionController : MonoBehaviour{
         }
     }
     public bool MSMissionCompleted = false;
-    public void SpawnMissions(SolarSystem Sol)
+    public void SpawnMissions(SolarSystem Sol, GameObject Sun)
     {
         if(CurrentMSMission == -1 || MSMissionCompleted)
         {
@@ -44,13 +45,19 @@ public class MissionController : MonoBehaviour{
             else
             {
                 Point v = Layout.HexToPixel(L, P.Orbit[P.CurrentPosition]);
-                GameObject MissionMarker = (GameObject) Instantiate(MissionMarkerPrefab, new Vector3((float)v.x, (float)(v.y + .4f), 10.2f), Quaternion.identity);
+                GameObject MissionMarker = (GameObject)Instantiate(MissionMarkerPrefab, new Vector3((float)v.x, (float)(v.y + .4f), 10.2f), Quaternion.identity);
+                MissionMarker.transform.SetParent(HexG.GetPlanetGO(P, Sun).transform);
                 MissionMarker.transform.localScale = new Vector3(.5f, .5f, .5f);
+
             }
             
 
             MSMissionCompleted = false;
         }
+    }
+    public void MoveMissionMarker(Planet P)
+    {
+        
     }
     public void CheckMissionStatus()
     {

@@ -45,15 +45,15 @@ public class GameController : MonoBehaviour {
         Hex Sun = new Hex(0, 0, 0);
         List<Planet> Planets = new List<Planet>();
         
-        Planets.Add(new Planet("Mercury", 2, Sun, 1, Color.cyan, 1, .5f));
-        Planets.Add(new Planet("Venus", 4, Sun, 1, Color.green, 1, .5f));
-        Planets.Add(new Planet("Earth", 6, Sun, 1, Color.blue, 0, .6f));
-        Planets.Add(new Planet("Mars", 9, Sun, 1, Color.red, 1, .55f));
-        Planets.Add(new Planet("Jupitor", 31, Sun, 2, Color.magenta, 1, 1.8f));
-        Planets.Add(new Planet("Saturn", 57, Sun, 3, Utility.RGBcolor(176, 159, 114, 255), 55, 1.5f, new Rings(1f, Utility.RGBcolor(159, 183, 195, 115))));
-        Planets.Add(new Planet("Uranus", 85, Sun, 3, Color.magenta, 250, 1.1f));
-        Planets.Add(new Planet("Neptune", 110, Sun, 3, Color.magenta, 119, 1.1f));
-        Planets.Add(new Planet("Pluto", 145, Sun, 2, Color.magenta, 350, .2f));
+        Planets.Add(new Planet("Mercury", 2, Sun, 1, Color.cyan, 1, .5f, PlanetMoved));
+        Planets.Add(new Planet("Venus", 4, Sun, 1, Color.green, 1, .5f, PlanetMoved));
+        Planets.Add(new Planet("Earth", 6, Sun, 1, Color.blue, 0, .6f, PlanetMoved));
+        Planets.Add(new Planet("Mars", 9, Sun, 1, Color.red, 1, .55f, PlanetMoved));
+        Planets.Add(new Planet("Jupitor", 31, Sun, 2, Color.magenta, 1, 1.8f, PlanetMoved));
+        Planets.Add(new Planet("Saturn", 57, Sun, 3, Utility.RGBcolor(176, 159, 114, 255), 55, 1.5f, PlanetMoved, new Rings(1f, Utility.RGBcolor(159, 183, 195, 115))));
+        Planets.Add(new Planet("Uranus", 85, Sun, 3, Color.magenta, 250, 1.1f, PlanetMoved));
+        Planets.Add(new Planet("Neptune", 110, Sun, 3, Color.magenta, 119, 1.1f, PlanetMoved));
+        Planets.Add(new Planet("Pluto", 145, Sun, 2, Color.magenta, 350, .2f, PlanetMoved));
 
         Sol = new SolarSystem("Sol", Sun, 2, Planets);
 
@@ -95,8 +95,12 @@ public class GameController : MonoBehaviour {
         }
 
 
-        MissionController.SpawnMissions(Sol);
+        MissionController.SpawnMissions(Sol, SunGO);
 
+
+    }
+    public void PlanetMoved(Planet P)
+    {
 
     }
 }

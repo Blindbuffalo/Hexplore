@@ -8,15 +8,18 @@ public class CharController : MonoBehaviour {
     public DrawHexGraphics HexG;
     public Utilites Utility;
     public GameObject Prefab;
+    public GameObject MovementInd;
     Layout L = new Layout(Layout.pointy, new Point(.52, .52), new Point(0, 0));
     public Hex Center = new Hex(0, 0, 0);
     public Ship MainShip;
     public bool shipMoving = false;
     public Action<int> Test;
-    public Hex ClickedHex;
+    public Hex MouseOverHex;
+    public Hex MouseOverHexStart;
     // Use this for initialization
     void Start () {
-        MainShip = new Ship(3, new Hex(5, 0, -5));
+        MovementInd.SetActive(false);
+        MainShip = new Ship(1, new Hex(5, 0, -5));
         MainShip.RegisterMovesLeftCB(RedrawMovementHexes);
 
         placeShipOnHex(MainShip.CurrentHexPosition);
@@ -31,46 +34,67 @@ public class CharController : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
-        //if (shipMoving)
-        //{
+
+        float MousePositionY = Camera.main.ScreenToWorldPoint(Input.mousePosition).y;
+        float MousePositionX = Camera.main.ScreenToWorldPoint(Input.mousePosition).x;
+
+
+        Point P = new Point(MousePositionX, MousePositionY);
+        FractionalHex FH = Layout.PixelToHex(L, P);
+        MouseOverHex = FractionalHex.HexRound(FH);
+
+
+        if (Input.GetMouseButtonDown(1))
+        {
+            Debug.Log("down");
+
+            MouseOverHexStart = MouseOverHex;
             
-        //    moveShipToHex(ClickedHex);
+            TextMesh Txt = MovementInd.GetComponentInChildren<TextMesh>();
+            Txt.text = TurnsToTarget().ToString();
+            MovementInd.SetActive(true);
+            
+            
+            Point p = Layout.HexToPixel(L, MouseOverHex);
+            MovementInd.transform.position = new Vector3((float)p.x, (float)p.y, 9.89f);
+            
+        }
 
-        //    if(this.transform.position == Utility.HexToVector3(ClickedHex))
-        //    {
-        //        shipMoving = false;
-                
-        //    }
-        //}
-        //else
-        //{
-            float currentCamPositionY = Camera.main.ScreenToWorldPoint(Input.mousePosition).y;
-            float currentCamPositionX = Camera.main.ScreenToWorldPoint(Input.mousePosition).x;
-            if (Input.GetMouseButton(0)) //left mouse button
+        if (Input.GetMouseButton(1)) //right mouse button
+        {
+            if(Utility.HexToVector3(MouseOverHexStart) != Utility.HexToVector3(MouseOverHex))
             {
-                Point P = new Point(currentCamPositionX, currentCamPositionY);
-                FractionalHex FH = Layout.PixelToHex(L, P);
-                ClickedHex = FractionalHex.HexRound(FH);
-
-                int d = Hex.Distance(MainShip.CurrentHexPosition, ClickedHex);
-
-                if (d > MainShip.MovesLeft)
-                {
-                    //Debug.LogError("you clicked outside of the allowed movement area.");
-                }
-                else
-                {
-                    
-                    shipMoving = true;
-                    MainShip.ShipMoved(ClickedHex);
-
-                    placeShipOnHex(ClickedHex);
-
-                }
+                Debug.Log("Mouse moved to another hex");
+                MouseOverHexStart = MouseOverHex;
+                Point p = Layout.HexToPixel(L, MouseOverHex);
+                MovementInd.transform.position = new Vector3((float)p.x, (float)p.y, 9.89f);
+                TextMesh Txt = MovementInd.GetComponentInChildren<TextMesh>();
+                Txt.text = TurnsToTarget().ToString();
             }
-        //}
+        }
+        if (Input.GetMouseButtonUp(1))
+        {
+            Debug.Log("up");
+            MovementInd.SetActive(false);
+        }
     }
+    public int TurnsToTarget()
+    {
+        int d = Hex.Distance(MainShip.CurrentHexPosition, MouseOverHex);
+        int TurnsToTarget = 0;
 
+        if (d > MainShip.MovesLeft)
+        {
+            float r = d - MainShip.MovesLeft;
+            float t = (r / MainShip.Movement) + 1;
+            TurnsToTarget = (int)Mathf.Ceil(t);
+        }
+        else
+        {
+            TurnsToTarget = 1;
+        }
+        return TurnsToTarget;
+    }
     //private void moveShipToHex(Hex h)
     //{
     //    Point P2 = Layout.HexToPixel(L, h);
@@ -109,6 +133,6 @@ public class CharController : MonoBehaviour {
             
         }
 
-        HexG.CreateMovementHexGraphics(Reachable, Prefab, this.transform.gameObject);
+        //HexG.CreateMovementHexGraphics(Reachable, Prefab, this.transform.gameObject);
     }
 }
