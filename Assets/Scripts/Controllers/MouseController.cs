@@ -9,7 +9,7 @@ public class MouseController : MonoBehaviour {
     public Utilites Utility;
     public DrawHexGraphics HexG;
 	// Use this for initialization
-    Layout L = new Layout(Layout.pointy, new Point(.52, .52), new Point(0, 0));
+    Layout L = new Layout(Layout.pointy, new Vector3(.52f, .52f), new Vector3(0f, 0f));
 	void Start () {
 
 	}

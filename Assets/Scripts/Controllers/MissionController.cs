@@ -7,7 +7,7 @@ public class MissionController : MonoBehaviour{
     public List<MainStoryMission> MainStoryMissions;
 
     public Utilites Utility;
-    private Layout L = new Layout(Layout.pointy, new Point(.52, .52), new Point(0, 0));
+    private Layout L = new Layout(Layout.pointy, new Vector3(.52f, .52f), new Vector3(0f, 0f));
     public GameObject MissionMarkerPrefab;
     public DrawHexGraphics HexG;
     public int CurrentMSMission = -1;
@@ -44,8 +44,8 @@ public class MissionController : MonoBehaviour{
             }
             else
             {
-                Point v = Layout.HexToPixel(L, P.Orbit[P.CurrentPosition]);
-                GameObject MissionMarker = (GameObject)Instantiate(MissionMarkerPrefab, new Vector3((float)v.x, (float)(v.y + .4f), 10.2f), Quaternion.identity);
+
+                GameObject MissionMarker = (GameObject)Instantiate(MissionMarkerPrefab, Layout.HexToPixel(L, P.Orbit[P.CurrentPosition], 10.2f), Quaternion.identity);
                 MissionMarker.transform.SetParent(HexG.GetPlanetGO(P, Sun).transform);
                 MissionMarker.transform.localScale = new Vector3(.5f, .5f, .5f);
 

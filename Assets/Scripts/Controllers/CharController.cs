@@ -9,7 +9,7 @@ public class CharController : MonoBehaviour {
     public Utilites Utility;
     public GameObject Prefab;
     public GameObject MovementInd;
-    Layout L = new Layout(Layout.pointy, new Point(.52, .52), new Point(0, 0));
+    Layout L = new Layout(Layout.pointy, new Vector3(.52f, .52f), new Vector3(0f, 0f));
     public Hex Center = new Hex(0, 0, 0);
     public Ship MainShip;
     public bool shipMoving = false;
@@ -19,7 +19,7 @@ public class CharController : MonoBehaviour {
     // Use this for initialization
     void Start () {
         MovementInd.SetActive(false);
-        MainShip = new Ship(1, new Hex(5, 0, -5));
+        MainShip = new Ship(3, new Hex(5, 0, -5));
         MainShip.RegisterMovesLeftCB(RedrawMovementHexes);
 
         placeShipOnHex(MainShip.CurrentHexPosition);
@@ -39,42 +39,46 @@ public class CharController : MonoBehaviour {
         float MousePositionX = Camera.main.ScreenToWorldPoint(Input.mousePosition).x;
 
 
-        Point P = new Point(MousePositionX, MousePositionY);
+        Vector3 P = new Vector3(MousePositionX, MousePositionY);
         FractionalHex FH = Layout.PixelToHex(L, P);
         MouseOverHex = FractionalHex.HexRound(FH);
 
-
+        //right mouse button
         if (Input.GetMouseButtonDown(1))
         {
-            Debug.Log("down");
+            //Debug.Log("down");
+
+            MainShip.SetTargetHex(MouseOverHex);
 
             MouseOverHexStart = MouseOverHex;
             
             TextMesh Txt = MovementInd.GetComponentInChildren<TextMesh>();
             Txt.text = TurnsToTarget().ToString();
             MovementInd.SetActive(true);
-            
-            
-            Point p = Layout.HexToPixel(L, MouseOverHex);
-            MovementInd.transform.position = new Vector3((float)p.x, (float)p.y, 9.89f);
-            
+
+            MovementInd.transform.position = Layout.HexToPixel(L, MouseOverHex, 9.89f);
+
+            CreateMovementLine();
         }
 
-        if (Input.GetMouseButton(1)) //right mouse button
+        if (Input.GetMouseButton(1)) 
         {
             if(Utility.HexToVector3(MouseOverHexStart) != Utility.HexToVector3(MouseOverHex))
             {
-                Debug.Log("Mouse moved to another hex");
+                MainShip.SetTargetHex(MouseOverHex);
+                //Debug.Log("Mouse moved to another hex");
                 MouseOverHexStart = MouseOverHex;
-                Point p = Layout.HexToPixel(L, MouseOverHex);
-                MovementInd.transform.position = new Vector3((float)p.x, (float)p.y, 9.89f);
+
+                MovementInd.transform.position = Layout.HexToPixel(L, MouseOverHex, 9.89f);
                 TextMesh Txt = MovementInd.GetComponentInChildren<TextMesh>();
                 Txt.text = TurnsToTarget().ToString();
+
+                CreateMovementLine();
             }
         }
         if (Input.GetMouseButtonUp(1))
         {
-            Debug.Log("up");
+            //Debug.Log("up");
             MovementInd.SetActive(false);
         }
     }
@@ -95,6 +99,18 @@ public class CharController : MonoBehaviour {
         }
         return TurnsToTarget;
     }
+    public void CreateMovementLine()
+    {
+        LineRenderer LR = MovementInd.GetComponent<LineRenderer>();
+        int i = 0;
+        LR.SetVertexCount(MainShip.PathToTarget.Count);
+        foreach (Hex h in MainShip.PathToTarget)
+        {
+            //Debug.Log(i.ToString());
+            LR.SetPosition(i, Layout.HexToPixel(L, h, 9.75f));
+            i++;
+        }
+    }
     //private void moveShipToHex(Hex h)
     //{
     //    Point P2 = Layout.HexToPixel(L, h);
@@ -105,19 +121,7 @@ public class CharController : MonoBehaviour {
     private void placeShipOnHex(Hex h)
     {
 
-
-
-        Point P2 = Layout.HexToPixel(L, h);
-
-        //Vector3 dir = Utility.HexToVector3(h) -this.transform.position;
-
-        //float speed = 1;
-
-        //float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
-        //Quaternion q = Quaternion.AngleAxis(angle, Vector3.left);
-        //transform.rotation = q;
-
-        this.transform.position = new Vector3((float)P2.x, (float)P2.y, 10f);
+        this.transform.position = Layout.HexToPixel(L, h, 10f);
         
     }
     void RedrawMovementHexes()

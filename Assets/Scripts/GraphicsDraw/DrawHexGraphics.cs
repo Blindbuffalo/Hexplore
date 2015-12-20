@@ -5,7 +5,7 @@ using System.Collections.Generic;
 public class DrawHexGraphics : MonoBehaviour {
     public Dictionary<string, GameObject> HexGraphics = null;
     public Utilites Utility;
-    private Layout L = new Layout(Layout.pointy, new Point(.52, .52), new Point(0, 0));
+    private Layout L = new Layout(Layout.pointy, new Vector3(.52f, .52f), new Vector3(0f, 0f));
     void Start()
     {
         Debug.Log("hexgraphics Start");
@@ -16,7 +16,6 @@ public class DrawHexGraphics : MonoBehaviour {
         HexGraphics = new Dictionary<string, GameObject>();
         foreach (Hex h in Hexes)
         {
-            Point p = Layout.HexToPixel(L, h);
 
             if (HexGraphics.ContainsKey(Utility.HexNameStr(h)))
             {
@@ -25,7 +24,7 @@ public class DrawHexGraphics : MonoBehaviour {
             else
             {
 
-                GameObject g = (GameObject)Instantiate(Prefab, new Vector3((float)p.x, (float)p.y, 0), Quaternion.identity);
+                GameObject g = (GameObject)Instantiate(Prefab, Layout.HexToPixel(L, h, 0), Quaternion.identity);
                 g.name = Utility.HexNameStr(h);
                 g.transform.SetParent(this.transform);
                 HexGraphics.Add(Utility.HexNameStr(h), g);
@@ -39,9 +38,7 @@ public class DrawHexGraphics : MonoBehaviour {
         
         foreach (Hex h in Hexes)
         {
-            Point p = Layout.HexToPixel(L, h);
-
-            GameObject g = (GameObject)Instantiate(Prefab, new Vector3((float)p.x, (float)p.y, 0), Quaternion.identity);
+            GameObject g = (GameObject)Instantiate(Prefab, Layout.HexToPixel(L, h, 0), Quaternion.identity);
             g.name = Utility.HexNameStr(h);
             g.transform.SetParent(parent.transform);
                 
@@ -84,15 +81,14 @@ public class DrawHexGraphics : MonoBehaviour {
     }
     public void DrawPlanetObject(Planet planet, GameObject PlanetPrefab, GameObject Sun, GameObject Rings)
     {
-        Point p = Layout.HexToPixel(L, planet.Orbit[planet.CurrentPosition]);
-
-        GameObject GO = (GameObject)Instantiate(PlanetPrefab, new Vector3((float)p.x, (float)p.y, 10f), Quaternion.identity);
+        Vector3 p = Layout.HexToPixel(L, planet.Orbit[planet.CurrentPosition], 10f);
+        GameObject GO = (GameObject)Instantiate(PlanetPrefab, p, Quaternion.identity);
         GO.name = planet.Name + "_GO";
         GO.transform.localScale *= planet.Size;
 
         if (planet.Rings != null)
         {
-            GameObject RingsGO = (GameObject)Instantiate(Rings, new Vector3((float)p.x, (float)p.y, 10f), Quaternion.identity);
+            GameObject RingsGO = (GameObject)Instantiate(Rings, p, Quaternion.identity);
             RingsGO.name = planet.Name + "_Rings";
             RingsGO.GetComponent<SpriteRenderer>().color = planet.Rings.RingColor;
             RingsGO.transform.SetParent(GO.transform);
@@ -116,11 +112,9 @@ public class DrawHexGraphics : MonoBehaviour {
         return null;
     }
     public void MovePlanetObject(Planet planet, GameObject Sun)
-    {
-        Point p = Layout.HexToPixel(L, planet.Orbit[planet.CurrentPosition]);
-        
+    {       
         GameObject pGO = GetPlanetGO(planet, Sun);
-        pGO.transform.position = new Vector3((float)p.x, (float)p.y, 10f);
+        pGO.transform.position = Layout.HexToPixel(L, planet.Orbit[planet.CurrentPosition], 10f);
 
     }
 }
