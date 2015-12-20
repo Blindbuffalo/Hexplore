@@ -13,7 +13,7 @@ public class Utilites : MonoBehaviour {
     }
     public GameObject PlacePrefab(GameObject GO, float scale, Vector3 Position, Color Tint)
     {
-        GO = (GameObject)Instantiate(GO, new Vector3(GO.transform.position.x, GO.transform.position.y, 5), Quaternion.identity);
+        GO = (GameObject)Instantiate(GO, new Vector3(GO.transform.position.x, GO.transform.position.y, -5), Quaternion.identity);
         GO.transform.localScale = new Vector3(scale, scale, scale);
         GO.GetComponent<SpriteRenderer>().color = Tint;
         return GO;

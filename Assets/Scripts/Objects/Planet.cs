@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System;
+public enum OrbitDir { CCW, CW }
 public class Rings
 {
     public Rings(float ringscale, Color ringcolor)
@@ -14,7 +15,7 @@ public class Rings
 }
 public class Planet {
     Action<Planet> PlanetMoved;
-    public Planet(string name, int orbitRadius, Hex parent, int numberofmoves, Color color, int position, float size, Action<Planet> planetmoved, Rings rings = null)
+    public Planet(string name, int orbitRadius, Hex parent, int numberofmoves, Color color, int position, float size, Action<Planet> planetmoved, OrbitDir OD = OrbitDir.CCW, Rings rings = null)
     {
 
         PlanetMoved = planetmoved;
@@ -33,7 +34,7 @@ public class Planet {
         LastPosition = position;
         CurrentPosition = position;
 
-        
+        OrbitDirection = OD;
     }
 
     public string Name { get; private set; }
@@ -62,7 +63,9 @@ public class Planet {
         }
     }
     public int LastPosition { get; set; }
-    
+
+    public OrbitDir OrbitDirection { get; set; }
+
     private List<Hex> CalcOrbit()
     {
 
