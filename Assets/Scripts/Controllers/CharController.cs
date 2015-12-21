@@ -52,24 +52,24 @@ public class CharController : MonoBehaviour {
         }
         if (shipMoving && MainShip.MovesLeft > 0)
         {
-            //move the ship
-            //Vector3 t = Layout.HexToPixel(L, MainShip.PathToTarget[MoveShipPos], 0f);
-            //Vector3 c = Layout.HexToPixel(L, MainShip.CurrentHexPosition, 0f);
-            //Vector3 n = new Vector3(t.x - c.x, t.y - c.y, 0f);
-            //this.transform.Translate(n.normalized * 2f * Time.deltaTime);
-            //float offset = .05f;
-            //if(this.transform.position.x > t.x - offset && this.transform.position.x < t.x + offset && this.transform.position.y > t.y- offset && this.transform.position.y < t.y + offset)
-            //{
-            //    MainShip.ShipMoved(MainShip.PathToTarget[MoveShipPos]);
-            //    //MainShip.CurrentHexPosition = MainShip.PathToTarget[MoveShipPos];
-            //    MoveShipPos++;
-            //    if(MoveShipPos > MainShip.PathToTarget.Count - 1 )
-            //    {
-            //        MoveShipPos = 1;
-            //        shipMoving = false;
+           // move the ship
+            Vector3 t = Layout.HexToPixel(L, MainShip.PathToTarget[MoveShipPos], 0f);
+            Vector3 c = Layout.HexToPixel(L, MainShip.CurrentHexPosition, 0f);
+            Vector3 n = new Vector3(t.x - c.x, t.y - c.y, 0f);
+            this.transform.Translate(n.normalized * 2f * Time.deltaTime);
+            float offset = .05f;
+            if (this.transform.position.x > t.x - offset && this.transform.position.x < t.x + offset && this.transform.position.y > t.y - offset && this.transform.position.y < t.y + offset)
+            {
+                MainShip.ShipMoved(MainShip.PathToTarget[MoveShipPos]);
+                //MainShip.CurrentHexPosition = MainShip.PathToTarget[MoveShipPos];
+                MoveShipPos++;
+                if (MoveShipPos > MainShip.PathToTarget.Count - 1)
+                {
+                    MoveShipPos = 1;
+                    shipMoving = false;
 
-            //    }
-            //}
+                }
+            }
         }
         else
         {
@@ -78,48 +78,48 @@ public class CharController : MonoBehaviour {
             if (Input.GetMouseButtonDown(1))
             {
 
-               List<Hex> t = Hex.AstarPath(MainShip.CurrentHexPosition, MouseOverHex);
-                foreach(Hex k in t)
-                {
-                    HexG.ChangeHexesColor(k, Color.red);
-                }
+                //List<Hex> t = Hex.AstarPath(MainShip.CurrentHexPosition, MouseOverHex);
+                // foreach(Hex k in t)
+                // {
+                //     HexG.ChangeHexesColor(k, Color.red);
+                // }
                 //Debug.Log("down");
                 //triggers only on first down
-                //MainShip.SetTargetHex(MouseOverHex);
+                MainShip.SetTargetHex(MouseOverHex);
 
-                //MouseOverHexStart = MouseOverHex;
+                MouseOverHexStart = MouseOverHex;
 
-                //TextMesh Txt = MovementInd.GetComponentInChildren<TextMesh>();
-                //Txt.text = TurnsToTarget().ToString();
-                //MovementInd.SetActive(true);
+                TextMesh Txt = MovementInd.GetComponentInChildren<TextMesh>();
+                Txt.text = TurnsToTarget().ToString();
+                MovementInd.SetActive(true);
 
-                //MovementInd.transform.position = Layout.HexToPixel(L, MouseOverHex, -9.89f);
+                MovementInd.transform.position = Layout.HexToPixel(L, MouseOverHex, -9.89f);
 
-                //CreateMovementLine();
+                CreateMovementLine();
             }
 
-            //if (Input.GetMouseButton(1))
-            //{
-            //    //triggers while the button is down
-            //    if (Utility.HexToVector3(MouseOverHexStart) != Utility.HexToVector3(MouseOverHex))
-            //    {
-            //        MainShip.SetTargetHex(MouseOverHex);
-            //        //Debug.Log("Mouse moved to another hex");
-            //        MouseOverHexStart = MouseOverHex;
+            if (Input.GetMouseButton(1))
+            {
+                //triggers while the button is down
+                if (Utility.HexToVector3(MouseOverHexStart) != Utility.HexToVector3(MouseOverHex))
+                {
+                    MainShip.SetTargetHex(MouseOverHex);
+                    //Debug.Log("Mouse moved to another hex");
+                    MouseOverHexStart = MouseOverHex;
 
-            //        MovementInd.transform.position = Layout.HexToPixel(L, MouseOverHex, -9.89f);
-            //        TextMesh Txt = MovementInd.GetComponentInChildren<TextMesh>();
-            //        Txt.text = TurnsToTarget().ToString();
+                    MovementInd.transform.position = Layout.HexToPixel(L, MouseOverHex, -9.89f);
+                    TextMesh Txt = MovementInd.GetComponentInChildren<TextMesh>();
+                    Txt.text = TurnsToTarget().ToString();
 
-            //        CreateMovementLine();
-            //    }
-            //}
-            //if (Input.GetMouseButtonUp(1))
-            //{
-            //    //Debug.Log("up");
-            //    MovementInd.SetActive(false);
-            //    MoveShip = true;
-            //}
+                    CreateMovementLine();
+                }
+            }
+            if (Input.GetMouseButtonUp(1))
+            {
+                //Debug.Log("up");
+                MovementInd.SetActive(false);
+                MoveShip = true;
+            }
         }
 
         

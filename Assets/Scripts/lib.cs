@@ -156,7 +156,7 @@ public struct Hex
     {
         Dictionary<Hex, Hex> cameFrom = Astar(start, Target);
         List<Hex> Path = new List<Hex>();
-        Path.Add(cameFrom[Target]);
+        Path.Add(Target);
         int i = 0;
         while (true)
         {
@@ -165,9 +165,11 @@ public struct Hex
             i++;
             if(Hex.Equals(Path[i], start))
             {
+                //Path.Add(start);
                 break;
             }
         }
+       Path.Reverse();
         return Path;
     }
     static public Dictionary<Hex, Hex> Astar(Hex start, Hex Target)
