@@ -45,10 +45,11 @@ public class MissionController : MonoBehaviour{
             else
             {
 
-                GameObject MissionMarker = (GameObject)Instantiate(MissionMarkerPrefab, Layout.HexToPixel(L, P.Orbit[P.CurrentPosition], 10.2f), Quaternion.identity);
+                GameObject MissionMarker = (GameObject)Instantiate(MissionMarkerPrefab, Layout.HexToPixel(L, P.Orbit[P.CurrentPosition], -10.2f), Quaternion.identity);
+                
                 MissionMarker.transform.SetParent(HexG.GetPlanetGO(P, Sun).transform);
                 MissionMarker.transform.localScale = new Vector3(.5f, .5f, .5f);
-
+                MissionMarker.transform.localPosition = new Vector3(0f, .46f, -1f); ;
             }
             
 

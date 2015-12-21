@@ -29,6 +29,14 @@ public struct Hex
     public readonly int r;
     public readonly int s;
 
+    static public bool Equals(Hex a, Hex b)
+    {
+        if(a.q == b.q && a.r == b.r && a.s == b.s)
+        {
+            return true;
+        }
+        return false;
+    }
     static public Hex Add(Hex a, Hex b)
     {
         return new Hex(a.q + b.q, a.r + b.r, a.s + b.s);
@@ -102,7 +110,106 @@ public struct Hex
         }
         return Reachable;
     }
- 
+    public class Tuple
+    {
+        public Tuple(Hex i, int p)
+        {
+            item = i;
+            pri = p;
+        }
+        public Hex item { get; set; }
+        public int pri { get; set; }
+    }
+    public class PriorityQueue
+    {
+        private List<Tuple> elements = new List<Tuple>();
+
+        public int Count
+        {
+            get { return elements.Count; }
+        }
+
+        public void Enqueue(Hex item, int priority)
+        {
+            Tuple t = new Tuple(item, priority);
+            elements.Add(t);
+        }
+
+        public Hex Dequeue()
+        {
+            int bestIndex = 0;
+
+            for (int i = 0; i < elements.Count; i++)
+            {
+                if (elements[i].pri < elements[bestIndex].pri)
+                {
+                    bestIndex = i;
+                }
+            }
+
+            Hex bestItem = elements[bestIndex].item;
+            elements.RemoveAt(bestIndex);
+            return bestItem;
+        }
+    }
+    static public List<Hex> AstarPath(Hex start, Hex Target)
+    {
+        Dictionary<Hex, Hex> cameFrom = Astar(start, Target);
+        List<Hex> Path = new List<Hex>();
+        Path.Add(cameFrom[Target]);
+        int i = 0;
+        while (true)
+        {
+            Path.Add(cameFrom[Path[i]]);
+            
+            i++;
+            if(Hex.Equals(Path[i], start))
+            {
+                break;
+            }
+        }
+        return Path;
+    }
+    static public Dictionary<Hex, Hex> Astar(Hex start, Hex Target)
+    {
+        List<Hex> PathToTarget = new List<Hex>();
+        PriorityQueue Fringes = new PriorityQueue();
+
+        Dictionary<Hex, Hex> cameFrom = new Dictionary<Hex, Hex>();
+        Dictionary<Hex, int> costSoFar = new Dictionary<Hex, int>();
+
+        Fringes.Enqueue(start, 0);
+
+        cameFrom[start] = start;
+        costSoFar[start] = 0;
+
+
+        while(Fringes.Count > 0)
+        { 
+            Hex current = Fringes.Dequeue();
+
+            if(Equals(current, Target))
+            {
+                break;
+            }
+
+            foreach (Hex  n in Neighbors(current))
+            {
+                int newCost = costSoFar[current];
+
+                if(!costSoFar.ContainsKey(n) || newCost < costSoFar[n])
+                {
+                    costSoFar[n] = newCost;
+                    int pri = newCost + Distance(n, Target);
+                    Fringes.Enqueue(n, pri);
+                    cameFrom[n] = current;
+                }
+            }
+        }
+
+        
+        return cameFrom;
+    }
     static public List<Hex> diagonals = new List<Hex>{new Hex(2, -1, -1), new Hex(1, -2, 1), new Hex(-1, -1, 2), new Hex(-2, 1, 1), new Hex(-1, 2, -1), new Hex(1, 1, -2)};
 
     static public Hex DiagonalNeighbor(Hex hex, int direction)
