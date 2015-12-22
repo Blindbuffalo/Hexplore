@@ -43,39 +43,7 @@ public class CharController : MonoBehaviour {
 	void Update () {
         float MousePositionY = Camera.main.ScreenToWorldPoint(Input.mousePosition).y;
         float MousePositionX = Camera.main.ScreenToWorldPoint(Input.mousePosition).x;
-        GameObject Child = this.transform.GetChild(0).gameObject;
 
-        Vector3 direction = Layout.HexToPixel(L, new Hex(-9, 10, 0), 0f) - Child.transform.position;
-        float ang = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
-
-        
-
-
-        //current angle in degrees
-        float anglecurrent = Child.transform.eulerAngles.z;
-        float checkAngle = 0;
-
-
-        checkAngle = (ang + 360) % 360;
-
-        Debug.Log(ang + " -- " + anglecurrent + " -- " + checkAngle);
-
-
-        if (anglecurrent <= checkAngle + 0.5f && anglecurrent >= checkAngle - 0.5f)
-        {
-
-        }
-        else
-        {
-            if (ang > 0)
-            {
-                Child.transform.Rotate(new Vector3(0, 0, 1f));
-            }
-            else
-            {
-                Child.transform.Rotate(new Vector3(0, 0, -1f));
-            }
-        }
 
         Vector3 P = new Vector3(MousePositionX, MousePositionY);
         FractionalHex FH = Layout.PixelToHex(L, P);
@@ -94,37 +62,44 @@ public class CharController : MonoBehaviour {
         if (shipMoving && MainShip.MovesLeft > 0)
         {
            // move the ship
-            Vector3 t = Layout.HexToPixel(L, MainShip.PathToTarget[MoveShipPos], -10f);
+            Vector3 t = Layout.HexToPixel(L, MainShip.PathToTarget[MoveShipPos], -15f);
             Vector3 c = Layout.HexToPixel(L, MainShip.CurrentHexPosition, 0f);
             Vector3 n = new Vector3(t.x - c.x, t.y - c.y, 0f);
-            Vector3 m = new Vector3(this.transform.position.x, this.transform.position.y, -10);
+            Vector3 m = new Vector3(this.transform.position.x, this.transform.position.y, -15);
             //Debug.Log(Utility.HexNameStr(MainShip.PathToTarget[MoveShipPos]));
 
-           
-            Child.transform.Rotate(Vector3.forward, .1f);
 
-            
+            //Child.transform.Rotate(Vector3.forward, .1f);
 
 
-            this.transform.Translate(n.normalized * 1f * Time.deltaTime);
-
-            if ((t - m).sqrMagnitude < MinNextTileDist * MinNextTileDist)
+            if (RotateShip(this.transform.GetChild(0).gameObject, n))
             {
+                this.transform.Translate(n.normalized * 2f * Time.deltaTime);
 
-                
-                MainShip.ShipMoved(MainShip.PathToTarget[MoveShipPos]);
-
-
-
-               // MainShip.CurrentHexPosition = MainShip.PathToTarget[MoveShipPos];
-                MoveShipPos++;
-                if (MoveShipPos > MainShip.PathToTarget.Count - 1)
+                if ((t - m).sqrMagnitude < MinNextTileDist * MinNextTileDist)
                 {
-                    MoveShipPos = 1;
-                    shipMoving = false;
-                    MovementInd.SetActive(false);
+
+
+                    MainShip.ShipMoved(MainShip.PathToTarget[MoveShipPos]);
+
+
+
+                    // MainShip.CurrentHexPosition = MainShip.PathToTarget[MoveShipPos];
+                    MoveShipPos++;
+                    if (MoveShipPos > MainShip.PathToTarget.Count - 1)
+                    {
+                        MoveShipPos = 1;
+                        shipMoving = false;
+                        MovementInd.SetActive(false);
+                    }
                 }
             }
+            else
+            {
+
+            }
+
+
 
 
             
@@ -201,6 +176,48 @@ public class CharController : MonoBehaviour {
             }
         }
     }
+
+    public bool RotateShip(GameObject Child, Vector3 direction)
+    {
+        
+
+        //Vector3 direction = Layout.HexToPixel(L, new Hex(-9, 10, 0), 0f) - Child.transform.position;
+        float ang = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+
+
+
+
+        //current angle in degrees
+        float anglecurrent = Child.transform.eulerAngles.z;
+        float checkAngle = 0;
+
+
+        checkAngle = ((ang + 360) % 360);
+        float CheckTurnDir = anglecurrent - checkAngle;
+       Debug.Log("A:" + ang + " -- AC" + anglecurrent + " -- CA" + checkAngle + " TD:" + CheckTurnDir);
+
+
+        
+
+        if (anglecurrent <= checkAngle + 0.5f && anglecurrent >= checkAngle - 0.5f)
+        {
+            return true;
+        }
+        else
+        {
+            if (CheckTurnDir > 0)
+            {
+                Child.transform.Rotate(new Vector3(0, 0, -2f));
+            }
+            else
+            {
+                Child.transform.Rotate(new Vector3(0, 0, 2f));
+                //Debug.Log(ang + "AC" + anglecurrent + " -- CA" + checkAngle + " TD:" + CheckTurnDir);
+            }
+        }
+
+        return false;
+    }
     public int TurnsToTarget()
     {
         int d = Hex.Distance(MainShip.CurrentHexPosition, MouseOverHex);
@@ -233,7 +250,7 @@ public class CharController : MonoBehaviour {
     private void placeShipOnHex(Hex h)
     {
 
-        this.transform.position = Layout.HexToPixel(L, h, -10f);
+        this.transform.position = Layout.HexToPixel(L, h, -15f);
         
     }
     void RedrawMovementHexes()
