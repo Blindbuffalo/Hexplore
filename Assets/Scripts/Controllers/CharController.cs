@@ -45,7 +45,7 @@ public class CharController : MonoBehaviour {
         float MousePositionX = Camera.main.ScreenToWorldPoint(Input.mousePosition).x;
         GameObject Child = this.transform.GetChild(0).gameObject;
 
-        Vector3 direction = Camera.main.ScreenToWorldPoint(Input.mousePosition) - Child.transform.position;
+        Vector3 direction = Layout.HexToPixel(L, new Hex(-9, 10, 0), 0f) - Child.transform.position;
         float ang = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
 
         
@@ -56,11 +56,12 @@ public class CharController : MonoBehaviour {
         float checkAngle = 0;
 
 
+        checkAngle = (ang + 360) % 360;
 
         Debug.Log(ang + " -- " + anglecurrent + " -- " + checkAngle);
 
 
-        if (anglecurrent <= ang + 0.5f && anglecurrent >= ang - 0.5f)
+        if (anglecurrent <= checkAngle + 0.5f && anglecurrent >= checkAngle - 0.5f)
         {
 
         }
@@ -68,11 +69,11 @@ public class CharController : MonoBehaviour {
         {
             if (ang > 0)
             {
-                Child.transform.Rotate(new Vector3(0, 0, .1f));
+                Child.transform.Rotate(new Vector3(0, 0, 1f));
             }
             else
             {
-                Child.transform.Rotate(new Vector3(0, 0, -.1f));
+                Child.transform.Rotate(new Vector3(0, 0, -1f));
             }
         }
 
