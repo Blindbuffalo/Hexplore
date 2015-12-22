@@ -29,6 +29,7 @@ public struct Hex
     public readonly int r;
     public readonly int s;
 
+    
     static public bool Equals(Hex a, Hex b)
     {
         if(a.q == b.q && a.r == b.r && a.s == b.s)
@@ -199,6 +200,15 @@ public struct Hex
             {
                 int newCost = costSoFar[current];
 
+
+                if (BlockedHexes.Instance.HexData.Contains(current))
+                {
+                    newCost += 5;
+                }
+                if (Equals(current, new Hex(0, 0, 0)))
+                {
+                    
+                }
                 if(!costSoFar.ContainsKey(n) || newCost < costSoFar[n])
                 {
                     costSoFar[n] = newCost;

@@ -87,12 +87,22 @@ public class CharController : MonoBehaviour {
                 // }
                 //Debug.Log("down");
                 //triggers only on first down
+                
                 MainShip.SetTargetHex(MouseOverHex);
 
                 MouseOverHexStart = MouseOverHex;
 
                 TextMesh Txt = MovementInd.GetComponentInChildren<TextMesh>();
-                Txt.text = TurnsToTarget().ToString();
+
+                if (BlockedHexes.Instance.HexData.Contains(MouseOverHex))
+                {
+                    Txt.text = "X";
+                }
+                else
+                {
+                    Txt.text = TurnsToTarget().ToString();
+                }
+                
                 MovementInd.SetActive(true);
 
                 MovementInd.transform.position = Layout.HexToPixel(L, MouseOverHex, -9.89f);
@@ -111,7 +121,15 @@ public class CharController : MonoBehaviour {
 
                     MovementInd.transform.position = Layout.HexToPixel(L, MouseOverHex, -9.89f);
                     TextMesh Txt = MovementInd.GetComponentInChildren<TextMesh>();
-                    Txt.text = TurnsToTarget().ToString();
+
+                    if (BlockedHexes.Instance.HexData.Contains(MouseOverHex))
+                    {
+                        Txt.text = "X";
+                    }
+                    else
+                    {
+                        Txt.text = TurnsToTarget().ToString();
+                    }
 
                     CreateMovementLine();
                 }
@@ -120,16 +138,20 @@ public class CharController : MonoBehaviour {
             {
                 //Debug.Log("up");
                 //MovementInd.SetActive(false);
-                MoveShip = true;
+                if (BlockedHexes.Instance.HexData.Contains(MouseOverHex))
+                {
+                    MoveShip = false;
+                    MoveShipPos = 1;
+                    shipMoving = false;
+                    MovementInd.SetActive(false);
+                }
+                else
+                {
+                    MoveShip = true;
+                }
+                
             }
         }
-
-        
-
-
-        
-
-
     }
     public int TurnsToTarget()
     {
@@ -160,13 +182,6 @@ public class CharController : MonoBehaviour {
             i++;
         }
     }
-    //private void moveShipToHex(Hex h)
-    //{
-    //    Point P2 = Layout.HexToPixel(L, h);
-    //    this.transform.position = new Vector3((float)P2.x, (float)P2.y, 10f);
-
-    //    this.transform.Translate(new Vector3((float)P2.x, (float)P2.y, 10f).normalized * Time.deltaTime);
-    //}
     private void placeShipOnHex(Hex h)
     {
 
@@ -183,9 +198,7 @@ public class CharController : MonoBehaviour {
             {
                 GameObject.Destroy(child.gameObject);
             }
-            
-        }
 
-        //HexG.CreateMovementHexGraphics(Reachable, Prefab, this.transform.gameObject);
+        }
     }
 }

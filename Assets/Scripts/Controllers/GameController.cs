@@ -2,7 +2,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.UI;
+
 public class GameController : MonoBehaviour {
+  
     public int CurrentTurn = 0;
     public int days = 0;
     public int SolarSystemDayMultiplier = 10;
@@ -15,7 +17,7 @@ public class GameController : MonoBehaviour {
     public GameObject PlanetPreFab;
     public GameObject Rings;
 
-    public int GridRadius = 20;
+    public int GridRadius = 150;
 
     public GridData Grid = new GridData();
     public Utilites Utility;
@@ -54,6 +56,9 @@ public class GameController : MonoBehaviour {
         Planets.Add(new Planet("Uranus", 85, Sun, 3, Color.magenta, 250, 1.1f, PlanetMoved));
         Planets.Add(new Planet("Neptune", 110, Sun, 3, Color.magenta, 119, 1.1f, PlanetMoved));
         Planets.Add(new Planet("Pluto", 145, Sun, 2, Color.magenta, 350, .2f, PlanetMoved));
+
+        BlockedHexes.Instance.HexData = Hex.Neighbors(Sun);
+        BlockedHexes.Instance.HexData.Add(Sun);
 
         Sol = new SolarSystem("Sol", Sun, 2, Planets);
 

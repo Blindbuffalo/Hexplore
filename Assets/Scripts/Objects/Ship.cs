@@ -39,8 +39,9 @@ public class Ship  {
     public void SetTargetHex(Hex hex)
     {
         TargetHex = hex;
-        //PathToTarget = FractionalHex.HexLinedraw(this.CurrentHexPosition, TargetHex);
+        
         PathToTarget = Hex.AstarPath(this.CurrentHexPosition, TargetHex);
+        
     }
     public List<Hex> PathToTarget { get; protected set; }
 }
