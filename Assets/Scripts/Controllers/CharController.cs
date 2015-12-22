@@ -7,7 +7,7 @@ public class CharController : MonoBehaviour {
 
     public DrawHexGraphics HexG;
     public Utilites Utility;
-    public GameObject Prefab;
+
     public GameObject MovementInd;
     Layout L = new Layout(Layout.pointy, new Vector3(.52f, .52f), new Vector3(0f, 0f));
     public Hex Center = new Hex(0, 0, 0);
@@ -20,6 +20,9 @@ public class CharController : MonoBehaviour {
     public Action<int> Test;
     public Hex MouseOverHex;
     public Hex MouseOverHexStart;
+    public float speed = 0.0025F;
+    public float rotationSpeed = 0.004F;
+    public float MinNextTileDist = .025f;
 
     // Use this for initialization
     void Start () {
@@ -45,6 +48,11 @@ public class CharController : MonoBehaviour {
         FractionalHex FH = Layout.PixelToHex(L, P);
         MouseOverHex = FractionalHex.HexRound(FH);
 
+        int qm = MainShip.CurrentHexPosition.q - MouseOverHex.q;
+        int rm = MainShip.CurrentHexPosition.r - MouseOverHex.r;
+
+        //Debug.Log(qm + " " + rm);
+
         if (MoveShip)
         {
             shipMoving = true;
@@ -53,17 +61,20 @@ public class CharController : MonoBehaviour {
         if (shipMoving && MainShip.MovesLeft > 0)
         {
            // move the ship
-            Vector3 t = Layout.HexToPixel(L, MainShip.PathToTarget[MoveShipPos], 0f);
+            Vector3 t = Layout.HexToPixel(L, MainShip.PathToTarget[MoveShipPos], -10f);
             Vector3 c = Layout.HexToPixel(L, MainShip.CurrentHexPosition, 0f);
             Vector3 n = new Vector3(t.x - c.x, t.y - c.y, 0f);
-            this.transform.Translate(n.normalized * 2f * Time.deltaTime);
-            float offset = .05f;
-            
-            if (this.transform.position.x > t.x - offset && this.transform.position.x < t.x + offset && this.transform.position.y > t.y - offset && this.transform.position.y < t.y + offset)
+            Vector3 m = new Vector3(this.transform.position.x, this.transform.position.y, -10);
+            //Debug.Log(Utility.HexNameStr(MainShip.PathToTarget[MoveShipPos]));
+            this.transform.Translate(n.normalized * 1f * Time.deltaTime);
+
+            if ((t - m).sqrMagnitude < MinNextTileDist * MinNextTileDist)
             {
-                MainShip.ShipMoved(MainShip.PathToTarget[MoveShipPos]);
+
                 
-                //MainShip.CurrentHexPosition = MainShip.PathToTarget[MoveShipPos];
+                MainShip.ShipMoved(MainShip.PathToTarget[MoveShipPos]);
+
+               // MainShip.CurrentHexPosition = MainShip.PathToTarget[MoveShipPos];
                 MoveShipPos++;
                 if (MoveShipPos > MainShip.PathToTarget.Count - 1)
                 {
@@ -72,6 +83,10 @@ public class CharController : MonoBehaviour {
                     MovementInd.SetActive(false);
                 }
             }
+
+
+            
+            
         }
         else
         {
@@ -79,15 +94,6 @@ public class CharController : MonoBehaviour {
             //right mouse button
             if (Input.GetMouseButtonDown(1))
             {
-
-                //List<Hex> t = Hex.AstarPath(MainShip.CurrentHexPosition, MouseOverHex);
-                // foreach(Hex k in t)
-                // {
-                //     HexG.ChangeHexesColor(k, Color.red);
-                // }
-                //Debug.Log("down");
-                //triggers only on first down
-                
                 MainShip.SetTargetHex(MouseOverHex);
 
                 MouseOverHexStart = MouseOverHex;
@@ -105,7 +111,7 @@ public class CharController : MonoBehaviour {
                 
                 MovementInd.SetActive(true);
 
-                MovementInd.transform.position = Layout.HexToPixel(L, MouseOverHex, -9.89f);
+                MovementInd.transform.position = Layout.HexToPixel(L, MouseOverHex, -9f);
 
                 CreateMovementLine();
             }
@@ -119,7 +125,7 @@ public class CharController : MonoBehaviour {
                     //Debug.Log("Mouse moved to another hex");
                     MouseOverHexStart = MouseOverHex;
 
-                    MovementInd.transform.position = Layout.HexToPixel(L, MouseOverHex, -9.89f);
+                    MovementInd.transform.position = Layout.HexToPixel(L, MouseOverHex, -9f);
                     TextMesh Txt = MovementInd.GetComponentInChildren<TextMesh>();
 
                     if (BlockedHexes.Instance.HexData.Contains(MouseOverHex))
@@ -178,7 +184,7 @@ public class CharController : MonoBehaviour {
         foreach (Hex h in MainShip.PathToTarget)
         {
             //Debug.Log(i.ToString());
-            LR.SetPosition(i, Layout.HexToPixel(L, h, -9.75f));
+            LR.SetPosition(i, Layout.HexToPixel(L, h, -8f));
             i++;
         }
     }
