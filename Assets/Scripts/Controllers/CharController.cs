@@ -58,16 +58,18 @@ public class CharController : MonoBehaviour {
             Vector3 n = new Vector3(t.x - c.x, t.y - c.y, 0f);
             this.transform.Translate(n.normalized * 2f * Time.deltaTime);
             float offset = .05f;
+            
             if (this.transform.position.x > t.x - offset && this.transform.position.x < t.x + offset && this.transform.position.y > t.y - offset && this.transform.position.y < t.y + offset)
             {
                 MainShip.ShipMoved(MainShip.PathToTarget[MoveShipPos]);
+                
                 //MainShip.CurrentHexPosition = MainShip.PathToTarget[MoveShipPos];
                 MoveShipPos++;
                 if (MoveShipPos > MainShip.PathToTarget.Count - 1)
                 {
                     MoveShipPos = 1;
                     shipMoving = false;
-
+                    MovementInd.SetActive(false);
                 }
             }
         }
@@ -117,7 +119,7 @@ public class CharController : MonoBehaviour {
             if (Input.GetMouseButtonUp(1))
             {
                 //Debug.Log("up");
-                MovementInd.SetActive(false);
+                //MovementInd.SetActive(false);
                 MoveShip = true;
             }
         }
