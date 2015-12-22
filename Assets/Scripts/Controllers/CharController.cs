@@ -43,6 +43,38 @@ public class CharController : MonoBehaviour {
 	void Update () {
         float MousePositionY = Camera.main.ScreenToWorldPoint(Input.mousePosition).y;
         float MousePositionX = Camera.main.ScreenToWorldPoint(Input.mousePosition).x;
+        GameObject Child = this.transform.GetChild(0).gameObject;
+
+        Vector3 direction = Camera.main.ScreenToWorldPoint(Input.mousePosition) - Child.transform.position;
+        float ang = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+
+        
+
+
+        //current angle in degrees
+        float anglecurrent = Child.transform.eulerAngles.z;
+        float checkAngle = 0;
+
+
+
+        Debug.Log(ang + " -- " + anglecurrent + " -- " + checkAngle);
+
+
+        if (anglecurrent <= ang + 0.5f && anglecurrent >= ang - 0.5f)
+        {
+
+        }
+        else
+        {
+            if (ang > 0)
+            {
+                Child.transform.Rotate(new Vector3(0, 0, .1f));
+            }
+            else
+            {
+                Child.transform.Rotate(new Vector3(0, 0, -.1f));
+            }
+        }
 
         Vector3 P = new Vector3(MousePositionX, MousePositionY);
         FractionalHex FH = Layout.PixelToHex(L, P);
@@ -66,6 +98,13 @@ public class CharController : MonoBehaviour {
             Vector3 n = new Vector3(t.x - c.x, t.y - c.y, 0f);
             Vector3 m = new Vector3(this.transform.position.x, this.transform.position.y, -10);
             //Debug.Log(Utility.HexNameStr(MainShip.PathToTarget[MoveShipPos]));
+
+           
+            Child.transform.Rotate(Vector3.forward, .1f);
+
+            
+
+
             this.transform.Translate(n.normalized * 1f * Time.deltaTime);
 
             if ((t - m).sqrMagnitude < MinNextTileDist * MinNextTileDist)
@@ -73,6 +112,8 @@ public class CharController : MonoBehaviour {
 
                 
                 MainShip.ShipMoved(MainShip.PathToTarget[MoveShipPos]);
+
+
 
                // MainShip.CurrentHexPosition = MainShip.PathToTarget[MoveShipPos];
                 MoveShipPos++;
