@@ -4,10 +4,11 @@ using System.Collections.Generic;
 using System;
 public class Ship  {
     Action CB_MovesLeftChanged;
-    public Ship(int movement, Hex hexposition)
+    public Ship(int movement, Hex hexposition, float CHweight, float CHsize)
     {
         Movement = movement;
         CurrentHexPosition = hexposition;
+        Cargohold = new CargoHold(CHsize, CHweight);
 
     }
     public void RegisterMovesLeftCB(Action A)
@@ -44,4 +45,40 @@ public class Ship  {
         
     }
     public List<Hex> PathToTarget { get; protected set; }
+
+    public CargoHold Cargohold { get; set; }
+}
+public class CargoHold
+{
+    public CargoHold(float sizelimit, float weightlimit)
+    {
+        SizeLimit = sizelimit;
+        WeightLimit = weightlimit;
+        Hold = new List<Cargo>();
+    }
+    public float SizeLimit { get; set; }
+    public float WeightLimit { get; set; }
+
+    public float SizeUsedUp { get; private set; }
+    public float CurrentWeight { get; private set; }
+    public List<Cargo> Hold
+    {
+        get; set;
+    }
+
+    public bool Add(Cargo C)
+    {
+
+        if(C.Size + SizeUsedUp > SizeLimit)
+        {
+            return false;
+        }
+        if (C.Weight + CurrentWeight > WeightLimit)
+        {
+            return false;
+        }
+
+        Hold.Add(C);
+        return true;
+    }
 }

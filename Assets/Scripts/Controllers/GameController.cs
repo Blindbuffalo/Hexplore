@@ -60,6 +60,9 @@ public class GameController : MonoBehaviour {
         BlockedHexes.Instance.HexData = Hex.Neighbors(Sun);
         BlockedHexes.Instance.HexData.Add(Sun);
 
+
+        
+
         Sol = new SolarSystem("Sol", Sun, 2, Planets);
 
         SunGO = Utility.PlacePrefab(Prefab, Sol.SunRadius, new Vector3(Sol.Sun.q, Sol.Sun.r, Sol.Sun.s), Color.yellow);

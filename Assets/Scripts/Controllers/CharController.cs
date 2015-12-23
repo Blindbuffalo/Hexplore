@@ -27,8 +27,11 @@ public class CharController : MonoBehaviour {
     // Use this for initialization
     void Start () {
         MovementInd.SetActive(false);
-        MainShip = new Ship(3, new Hex(5, 0, -5));
+        MainShip = new Ship(3, new Hex(5, 0, -5), 10f, 5f);
         MainShip.RegisterMovesLeftCB(RedrawMovementHexes);
+
+        MainShip.Cargohold.Add(new BiologicalSamples("", 0f, 0f, 0f, BioSampleType.Animal));
+        MainShip.Cargohold.Add(new ShipParts("", 0f, 0f, 0, 0f, ShipPartType.Engine));
 
         placeShipOnHex(MainShip.CurrentHexPosition);
 
