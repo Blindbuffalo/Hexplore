@@ -3,11 +3,16 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 public class MissionController : MonoBehaviour{
+    public enum MissionProgress { notStarted, progressing, ending }
+    
+    public GameObject MissionMarkerPrefab;
+    public GameObject MainShip;
+    private MissionController() { }
+    public int CurrentMission = 0;
+    public int CurrentGoal = 0;
+    public MissionProgress MissionP = MissionProgress.notStarted;
 
     private static MissionController instance;
-
-    private MissionController() { }
-
     public static MissionController Instance
     {
         get
@@ -25,127 +30,115 @@ public class MissionController : MonoBehaviour{
 
     public List<MainStoryMission> MainStoryMissions;
 
-    private Layout L = new Layout(Layout.pointy, new Vector3(.52f, .52f), new Vector3(0f, 0f));
-    public GameObject MissionMarkerPrefab;
 
-    public int CurrentMSMission = -1;
-    public int _MSMissionStep = 0;
-    public int MSMissionStep
-    {
-        get
-        {
-            return _MSMissionStep;
-        }
-        set
-        {
-            _MSMissionStep = value;
-            CheckMissionStatus();
-        }
-    }
-    public bool MSMissionCompleted = false;
-    public void SpawnMissions(SolarSystem Sol, GameObject Sun)
-    {
-        if(CurrentMSMission == -1 || MSMissionCompleted)
-        {
-            CurrentMSMission++;
-
-            Debug.Log(MainStoryMissions[CurrentMSMission].Name);
-
-            MainStoryMissions[CurrentMSMission].Start(MainStoryMissions[CurrentMSMission]);
-
-            Planet P = (from s in Sol.Planets
-                        where s.Name.ToLower() == MainStoryMissions[CurrentMSMission].LocationName.ToLower()
-                        select s).FirstOrDefault();
-            if (P == null)
-            {
-                Debug.Log("oops");
-            }
-            else
-            {
-
-                GameObject MissionMarker = (GameObject)Instantiate(MissionMarkerPrefab, Layout.HexToPixel(L, P.Orbit[P.CurrentPosition], -10.2f), Quaternion.identity);
-                
-                MissionMarker.transform.SetParent(DrawHexGraphics.Instance.GetPlanetGO(P, Sun).transform);
-                MissionMarker.transform.localScale = new Vector3(.5f, .5f, .5f);
-                MissionMarker.transform.localPosition = new Vector3(0f, .46f, -1f); ;
-            }
-            
-
-            MSMissionCompleted = false;
-        }
-    }
-    public void MoveMissionMarker(Planet P)
-    {
-        
-    }
-    public void CheckMissionStatus()
-    {
-        MainStoryMissions[CurrentMSMission].Progress(MainStoryMissions[CurrentMSMission]);
-    }
     public void InitMissions()
     {
         MainStoryMissions = new List<MainStoryMission>()
         {
             new MainStoryMission(
                 "Good Day to Fly.",
-                "Things about stuff said here!", 
+                "Things about stuff said here!",
                 10,
-                "Earth",
-                start: MainMission1Start,
-                progress: MainMission1Progress,
-                end: MainMission1End),
-            new MainStoryMission(
-                "Weeeeeeeeeee",
-                "Things about stuff said here!", 
-                10,
-                "Earth",
-                start:foo,
-                progress:foo,
-                end:foo),
-            new MainStoryMission(
-                "Looky what the womprat dragged in.",
-                "Things about stuff said here!", 
-                10,
-                "Earth",
-                start:foo,
-                progress:foo,
-                end:foo),
-            new MainStoryMission(
-                "And the Red shirt laughed...",
-                "Things about stuff said here!", 
-                10,
-                "Earth",
-                start:foo,
-                progress:foo,
-                end:foo)
+                new List<Goal>() {
+                        new FetchGoal("Get Me the Things!", "get the guy an engine.", "Earth", "Earth", FetchMissionStart, FetchMissionProgress, FetchMissionEnd, new ShipParts("Engine", 1f, 2f, 0, 999f, ShipPartType.Engine))
+
+                    }
+                )
         };
 
 
     }
-    public void MainMission1Start(MainStoryMission M)
+    public void FetchMissionStart(Goal g)
     {
         Debug.Log("MSM1:Start");
-        Debug.Log(M.Info);
+        Debug.Log(g.Description);
+        MissionP = MissionProgress.progressing;
+
     }
-    public void MainMission1Progress(MainStoryMission M)
+    public void FetchMissionProgress(Goal g)
     {
-        
-        switch (MSMissionStep)
+        Debug.Log("MSM1:progress");
+        Debug.Log(g.Description);
+        if(MissionP == MissionProgress.progressing)
         {
-            case 1:
-                Debug.Log("MSM1:Progress:Step1");
-                M.End(M);
-                break;
+            //TODO: check ships neigbhors to see if the location is in one of the hexes
+
+
+
+            if(CharController.Instance.MainShip.Cargohold.Hold == null)
+            {
+                Debug.Log("null");
+            }
+            else
+            {
+                Debug.Log("is a shippart");
+                foreach(Cargo s in CharController.Instance.MainShip.Cargohold.Hold)
+                {
+
+                }
+                
+            }
         }
     }
-    public void MainMission1End(MainStoryMission M)
+    public void FetchMissionEnd(Goal g)
     {
-        Debug.Log("MSM1:End");
-        MSMissionCompleted = true;
-        MSMissionStep = 0;
+        Debug.Log("MSM1:end");
+        Debug.Log(g.Description);
     }
-    public void foo(MainStoryMission M)
+
+    public void foo(Goal G)
     {
 
     }
+    //private Layout L = new Layout(Layout.pointy, new Vector3(.52f, .52f), new Vector3(0f, 0f));
+
+
+    //public int CurrentMSMission = -1;
+    //public int _MSMissionStep = 0;
+    //public int MSMissionStep
+    //{
+    //    get
+    //    {
+    //        return _MSMissionStep;
+    //    }
+    //    set
+    //    {
+    //        _MSMissionStep = value;
+    //        CheckMissionStatus();
+    //    }
+    //}
+    //public bool MSMissionCompleted = false;
+    //public void SpawnMissions(SolarSystem Sol, GameObject Sun)
+    //{
+    //    if(CurrentMSMission == -1 || MSMissionCompleted)
+    //    {
+    //        CurrentMSMission++;
+
+    //        Debug.Log(MainStoryMissions[CurrentMSMission].Name);
+
+    //        MainStoryMissions[CurrentMSMission].Start(MainStoryMissions[CurrentMSMission]);
+
+    //        Planet P = (from s in Sol.Planets
+    //                    where s.Name.ToLower() == MainStoryMissions[CurrentMSMission].LocationName.ToLower()
+    //                    select s).FirstOrDefault();
+    //        if (P == null)
+    //        {
+    //            Debug.Log("oops");
+    //        }
+    //        else
+    //        {
+
+    //            GameObject MissionMarker = (GameObject)Instantiate(MissionMarkerPrefab, Layout.HexToPixel(L, P.Orbit[P.CurrentPosition], -10.2f), Quaternion.identity);
+
+    //            MissionMarker.transform.SetParent(DrawHexGraphics.Instance.GetPlanetGO(P, Sun).transform);
+    //            MissionMarker.transform.localScale = new Vector3(.5f, .5f, .5f);
+    //            MissionMarker.transform.localPosition = new Vector3(0f, .46f, -1f); ;
+    //        }
+
+
+    //        MSMissionCompleted = false;
+    //    }
+    //}
+
+
 }

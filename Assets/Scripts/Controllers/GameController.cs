@@ -21,8 +21,6 @@ public class GameController : MonoBehaviour {
 
     public float g = 0f;
 
-    public CharController charController;
-
     private GameObject SunGO;
 
 
@@ -76,8 +74,7 @@ public class GameController : MonoBehaviour {
     {
         if (Input.GetKeyDown("space"))
             NextTurnButton_Click();
-        if (Input.GetKeyDown("backspace"))
-            MissionController.Instance.MSMissionStep++;
+
 
         //MissionController.CheckMissionStatus(Sol);
 
@@ -89,16 +86,16 @@ public class GameController : MonoBehaviour {
         days = SolarSystemDayMultiplier * CurrentTurn;
         text.text = CurrentTurn.ToString() + " " + days;
 
-        charController.MainShip.MovesLeft = charController.MainShip.Movement;
+        CharController.Instance.MainShip.MovesLeft = CharController.Instance.MainShip.Movement;
 
         foreach (Planet P in SolarSystem.Instance.Planets)
         {
             DrawHexGraphics.Instance.DrawPlanetHex(P, SolarSystem.Instance.OrbitColor);
             DrawHexGraphics.Instance.MovePlanetObject(P, SunGO);
         }
-
-
-        MissionController.Instance.SpawnMissions(SolarSystem.Instance, SunGO);
+        MissionController.Instance.MissionP = MissionController.MissionProgress.progressing;
+        MissionController.Instance.FetchMissionProgress(MissionController.Instance.MainStoryMissions[0].MissionGoals[0]);
+        //MissionController.Instance.SpawnMissions(SolarSystem.Instance, SunGO);
 
 
     }

@@ -6,7 +6,7 @@ public enum NonBioSampleType { Dirt, Sand, Iron, Copper, Regolith, Aluminum, Wat
 public class Cargo  {
     public Cargo()
     {
-
+        
     }
     public string Name { get; set; }
     public float Size { get; set; }
@@ -27,8 +27,9 @@ public class ShipParts : Cargo
 
         Type = type;
         Damage = damage;
-
+        
     }
+    
     public ShipPartType Type { get; private set; }
     public int Damage { get; private set; }
 }

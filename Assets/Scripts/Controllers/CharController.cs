@@ -21,6 +21,21 @@ public class CharController : MonoBehaviour {
     public float rotationSpeed = 0.004F;
     public float MinNextTileDist = .025f;
 
+    private static CharController instance;
+    public static CharController Instance
+    {
+        get
+        {
+            if (instance == null)
+            {
+                instance = (CharController)FindObjectOfType(typeof(CharController));
+                if (instance == null)
+                    instance = (new GameObject("CharController")).AddComponent<CharController>();
+            }
+            return instance;
+        }
+    }
+
     // Use this for initialization
     void Start () {
         MovementInd.SetActive(false);

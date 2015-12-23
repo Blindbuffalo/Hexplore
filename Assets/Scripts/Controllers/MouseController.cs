@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -6,11 +7,15 @@ public class MouseController : MonoBehaviour {
     float lastCamPositionY;
     float lastCamPositionX;
 
+
+    public GameObject PlanetUIwindow;
+    public Text PlanetName;
 	// Use this for initialization
     Layout L = new Layout(Layout.pointy, new Vector3(.52f, .52f), new Vector3(0f, 0f));
 	void Start () {
+        PlanetUIwindow.SetActive(false);
 
-	}
+    }
 	
 	// Update is called once per frame
 	void Update () {
@@ -35,10 +40,37 @@ public class MouseController : MonoBehaviour {
         Camera.main.orthographicSize = Mathf.Clamp(Camera.main.orthographicSize, 1f, 50f);
         lastCamPositionX = Camera.main.ScreenToWorldPoint(Input.mousePosition).x;
         lastCamPositionY = Camera.main.ScreenToWorldPoint(Input.mousePosition).y;
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+
+            PlanetUIwindow.SetActive(false);
+
+        }
+
+        if (Input.GetMouseButtonDown(0))
+        { // if left button pressed...
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            RaycastHit hit;
+            if (Physics.Raycast(ray, out hit))
+            {
+
+                foreach (Planet p in SolarSystem.Instance.Planets)
+                {
+                    if(p.Name + "_GO" == hit.transform.name)
+                    {
+                        Debug.Log(hit.transform.name);
+                        PlanetUIwindow.SetActive(true);
+                        PlanetName.text = p.Name;
+                        break;
+                    }
+                }
+
+            }else
+            {
+                
+            }
+        }
 
 
-
-
-
-	}
+    }
 }
