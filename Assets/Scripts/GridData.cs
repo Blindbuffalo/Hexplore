@@ -3,7 +3,21 @@ using System.Collections;
 using System.Collections.Generic;
 
 public class GridData  {
+    private static GridData instance;
 
+    private GridData() { }
+
+    public static GridData Instance
+    {
+        get
+        {
+            if (instance == null)
+            {
+                instance = new GridData();
+            }
+            return instance;
+        }
+    }
     public List<Hex> HexData { get; private set; }
     public void GenerateGridData(int radius)
     {

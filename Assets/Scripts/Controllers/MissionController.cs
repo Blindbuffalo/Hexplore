@@ -4,12 +4,30 @@ using System.Collections.Generic;
 using System.Linq;
 public class MissionController : MonoBehaviour{
 
+    private static MissionController instance;
+
+    private MissionController() { }
+
+    public static MissionController Instance
+    {
+        get
+        {
+            if (instance == null)
+            {
+                instance = (MissionController)FindObjectOfType(typeof(MissionController));
+                if (instance == null)
+                    instance = (new GameObject("MissionController")).AddComponent<MissionController>();
+            }
+            return instance;
+        }
+    }
+
+
     public List<MainStoryMission> MainStoryMissions;
 
-    public Utilites Utility;
     private Layout L = new Layout(Layout.pointy, new Vector3(.52f, .52f), new Vector3(0f, 0f));
     public GameObject MissionMarkerPrefab;
-    public DrawHexGraphics HexG;
+
     public int CurrentMSMission = -1;
     public int _MSMissionStep = 0;
     public int MSMissionStep
@@ -47,7 +65,7 @@ public class MissionController : MonoBehaviour{
 
                 GameObject MissionMarker = (GameObject)Instantiate(MissionMarkerPrefab, Layout.HexToPixel(L, P.Orbit[P.CurrentPosition], -10.2f), Quaternion.identity);
                 
-                MissionMarker.transform.SetParent(HexG.GetPlanetGO(P, Sun).transform);
+                MissionMarker.transform.SetParent(DrawHexGraphics.Instance.GetPlanetGO(P, Sun).transform);
                 MissionMarker.transform.localScale = new Vector3(.5f, .5f, .5f);
                 MissionMarker.transform.localPosition = new Vector3(0f, .46f, -1f); ;
             }

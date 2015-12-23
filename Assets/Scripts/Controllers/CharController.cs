@@ -5,9 +5,6 @@ using System.Linq;
 using System;
 public class CharController : MonoBehaviour {
 
-    public DrawHexGraphics HexG;
-    public Utilites Utility;
-
     public GameObject MovementInd;
     Layout L = new Layout(Layout.pointy, new Vector3(.52f, .52f), new Vector3(0f, 0f));
     public Hex Center = new Hex(0, 0, 0);
@@ -139,7 +136,7 @@ public class CharController : MonoBehaviour {
             if (Input.GetMouseButton(1))
             {
                 //triggers while the button is down
-                if (Utility.HexToVector3(MouseOverHexStart) != Utility.HexToVector3(MouseOverHex))
+                if (Utilites.Instance.HexToVector3(MouseOverHexStart) != Utilites.Instance.HexToVector3(MouseOverHex))
                 {
                     MainShip.SetTargetHex(MouseOverHex);
                     //Debug.Log("Mouse moved to another hex");

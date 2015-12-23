@@ -3,21 +3,36 @@ using System.Collections;
 using System.Collections.Generic;
 
 public class DrawHexGraphics : MonoBehaviour {
-    public Dictionary<string, GameObject> HexGraphics = null;
-    public Utilites Utility;
-    private Layout L = new Layout(Layout.pointy, new Vector3(.52f, .52f), new Vector3(0f, 0f));
-    void Start()
+
+    private static DrawHexGraphics instance;
+
+    private DrawHexGraphics() { }
+
+    public static DrawHexGraphics Instance
     {
-        Debug.Log("hexgraphics Start");
-        
+        get
+        {
+            if (instance == null)
+            {
+                instance = (DrawHexGraphics)FindObjectOfType(typeof(DrawHexGraphics));
+                if (instance == null)
+                    instance = (new GameObject("DrawHexGraphics")).AddComponent<DrawHexGraphics>();
+            }
+            return instance;
+        }
     }
+
+
+    public Dictionary<string, GameObject> HexGraphics = null;
+
+    private Layout L = new Layout(Layout.pointy, new Vector3(.52f, .52f), new Vector3(0f, 0f));
     public void GenerateGraphics(List<Hex> Hexes, GameObject Prefab)
     {
         HexGraphics = new Dictionary<string, GameObject>();
         foreach (Hex h in Hexes)
         {
 
-            if (HexGraphics.ContainsKey(Utility.HexNameStr(h)))
+            if (HexGraphics.ContainsKey(Utilites.Instance.HexNameStr(h)))
             {
 
             }
@@ -25,9 +40,9 @@ public class DrawHexGraphics : MonoBehaviour {
             {
 
                 GameObject g = (GameObject)Instantiate(Prefab, Layout.HexToPixel(L, h, 0), Quaternion.identity);
-                g.name = Utility.HexNameStr(h);
+                g.name = Utilites.Instance.HexNameStr(h);
                 g.transform.SetParent(this.transform);
-                HexGraphics.Add(Utility.HexNameStr(h), g);
+                HexGraphics.Add(Utilites.Instance.HexNameStr(h), g);
 
             }
 
@@ -39,7 +54,7 @@ public class DrawHexGraphics : MonoBehaviour {
         foreach (Hex h in Hexes)
         {
             GameObject g = (GameObject)Instantiate(Prefab, Layout.HexToPixel(L, h, 0), Quaternion.identity);
-            g.name = Utility.HexNameStr(h);
+            g.name = Utilites.Instance.HexNameStr(h);
             g.transform.SetParent(parent.transform);
                 
 
@@ -47,7 +62,7 @@ public class DrawHexGraphics : MonoBehaviour {
     }
     public void ChangeHexesColor(Hex h, Color color)
     {
-        string HexName = Utility.HexNameStr(h);
+        string HexName = Utilites.Instance.HexNameStr(h);
         if (HexGraphics.ContainsKey(HexName))
         {
             GameObject HexGO = HexGraphics[HexName];

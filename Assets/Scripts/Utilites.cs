@@ -3,6 +3,24 @@ using System.Collections;
 
 public class Utilites : MonoBehaviour {
 
+    private static Utilites instance;
+
+    private Utilites() { }
+
+    public static Utilites Instance
+    {
+        get
+        {
+            if (instance == null)
+            {
+                instance = (Utilites)FindObjectOfType(typeof(Utilites));
+                if (instance == null)
+                    instance = (new GameObject("Utilites")).AddComponent<Utilites>();
+            }
+            return instance;
+        }
+    }
+
     public Vector3 HexToVector3(Hex hex)
     {
         return new Vector3(hex.q, hex.r, hex.s);
