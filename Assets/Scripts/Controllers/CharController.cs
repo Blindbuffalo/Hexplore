@@ -42,8 +42,8 @@ public class CharController : MonoBehaviour {
         MainShip = new Ship(3, new Hex(5, 0, -5), 10f, 5f);
         MainShip.RegisterMovesLeftCB(RedrawMovementHexes);
 
-        MainShip.Cargohold.Add(new BiologicalSamples("", 0f, 0f, 0f, BioSampleType.Animal));
-        MainShip.Cargohold.Add(new ShipParts("", 0f, 0f, 0, 0f, ShipPartType.Engine));
+        MainShip.Cargohold.Add(new BiologicalSamples("Icky Goo", 0f, 0f, 0f, BioSampleType.Animal));
+        MainShip.Cargohold.Add(new ShipPart("Super Engine", 0f, 0f, 0, 0f, ShipPartType.Engine));
 
         placeShipOnHex(MainShip.CurrentHexPosition);
 
@@ -209,7 +209,7 @@ public class CharController : MonoBehaviour {
 
         checkAngle = ((ang + 360) % 360);
         float CheckTurnDir = anglecurrent - checkAngle;
-       Debug.Log("A:" + ang + " -- AC" + anglecurrent + " -- CA" + checkAngle + " TD:" + CheckTurnDir);
+       //Debug.Log("A:" + ang + " -- AC" + anglecurrent + " -- CA" + checkAngle + " TD:" + CheckTurnDir);
 
 
         

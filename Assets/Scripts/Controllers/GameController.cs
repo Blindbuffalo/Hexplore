@@ -94,7 +94,7 @@ public class GameController : MonoBehaviour {
             DrawHexGraphics.Instance.MovePlanetObject(P, SunGO);
         }
         MissionController.Instance.MissionP = MissionController.MissionProgress.progressing;
-        MissionController.Instance.FetchMissionProgress(MissionController.Instance.MainStoryMissions[0].MissionGoals[0]);
+        MissionController.Instance.FetchMissionProgress(MissionController.Instance.MainStoryMissions[0]);
         //MissionController.Instance.SpawnMissions(SolarSystem.Instance, SunGO);
 
 

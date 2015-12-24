@@ -39,8 +39,16 @@ public class MissionController : MonoBehaviour{
                 "Good Day to Fly.",
                 "Things about stuff said here!",
                 10,
+                FetchMissionStart,
+                FetchMissionProgress,
+                FetchMissionEnd,
                 new List<Goal>() {
-                        new FetchGoal("Get Me the Things!", "get the guy an engine.", "Earth", "Earth", FetchMissionStart, FetchMissionProgress, FetchMissionEnd, new ShipParts("Engine", 1f, 2f, 0, 999f, ShipPartType.Engine))
+                        new FetchGoal (
+                            "Get Me the Things!", 
+                            "get the guy an engine.", 
+                            "Earth", 
+                            "Earth",
+                            new ShipPart("Engine", 1f, 2f, 0, 999f, ShipPartType.Engine))
 
                     }
                 )
@@ -48,45 +56,63 @@ public class MissionController : MonoBehaviour{
 
 
     }
-    public void FetchMissionStart(Goal g)
+    public void FetchMissionStart(MainStoryMission m)
     {
         Debug.Log("MSM1:Start");
-        Debug.Log(g.Description);
+        Debug.Log(m.Info);
         MissionP = MissionProgress.progressing;
 
     }
-    public void FetchMissionProgress(Goal g)
+    public void FetchMissionProgress(MainStoryMission m)
     {
         Debug.Log("MSM1:progress");
-        Debug.Log(g.Description);
+        Debug.Log(m.Info);
         if(MissionP == MissionProgress.progressing)
         {
-            //TODO: check ships neigbhors to see if the location is in one of the hexes
-
-
-
-            if(CharController.Instance.MainShip.Cargohold.Hold == null)
+            Hex PLoc;
+            foreach (Goal g in m.MissionGoals)
             {
-                Debug.Log("null");
-            }
-            else
-            {
-                Debug.Log("is a shippart");
-                foreach(Cargo s in CharController.Instance.MainShip.Cargohold.Hold)
+                FetchGoal f = g as FetchGoal;
+                if (f != null)
                 {
+                    foreach (Planet p  in SolarSystem.Instance.Planets)
+                    {
+                        if(p.Name == f.DropOffLocation)
+                        {
+                            PLoc = p.Orbit[p.CurrentPosition];
+                            List<Hex> ShipsNeighbors = Hex.Neighbors(CharController.Instance.MainShip.CurrentHexPosition);
+                            if (ShipsNeighbors.Contains(PLoc))
+                            {
+                                Debug.Log("im near " + f.DropOffLocation);
+                                foreach (Cargo c in CharController.Instance.MainShip.Cargohold.Hold)
+                                {
+                                    ShipPart sp = c as ShipPart;
+                                    if(sp != null)
+                                    {
+                                        ShipPart CargoNeeded = f.FetchItem as ShipPart;
+                                        if (CargoNeeded != null) {
+                                            if (sp.Type == CargoNeeded.Type)
+                                            {
+                                                Debug.Log("i have a " + CargoNeeded.Type.ToString() + " in my cargo hold.");
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
 
                 }
-                
             }
         }
     }
-    public void FetchMissionEnd(Goal g)
+    public void FetchMissionEnd(MainStoryMission m)
     {
         Debug.Log("MSM1:end");
-        Debug.Log(g.Description);
+        Debug.Log(m.Info);
     }
 
-    public void foo(Goal G)
+    public void foo(MainStoryMission G)
     {
 
     }

@@ -12,46 +12,47 @@ public class Mission
 }
 public class MainStoryMission : Mission
 {
-    public MainStoryMission(string name, string info, int reward, List<Goal> missiongoals)
+    public MainStoryMission(string name, string info, int reward, Action<MainStoryMission> start, Action<MainStoryMission> progress, Action<MainStoryMission> end, List<Goal> missiongoals)
     {
         Name = name;
         Info = info;
         Reward = reward;
 
         MissionGoals = missiongoals;
+
+        Start = start;
         
+        Progress = progress;
+        End = end;
     }
 
 
     public string LocationName { get; protected set; }
     public List<Goal> MissionGoals { get; set; }
-    
+
+    public Action<MainStoryMission> Start { get; protected set; }
+    public Action<MainStoryMission> Progress { get; protected set; }
+    public Action<MainStoryMission> End { get; protected set; }
 
 }
 public class Goal
 {
-    public string Name { get; protected set; }
-    public string Description { get; protected set; }
-    public string StartLocation { get; protected set; }
-
-    public Action<Goal> Start { get; protected set; }
-    public Action<Goal> Progress { get; protected set; }
-    public Action<Goal> End { get; protected set; }
+    public string Name { get; set; }
+    public string Description { get; set; }
+    public string StartLocation { get; set; }
 }
 public class FetchGoal : Goal
 {
-    public FetchGoal(string name, string description, string startlocation, string dropofflocation, Action<Goal> start, Action<Goal> progress, Action<Goal> end, Cargo fetchitem)
+    public FetchGoal(string name, string description, string startlocation, string dropofflocation,  Cargo fetchitem)
     {
         Name = name;
         Description = description;
         StartLocation = startlocation;
-        FetchItem = fetchitem;
-        Start = start;
-        DropOffLocation = dropofflocation;
-        Progress = progress;
-        End = end;
-    }
 
-    Cargo FetchItem { get; set; }
+        FetchItem = fetchitem;
+        DropOffLocation = dropofflocation;
+    }
     public string DropOffLocation { get; set; }
+    public Cargo FetchItem { get; set; }
+    
 }

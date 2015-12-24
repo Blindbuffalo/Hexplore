@@ -15,9 +15,9 @@ public class Cargo  {
 
     public float Value { get; set; }
 }
-public class ShipParts : Cargo
+public class ShipPart : Cargo
 {
-    public ShipParts(string name, float size, float weight, int damage, float value, ShipPartType type)
+    public ShipPart(string name, float size, float weight, int damage, float value, ShipPartType type)
     {
         Name = name;
         Size = size;
