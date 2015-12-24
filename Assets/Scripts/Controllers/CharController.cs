@@ -39,7 +39,7 @@ public class CharController : MonoBehaviour {
     // Use this for initialization
     void Start () {
         MovementInd.SetActive(false);
-        MainShip = new Ship(3, new Hex(5, 0, -5), 10f, 5f);
+        MainShip = new Ship(5, new Hex(5, 0, -5), 10f, 5f);
         MainShip.RegisterMovesLeftCB(RedrawMovementHexes);
 
         MainShip.Cargohold.Add(new BiologicalSamples("Icky Goo", 0f, 0f, 0f, BioSampleType.Animal));
@@ -73,10 +73,12 @@ public class CharController : MonoBehaviour {
         {
             shipMoving = true;
             MoveShip = false;
+            this.transform.GetChild(0).localPosition = new Vector3(0, 0, 0);
         }
         if (shipMoving && MainShip.MovesLeft > 0)
         {
-           // move the ship
+            
+            // move the ship
             Vector3 t = Layout.HexToPixel(L, MainShip.PathToTarget[MoveShipPos], -15f);
             Vector3 c = Layout.HexToPixel(L, MainShip.CurrentHexPosition, 0f);
             Vector3 n = new Vector3(t.x - c.x, t.y - c.y, 0f);
@@ -103,22 +105,13 @@ public class CharController : MonoBehaviour {
                     MoveShipPos++;
                     if (MoveShipPos > MainShip.PathToTarget.Count - 1)
                     {
+                        //ship has reached its destination
                         MoveShipPos = 1;
                         shipMoving = false;
                         MovementInd.SetActive(false);
                     }
                 }
             }
-            else
-            {
-
-            }
-
-
-
-
-            
-            
         }
         else
         {
@@ -189,9 +182,38 @@ public class CharController : MonoBehaviour {
                 }
                 
             }
-        }
-    }
 
+            if (OnHexWithPlanet())
+            {
+                
+                this.transform.GetChild(0).localPosition = new Vector3(0, .4f, 0);
+            }
+            else
+            {
+                this.transform.GetChild(0).localPosition = new Vector3(0, 0, 0);
+            }
+        }
+
+        
+
+    }
+    public bool OnHexWithPlanet()
+    {
+        // check to see if we are on a tile with a planet
+        foreach (Planet p in SolarSystem.Instance.Planets)
+        {
+            if (Hex.Equals(MainShip.CurrentHexPosition, p.Orbit[p.CurrentPosition]))
+            {
+                //Debug.Log("in the same square as a planet! " + p.Name);
+
+
+                
+
+                return true;
+            }
+        }
+        return false;
+    }
     public bool RotateShip(GameObject Child, Vector3 direction)
     {
         

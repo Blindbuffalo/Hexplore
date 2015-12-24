@@ -63,7 +63,7 @@ public class CargoHold
     public float CurrentWeight { get; private set; }
     public List<Cargo> Hold
     {
-        get; set;
+        get; protected set;
     }
 
     public bool Add(Cargo C)
