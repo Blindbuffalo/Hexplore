@@ -67,7 +67,7 @@ public class GameController : MonoBehaviour {
         }
 
         MissionController.Instance.InitMissions();
-
+        MissionController.Instance.StartMission();
 
     }
     void Update()
@@ -93,8 +93,13 @@ public class GameController : MonoBehaviour {
             DrawHexGraphics.Instance.DrawPlanetHex(P, SolarSystem.Instance.OrbitColor);
             DrawHexGraphics.Instance.MovePlanetObject(P, SunGO);
         }
-        MissionController.Instance.MissionP = MissionController.MissionProgress.progressing;
-        MissionController.Instance.FetchMissionProgress(MissionController.Instance.MainStoryMissions[0]);
+
+        MissionController.Instance.CheckOnCurrentMainMissionProgress();
+        
+
+
+        //MissionController.Instance.MissionP = MissionController.MissionProgress.progressing;
+        //MissionController.Instance.DeliveryMissionProgress(MissionController.Instance.MainStoryMissions[0]);
         //MissionController.Instance.SpawnMissions(SolarSystem.Instance, SunGO);
 
 

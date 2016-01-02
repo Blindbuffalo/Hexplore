@@ -6,10 +6,10 @@ public class MissionController : MonoBehaviour{
     public enum MissionProgress { notStarted, progressing, ending }
     
     public GameObject MissionMarkerPrefab;
-    public GameObject MainShip;
+    //public GameObject MainShip;
     private MissionController() { }
     public int CurrentMission = 0;
-    public int CurrentGoal = 0;
+
     public MissionProgress MissionP = MissionProgress.notStarted;
 
     private static MissionController instance;
@@ -29,26 +29,86 @@ public class MissionController : MonoBehaviour{
 
 
     public List<MainStoryMission> MainStoryMissions;
+    public bool StartMission()
+    {
+        if (MissionP == MissionProgress.notStarted)
+        {
+            MissionP = MissionProgress.progressing;
+            MainStoryMissions[CurrentMission].Start(MainStoryMissions[CurrentMission]);
+            Debug.Log("mission (" + CurrentMission + ") " + MainStoryMissions[CurrentMission].Name + " started!");
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+       
+    }
+    public void CheckOnCurrentMainMissionProgress()
+    {
+        if(MissionP == MissionProgress.progressing)
+        {
+            MainStoryMissions[CurrentMission].Progress(MainStoryMissions[CurrentMission]);
+        }
+    }
+    public bool EndMission()
+    {
+        if (MissionP == MissionProgress.progressing)
+        {
+            MissionP = MissionProgress.ending;
+            MainStoryMissions[CurrentMission].End(MainStoryMissions[CurrentMission]);
+            return true;
+        }
+        else
+        {
+            return false;
+        }
 
-
+    }
     public void InitMissions()
     {
         MainStoryMissions = new List<MainStoryMission>()
         {
             new MainStoryMission(
+                0,
+                -1,
                 "Good Day to Fly.",
                 "Things about stuff said here!",
                 10,
-                FetchMissionStart,
-                FetchMissionProgress,
-                FetchMissionEnd,
+                DeliveryMissionStart,
+                DeliveryMissionProgress,
+                DeliveryMissionEnd,
                 new List<Goal>() {
-                        new FetchGoal (
-                            "Get Me the Things!", 
-                            "get the guy an engine.", 
-                            "Earth", 
-                            "Earth",
-                            new ShipPart("Engine", 1f, 2f, 0, 999f, ShipPartType.Engine))
+                        new DeliveryGoal (
+                            name: "Deliver the Hull plating to the guy!",
+                            description: "get the guy some hull.",
+                            startlocation: "Earth",
+                            dropofflocation: "Earth",
+                            deliveryitem: new ShipPart("New hull", 1f, 2f, 0, 999f, ShipPartType.HullPlate),
+                            givenitem: new ShipPart("New hull", 1f, 2f, 0, 999f, ShipPartType.HullPlate)
+                            )
+
+                    }
+                ),
+
+                new MainStoryMission(
+                1,
+                0,
+                "Mars and back again",
+                "Things about stuff said here!",
+                10,
+                DeliveryMissionStart,
+                DeliveryMissionProgress,
+                DeliveryMissionEnd,
+                new List<Goal>() {
+                        new DeliveryGoal (
+                            name: "Get Me the Things!",
+                            description: "get the guy an engine.",
+                            startlocation: "Earth",
+                            dropofflocation: "Mars",
+                            deliveryitem: new ShipPart("Engine", 1f, 2f, 0, 999f, ShipPartType.Engine),
+                            givenitem: new ShipPart("Engine", 1f, 2f, 0, 999f, ShipPartType.Engine)
+                            )
 
                     }
                 )
@@ -56,14 +116,22 @@ public class MissionController : MonoBehaviour{
 
 
     }
-    public void FetchMissionStart(MainStoryMission m)
+    private void DeliveryMissionStart(MainStoryMission m)
     {
         Debug.Log("MSM1:Start");
         Debug.Log(m.Info);
         MissionP = MissionProgress.progressing;
-
+        foreach (Goal g in m.MissionGoals)
+        {
+            DeliveryGoal d = g as DeliveryGoal;
+            if(d!= null)
+            {
+                CharController.Instance.MainShip.Cargohold.Hold.Add(d.GivenItem);
+            }
+            
+        }
     }
-    public void FetchMissionProgress(MainStoryMission m)
+    private void DeliveryMissionProgress(MainStoryMission m)
     {
         Debug.Log("MSM1:progress");
         Debug.Log(m.Info);
@@ -72,24 +140,26 @@ public class MissionController : MonoBehaviour{
             Hex PLoc;
             foreach (Goal g in m.MissionGoals)
             {
-                FetchGoal f = g as FetchGoal;
-                if (f != null)
+                DeliveryGoal d = g as DeliveryGoal;
+                if (d != null)
                 {
                     foreach (Planet p  in SolarSystem.Instance.Planets)
                     {
-                        if(p.Name == f.DropOffLocation)
+                        if(p.Name == d.DropOffLocation)
                         {
                             PLoc = p.Orbit[p.CurrentPosition];
-                            List<Hex> ShipsNeighbors = Hex.Neighbors(CharController.Instance.MainShip.CurrentHexPosition);
-                            if (ShipsNeighbors.Contains(PLoc))
-                            {
-                                Debug.Log("im near " + f.DropOffLocation);
+                            //List<Hex> ShipsNeighbors = Hex.Neighbors(CharController.Instance.MainShip.CurrentHexPosition);
+                            //if (ShipsNeighbors.Contains(PLoc))
+                            //{
+                            if (Hex.Equals( PLoc, CharController.Instance.MainShip.CurrentHexPosition))
+                            { 
+                                Debug.Log("im in same tile as " + d.DropOffLocation);
                                 foreach (Cargo c in CharController.Instance.MainShip.Cargohold.Hold)
                                 {
                                     ShipPart sp = c as ShipPart;
                                     if(sp != null)
                                     {
-                                        ShipPart CargoNeeded = f.FetchItem as ShipPart;
+                                        ShipPart CargoNeeded = d.DeliveryItem as ShipPart;
                                         if (CargoNeeded != null) {
                                             if (sp.Type == CargoNeeded.Type)
                                             {
@@ -106,10 +176,12 @@ public class MissionController : MonoBehaviour{
             }
         }
     }
-    public void FetchMissionEnd(MainStoryMission m)
+    private void DeliveryMissionEnd(MainStoryMission m)
     {
         Debug.Log("MSM1:end");
         Debug.Log(m.Info);
+        MissionP = MissionProgress.notStarted;
+        CurrentMission += 1;
     }
 
     public void foo(MainStoryMission G)

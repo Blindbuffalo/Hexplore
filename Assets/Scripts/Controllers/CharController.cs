@@ -21,6 +21,8 @@ public class CharController : MonoBehaviour {
     public float rotationSpeed = 0.004F;
     public float MinNextTileDist = .025f;
 
+    public bool checkedMissions = false;
+
     private static CharController instance;
     public static CharController Instance
     {
@@ -39,11 +41,11 @@ public class CharController : MonoBehaviour {
     // Use this for initialization
     void Start () {
         MovementInd.SetActive(false);
-        MainShip = new Ship(5, new Hex(5, 0, -5), 10f, 5f);
+        MainShip = new Ship(5, new Hex(-5, 6, -1), 10f, 5f);
         MainShip.RegisterMovesLeftCB(RedrawMovementHexes);
 
-        MainShip.Cargohold.Add(new BiologicalSamples("Icky Goo", 0f, 0f, 0f, BioSampleType.Animal));
-        MainShip.Cargohold.Add(new ShipPart("Super Engine", 0f, 0f, 0, 0f, ShipPartType.Engine));
+       // MainShip.Cargohold.Add(new BiologicalSamples("Icky Goo", 0f, 0f, 0f, BioSampleType.Animal));
+       // MainShip.Cargohold.Add(new ShipPart("Super Engine", 0f, 0f, 0, 0f, ShipPartType.Engine));
 
         placeShipOnHex(MainShip.CurrentHexPosition);
 
@@ -77,7 +79,7 @@ public class CharController : MonoBehaviour {
         }
         if (shipMoving && MainShip.MovesLeft > 0)
         {
-            
+            checkedMissions = false;
             // move the ship
             Vector3 t = Layout.HexToPixel(L, MainShip.PathToTarget[MoveShipPos], -15f);
             Vector3 c = Layout.HexToPixel(L, MainShip.CurrentHexPosition, 0f);
@@ -115,7 +117,13 @@ public class CharController : MonoBehaviour {
         }
         else
         {
-            //ship doesnt need to move wait for right click from user
+            if (checkedMissions == false)
+            {
+                MissionController.Instance.CheckOnCurrentMainMissionProgress();
+
+                checkedMissions = true;
+            }
+                //ship doesnt need to move wait for right click from user
             //right mouse button
             if (Input.GetMouseButtonDown(1))
             {
