@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 public class MissionController : MonoBehaviour{
-    public enum MissionProgress { notStarted, progressing, ending }
+    public enum MissionProgress { notStarted, progressing, ending, noMore }
     
     public GameObject MissionMarkerPrefab;
     //public GameObject MainShip;
@@ -34,9 +34,22 @@ public class MissionController : MonoBehaviour{
         if (MissionP == MissionProgress.notStarted)
         {
             MissionP = MissionProgress.progressing;
-            MainStoryMissions[CurrentMission].Start(MainStoryMissions[CurrentMission]);
-            Debug.Log("mission (" + CurrentMission + ") " + MainStoryMissions[CurrentMission].Name + " started!");
-            return true;
+            if(MainStoryMissions.Count <= CurrentMission)
+            {
+                //no more missions
+                Debug.Log("No more missions.");
+                MissionP = MissionProgress.noMore;
+                return false;
+            }
+            else
+            {
+                Debug.Log("mission");
+                MainStoryMissions[CurrentMission].Start(MainStoryMissions[CurrentMission]);
+                Debug.Log("mission (" + CurrentMission + ") " + MainStoryMissions[CurrentMission].Name + " started!");
+                CharController.Instance.MainShip.Cargohold.DebugListOfItemsInHold();
+                return true;
+            }
+            
         }
         else
         {
@@ -55,7 +68,7 @@ public class MissionController : MonoBehaviour{
 
             MissionP = MissionProgress.notStarted;
             CurrentMission += 1;
-            
+            StartCurrentMainMission();
             return true;
         }
         else
@@ -89,7 +102,42 @@ public class MissionController : MonoBehaviour{
                             )
 
                     }
+                ),
+            new MainStoryMission(
+                id: 1,
+                prereq: 0,
+                name: "To Mars and back again.",
+                info: "Bring some stuff to mars.",
+                xpreward: 10,
+                start: DeliveryMissionStart,
+                missiongoals: new List<Goal>() {
+                        new DeliveryGoal (
+                            name: "Deliver the Hull plating to the guy!",
+                            description: "get the guy some hull.",
+                            startlocation: "Earth",
+                            dropofflocation: "Mars",
+                            deliveryitem: new ShipPart("New hull", 1f, 2f, 0, 999f, ShipPartType.HullPlate),
+                            givenitem: new ShipPart("New hull", 1f, 2f, 0, 999f, ShipPartType.HullPlate),
+                            goalprogress: DeliveryGoalCheck,
+                            goalend: DeliveryGoalEnd,
+                            status: GoalStatus.NA
+                            ),
+                        new DeliveryGoal (
+                            name: "Deliver the Hull plating to the guy!",
+                            description: "get the guy some hull.",
+                            startlocation: "Mars",
+                            dropofflocation: "Earth",
+                            deliveryitem: new ShipPart("New hull", 1f, 2f, 0, 999f, ShipPartType.HullPlate),
+                            givenitem: new ShipPart("New hull", 1f, 2f, 0, 999f, ShipPartType.HullPlate),
+                            goalprogress: DeliveryGoalCheck,
+                            goalend: DeliveryGoalEnd,
+                            status: GoalStatus.NA
+                            )
+
+
+                    }
                 )
+
         };
 
 
@@ -155,22 +203,11 @@ public class MissionController : MonoBehaviour{
                     if (Hex.Equals(PLoc, CharController.Instance.MainShip.CurrentHexPosition))
                     {
                         Debug.Log("im in same tile as " + d.DropOffLocation);
-                        foreach (Cargo c in CharController.Instance.MainShip.Cargohold.Hold)
+                        if (ItemInCargoHold(d.DeliveryItem))
                         {
-                            ShipPart sp = c as ShipPart;
-                            if (sp != null)
-                            {
-                                ShipPart CargoNeeded = d.DeliveryItem as ShipPart;
-                                if (CargoNeeded != null)
-                                {
-                                    if (sp.Type == CargoNeeded.Type)
-                                    {
-                                        Debug.Log("i have a " + CargoNeeded.Type.ToString() + " in my cargo hold.");
-                                        d.Status = GoalStatus.CanTurnIn;
-                                        return;
-                                    }
-                                }
-                            }
+                            Debug.Log("i have the item in my cargo hold.");
+                            d.Status = GoalStatus.CanTurnIn;
+                            return;
                         }
                     }
                 }
@@ -179,34 +216,70 @@ public class MissionController : MonoBehaviour{
         }
         
     }
-    public void DeliveryGoalEnd(DeliveryGoal d)
+    public bool ItemInCargoHold(Cargo i)
     {
-        Debug.Log("Goal has been turned in.");
-        d.Status = GoalStatus.TurnedIn;
-
-        //check to see if mission is complete?
-        foreach (Goal g in MainStoryMissions[CurrentMission].MissionGoals)
+        foreach (Cargo c in CharController.Instance.MainShip.Cargohold.Hold)
         {
-            if(g.Status != GoalStatus.TurnedIn)
+            ShipPart sp = c as ShipPart;
+            if (sp != null)
             {
-                return;
+                ShipPart CargoNeeded = i as ShipPart;
+                if (CargoNeeded != null)
+                {
+                    if (sp.Type == CargoNeeded.Type)
+                    {
+
+                        return true;
+                    }
+                }
             }
         }
-        EndCurrentMainMission();
+        return false;
+    }
+    
+    public void DeliveryGoalEnd(DeliveryGoal d)
+    {
+        Debug.Log("Goal turning in now");
+        d.Status = GoalStatus.TurnedIn;
+        if(ItemInCargoHold(d.DeliveryItem))
+        {
+            CharController.Instance.MainShip.Cargohold.RemoveFirstItemOfSameType(d.DeliveryItem);
+            CharController.Instance.MainShip.Cargohold.DebugListOfItemsInHold();
+            Debug.Log("Goal has been turned in.");
+            //check to see if mission is complete?
+            foreach (Goal g in MainStoryMissions[CurrentMission].MissionGoals)
+            {
+                if (g.Status != GoalStatus.TurnedIn)
+                {
+
+                    return;
+                }
+            }
+            EndCurrentMainMission();
+        }
+        else
+        {
+            Debug.LogError("the item is not in the hold :(");
+        }
+
 
     }
     public void TurnInGoals()
     {
-        foreach (Goal g in MainStoryMissions[CurrentMission].MissionGoals)
+        if (MissionP == MissionProgress.progressing)
         {
-            if(g.Status == GoalStatus.CanTurnIn)
+            foreach (Goal g in MainStoryMissions[CurrentMission].MissionGoals)
             {
-                if ((g as DeliveryGoal) != null)
+                if (g.Status == GoalStatus.CanTurnIn)
                 {
-                    (g as DeliveryGoal).GoalEnd((g as DeliveryGoal));
+                    if ((g as DeliveryGoal) != null)
+                    {
+                        (g as DeliveryGoal).GoalEnd((g as DeliveryGoal));
+                    }
                 }
             }
         }
+
     }
 
 

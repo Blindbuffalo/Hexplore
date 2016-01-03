@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System;
+using System.Linq;
 public class Ship  {
     Action CB_MovesLeftChanged;
     public Ship(int movement, Hex hexposition, float CHweight, float CHsize)
@@ -65,7 +66,33 @@ public class CargoHold
     {
         get; protected set;
     }
+    public bool RemoveFirstItemOfSameType(Cargo i)
+    {
+        ShipPart CargoNeeded = i as ShipPart;
+        Cargo C = (from c in Hold
+                   where (c as ShipPart).Type == CargoNeeded.Type
+                   select c).FirstOrDefault();
 
+        if (C != null)
+        {
+
+            Hold.Remove(C);
+            Debug.Log("removed");
+            return true;
+        }
+
+        return false;
+    }
+    public void DebugListOfItemsInHold()
+    {
+        Debug.LogError("CargoHold:");
+        Debug.Log("------------------------------------------------------");
+        foreach (Cargo c in Hold)
+        {
+            Debug.Log(c.Name + ":  " + (c as ShipPart).Type.ToString());
+        }
+        Debug.Log("------------------------------------------------------");
+    }
     public bool Add(Cargo C)
     {
 
