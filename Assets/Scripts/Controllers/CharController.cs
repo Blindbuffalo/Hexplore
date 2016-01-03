@@ -15,6 +15,8 @@ public class CharController : MonoBehaviour {
     public int MoveShipPos = 1;
 
     public Action UpdateUI;
+    public Action<int> MovePlanetHex;
+
     public Hex MouseOverHex;
     public Hex MouseOverHexStart;
     public float speed = 0.0025F;
@@ -151,6 +153,7 @@ public class CharController : MonoBehaviour {
                 MovementInd.transform.position = Layout.HexToPixel(L, MouseOverHex, -9f);
 
                 CreateMovementLine();
+
             }
 
             if (Input.GetMouseButton(1))
@@ -173,7 +176,7 @@ public class CharController : MonoBehaviour {
                     {
                         Txt.text = TurnsToTarget().ToString();
                     }
-
+                    
                     CreateMovementLine();
                 }
             }
@@ -191,8 +194,9 @@ public class CharController : MonoBehaviour {
                 else
                 {
                     MoveShip = true;
+
                 }
-                
+                MovePlanetHex(0);
             }
 
             if (OnHexWithPlanet())
@@ -295,6 +299,8 @@ public class CharController : MonoBehaviour {
             LR.SetPosition(i, Layout.HexToPixel(L, h, -8f));
             i++;
         }
+
+        MovePlanetHex(TurnsToTarget() - 1);
     }
     private void placeShipOnHex(Hex h)
     {

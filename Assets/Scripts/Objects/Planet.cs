@@ -65,7 +65,50 @@ public class Planet {
     public int LastPosition { get; set; }
 
     public OrbitDir OrbitDirection { get; set; }
+    public int PredictPlanetPos(int numMoves)
+    {
+        int CP = 0;
+        if(numMoves == 0) { return _currentPosition; }
+        int NM = NumberOfMoves * numMoves;
+        if (OrbitDirection == OrbitDir.CCW)
+        {
+            int LP = _currentPosition;
 
+
+            if ((_currentPosition - NM) < 0)
+            {
+                CP = Orbit.Count + ((LP )- NM);
+
+            }
+            else
+            {
+                CP = (_currentPosition) - NM;
+            }
+        }
+        else
+        {
+
+
+            if ((_currentPosition + NM) >= Orbit.Count)
+            {
+                CP = (_currentPosition) - Orbit.Count;
+
+            }
+            else
+            {
+                CP = (_currentPosition) + NM;
+            }
+        }
+
+        return CP;
+    }
+    public void MovePlanet ()
+    {
+        CurrentPosition = PredictPlanetPos(1);
+        //LastPosition = CurrentPosition;
+
+
+    }
     private List<Hex> CalcOrbit()
     {
 

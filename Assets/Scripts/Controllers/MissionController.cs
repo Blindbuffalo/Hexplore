@@ -203,7 +203,7 @@ public class MissionController : MonoBehaviour{
                     if (Hex.Equals(PLoc, CharController.Instance.MainShip.CurrentHexPosition))
                     {
                         Debug.Log("im in same tile as " + d.DropOffLocation);
-                        if (ItemInCargoHold(d.DeliveryItem))
+                        if (CharController.Instance.MainShip.Cargohold.ItemInCargoHold(d.DeliveryItem))//if the item is in the cargo hold
                         {
                             Debug.Log("i have the item in my cargo hold.");
                             d.Status = GoalStatus.CanTurnIn;
@@ -216,34 +216,15 @@ public class MissionController : MonoBehaviour{
         }
         
     }
-    public bool ItemInCargoHold(Cargo i)
-    {
-        foreach (Cargo c in CharController.Instance.MainShip.Cargohold.Hold)
-        {
-            ShipPart sp = c as ShipPart;
-            if (sp != null)
-            {
-                ShipPart CargoNeeded = i as ShipPart;
-                if (CargoNeeded != null)
-                {
-                    if (sp.Type == CargoNeeded.Type)
-                    {
-
-                        return true;
-                    }
-                }
-            }
-        }
-        return false;
-    }
+ 
     
     public void DeliveryGoalEnd(DeliveryGoal d)
     {
         Debug.Log("Goal turning in now");
         d.Status = GoalStatus.TurnedIn;
-        if(ItemInCargoHold(d.DeliveryItem))
+        if(CharController.Instance.MainShip.Cargohold.ItemInCargoHold(d.DeliveryItem)) //if the item is in the cargo hold
         {
-            CharController.Instance.MainShip.Cargohold.RemoveFirstItemOfSameType(d.DeliveryItem);
+            CharController.Instance.MainShip.Cargohold.RemoveFirstItemOfSameType(d.DeliveryItem); //remove the item
             CharController.Instance.MainShip.Cargohold.DebugListOfItemsInHold();
             Debug.Log("Goal has been turned in.");
             //check to see if mission is complete?

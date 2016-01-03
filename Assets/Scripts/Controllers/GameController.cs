@@ -39,15 +39,15 @@ public class GameController : MonoBehaviour {
         Hex Sun = new Hex(0, 0, 0);
         List<Planet> Planets = new List<Planet>();
         
-        Planets.Add(new Planet("Mercury", 2, Sun, 1, Color.cyan, 1, .5f, PlanetMoved));
-        Planets.Add(new Planet("Venus", 4, Sun, 1, Color.green, 1, .5f, PlanetMoved));
-        Planets.Add(new Planet("Earth", 6, Sun, 1, Color.blue, 1, .6f, PlanetMoved));
-        Planets.Add(new Planet("Mars", 9, Sun, 1, Color.red, 1, .55f, PlanetMoved));
-        Planets.Add(new Planet("Jupitor", 31, Sun, 2, Color.magenta, 1, 1.8f, PlanetMoved));
-        Planets.Add(new Planet("Saturn", 57, Sun, 3, Utilites.Instance.RGBcolor(176, 159, 114, 255), 55, 1.5f, PlanetMoved, rings: new Rings(1f, Utilites.Instance.RGBcolor(159, 183, 195, 115))));
-        Planets.Add(new Planet("Uranus", 85, Sun, 3, Color.magenta, 250, 1.1f, PlanetMoved));
-        Planets.Add(new Planet("Neptune", 110, Sun, 3, Color.magenta, 119, 1.1f, PlanetMoved));
-        Planets.Add(new Planet("Pluto", 145, Sun, 2, Color.magenta, 350, .2f, PlanetMoved));
+        Planets.Add(new Planet("Mercury", 2, Sun, 1, Color.cyan, 1, .5f, DrawHexGraphics.Instance.PlanetMoved));
+        Planets.Add(new Planet("Venus", 4, Sun, 1, Color.green, 1, .5f, DrawHexGraphics.Instance.PlanetMoved));
+        Planets.Add(new Planet("Earth", 6, Sun, 1, Color.blue, 1, .6f, DrawHexGraphics.Instance.PlanetMoved));
+        Planets.Add(new Planet("Mars", 9, Sun, 1, Color.red, 1, .55f, DrawHexGraphics.Instance.PlanetMoved));
+        Planets.Add(new Planet("Jupitor", 31, Sun, 2, Color.magenta, 1, 1.8f, DrawHexGraphics.Instance.PlanetMoved));
+        Planets.Add(new Planet("Saturn", 57, Sun, 3, Utilites.Instance.RGBcolor(176, 159, 114, 255), 55, 1.5f, DrawHexGraphics.Instance.PlanetMoved, rings: new Rings(1f, Utilites.Instance.RGBcolor(159, 183, 195, 115))));
+        Planets.Add(new Planet("Uranus", 85, Sun, 3, Color.magenta, 250, 1.1f, DrawHexGraphics.Instance.PlanetMoved));
+        Planets.Add(new Planet("Neptune", 110, Sun, 3, Color.magenta, 119, 1.1f, DrawHexGraphics.Instance.PlanetMoved));
+        Planets.Add(new Planet("Pluto", 145, Sun, 2, Color.magenta, 350, .2f, DrawHexGraphics.Instance.PlanetMoved));
 
         BlockedHexes.Instance.HexData = Hex.Neighbors(Sun);
         BlockedHexes.Instance.HexData.Add(Sun);
@@ -63,7 +63,7 @@ public class GameController : MonoBehaviour {
         {
 
             DrawHexGraphics.Instance.DrawOrbit(P, SolarSystem.Instance.OrbitColor);
-            DrawHexGraphics.Instance.DrawPlanetHex(P, SolarSystem.Instance.OrbitColor);
+            DrawHexGraphics.Instance.DrawPlanetHex(P, Prefab, SunGO);
             DrawHexGraphics.Instance.DrawPlanetObject(P, PlanetPreFab, SunGO, Rings);
         }
 
@@ -71,7 +71,7 @@ public class GameController : MonoBehaviour {
         MissionController.Instance.StartCurrentMainMission();
 
         CharController.Instance.UpdateUI = UpdateUI;
-
+        CharController.Instance.MovePlanetHex = MovePlanetHex;
 
         UpdateUI();
     }
@@ -102,8 +102,11 @@ public class GameController : MonoBehaviour {
 
         foreach (Planet P in SolarSystem.Instance.Planets)
         {
-            DrawHexGraphics.Instance.DrawPlanetHex(P, SolarSystem.Instance.OrbitColor);
+            P.MovePlanet();
+            DrawHexGraphics.Instance.MovePlanetHex(P, SunGO, P.CurrentPosition);
             DrawHexGraphics.Instance.MovePlanetObject(P, SunGO);
+            
+            
         }
 
         MissionController.Instance.MainMissionProgress();
@@ -116,9 +119,14 @@ public class GameController : MonoBehaviour {
 
 
     }
-    public void PlanetMoved(Planet P)
+    public void MovePlanetHex(int NumMoves)
     {
-
+        foreach (Planet P in SolarSystem.Instance.Planets)
+        {
+           
+            DrawHexGraphics.Instance.MovePlanetHex(P, SunGO, P.PredictPlanetPos(NumMoves));
+            
+        }
     }
     public void TurnInCurrentMissionGoal()
     {

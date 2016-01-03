@@ -66,6 +66,26 @@ public class CargoHold
     {
         get; protected set;
     }
+    public bool ItemInCargoHold(Cargo i)
+    {
+        foreach (Cargo c in Hold)
+        {
+            ShipPart sp = c as ShipPart;
+            if (sp != null)
+            {
+                ShipPart CargoNeeded = i as ShipPart;
+                if (CargoNeeded != null)
+                {
+                    if (sp.Type == CargoNeeded.Type)
+                    {
+
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
     public bool RemoveFirstItemOfSameType(Cargo i)
     {
         ShipPart CargoNeeded = i as ShipPart;

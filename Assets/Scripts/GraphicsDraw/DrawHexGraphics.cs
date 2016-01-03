@@ -28,6 +28,7 @@ public class DrawHexGraphics : MonoBehaviour {
     private Layout L = new Layout(Layout.pointy, new Vector3(.52f, .52f), new Vector3(0f, 0f));
     public void GenerateGraphics(List<Hex> Hexes, GameObject Prefab)
     {
+        //this function lays out all of the hex grid data as unity sprites on screen
         HexGraphics = new Dictionary<string, GameObject>();
         foreach (Hex h in Hexes)
         {
@@ -48,18 +49,18 @@ public class DrawHexGraphics : MonoBehaviour {
 
         }
     }
-    public void CreateMovementHexGraphics(List<Hex> Hexes, GameObject Prefab, GameObject parent)
-    {
+    //public void CreateMovementHexGraphics(List<Hex> Hexes, GameObject Prefab, GameObject parent)
+    //{
         
-        foreach (Hex h in Hexes)
-        {
-            GameObject g = (GameObject)Instantiate(Prefab, Layout.HexToPixel(L, h, 0), Quaternion.identity);
-            g.name = Utilites.Instance.HexNameStr(h);
-            g.transform.SetParent(parent.transform);
+    //    foreach (Hex h in Hexes)
+    //    {
+    //        GameObject g = (GameObject)Instantiate(Prefab, Layout.HexToPixel(L, h, 0), Quaternion.identity);
+    //        g.name = Utilites.Instance.HexNameStr(h);
+    //        g.transform.SetParent(parent.transform);
                 
 
-        }
-    }
+    //    }
+    //}
     public void ChangeHexesColor(Hex h, Color color)
     {
         string HexName = Utilites.Instance.HexNameStr(h);
@@ -72,47 +73,53 @@ public class DrawHexGraphics : MonoBehaviour {
     }
     public void DrawOrbit(Planet Planet, Color OrbitColor)
     {
+        //changes the grid hex color for a certain planet so that the
+        //orbit is visible
         foreach (Hex h in Planet.Orbit)
         {
             ChangeHexesColor(h, OrbitColor);
         }
-
-        //return Hexes;
     }
 
-    public void DrawPlanetHex(Planet Planet, Color OrbitColor)
+
+
+    public void PlanetMoved(Planet P)
     {
-        if(Planet.OrbitDirection == OrbitDir.CCW)
-        {
-            int LP = Planet.CurrentPosition;
-            Planet.CurrentPosition = Planet.CurrentPosition - Planet.NumberOfMoves;
-
-            if (Planet.CurrentPosition < 0)
-            {
-                Planet.CurrentPosition = (Planet.Orbit.Count ) + (LP - Planet.NumberOfMoves);
-
-            }
-            ChangeHexesColor(Planet.Orbit[Planet.LastPosition], OrbitColor);
-            ChangeHexesColor(Planet.Orbit[Planet.CurrentPosition], Planet.Col);
-
-            Planet.LastPosition = Planet.CurrentPosition;
-        }
-        else
-        {
-            Planet.CurrentPosition = Planet.CurrentPosition + Planet.NumberOfMoves;
-
-            if (Planet.CurrentPosition >= Planet.Orbit.Count)
-            {
-                Planet.CurrentPosition = Planet.CurrentPosition - Planet.Orbit.Count;
-
-            }
-            ChangeHexesColor(Planet.Orbit[Planet.LastPosition], OrbitColor);
-            ChangeHexesColor(Planet.Orbit[Planet.CurrentPosition], Planet.Col);
-
-            Planet.LastPosition = Planet.CurrentPosition;
-        }
 
     }
+    //public void DrawPlanetHex(Planet Planet, Color OrbitColor)
+    //{
+    //    if(Planet.OrbitDirection == OrbitDir.CCW)
+    //    {
+    //        int LP = Planet.CurrentPosition;
+    //        Planet.CurrentPosition = Planet.CurrentPosition - Planet.NumberOfMoves;
+
+    //        if (Planet.CurrentPosition < 0)
+    //        {
+    //            Planet.CurrentPosition = (Planet.Orbit.Count ) + (LP - Planet.NumberOfMoves);
+
+    //        }
+    //        ChangeHexesColor(Planet.Orbit[Planet.LastPosition], OrbitColor);
+    //        ChangeHexesColor(Planet.Orbit[Planet.CurrentPosition], Planet.Col);
+
+    //        Planet.LastPosition = Planet.CurrentPosition;
+    //    }
+    //    else
+    //    {
+    //        Planet.CurrentPosition = Planet.CurrentPosition + Planet.NumberOfMoves;
+
+    //        if (Planet.CurrentPosition >= Planet.Orbit.Count)
+    //        {
+    //            Planet.CurrentPosition = Planet.CurrentPosition - Planet.Orbit.Count;
+
+    //        }
+    //        ChangeHexesColor(Planet.Orbit[Planet.LastPosition], OrbitColor);
+    //        ChangeHexesColor(Planet.Orbit[Planet.CurrentPosition], Planet.Col);
+
+    //        Planet.LastPosition = Planet.CurrentPosition;
+    //    }
+
+    //}
     public void DrawPlanetObject(Planet planet, GameObject PlanetPrefab, GameObject Sun, GameObject Rings)
     {
         Vector3 p = Layout.HexToPixel(L, planet.Orbit[planet.CurrentPosition], -10f);
@@ -132,6 +139,40 @@ public class DrawHexGraphics : MonoBehaviour {
         
         GO.transform.SetParent(Sun.transform);
     }
+    public void DrawPlanetHex(Planet Planet, GameObject Prefab, GameObject parent)
+    {
+        Hex hToPlace = Planet.Orbit[Planet.CurrentPosition];
+
+        GameObject g = (GameObject)Instantiate(Prefab, Layout.HexToPixel(L, hToPlace, -2), Quaternion.identity);
+        g.name = Planet.Name + "_Hex";
+        g.GetComponent<SpriteRenderer>().color = Planet.Col;
+        g.transform.SetParent(parent.transform);
+    }
+    public void MovePlanetHex(Planet planet, GameObject Sun, int PlanetPos)
+    {
+        GameObject pHex = GetPlanetHex(planet, Sun);
+        pHex.transform.position = Layout.HexToPixel(L, planet.Orbit[PlanetPos], -2f);
+
+    }
+    public GameObject GetPlanetHex(Planet planet, GameObject Sun)
+    {
+        string planetNameCheck = planet.Name + "_Hex";
+        for (int i = 0; i < Sun.transform.childCount; i++)
+        {
+            GameObject pHex = Sun.transform.GetChild(i).gameObject;
+            if (pHex.name == planetNameCheck)
+            {
+                return pHex;
+            }
+        }
+        return null;
+    }
+    public void MovePlanetObject(Planet planet, GameObject Sun)
+    {       
+        GameObject pGO = GetPlanetGO(planet, Sun);
+        pGO.transform.position = Layout.HexToPixel(L, planet.Orbit[planet.CurrentPosition], -10f);
+
+    }
     public GameObject GetPlanetGO(Planet planet, GameObject Sun)
     {
         string planetNameCheck = planet.Name + "_GO";
@@ -144,11 +185,5 @@ public class DrawHexGraphics : MonoBehaviour {
             }
         }
         return null;
-    }
-    public void MovePlanetObject(Planet planet, GameObject Sun)
-    {       
-        GameObject pGO = GetPlanetGO(planet, Sun);
-        pGO.transform.position = Layout.HexToPixel(L, planet.Orbit[planet.CurrentPosition], -10f);
-
     }
 }
