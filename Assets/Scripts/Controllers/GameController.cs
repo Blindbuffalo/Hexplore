@@ -8,7 +8,8 @@ public class GameController : MonoBehaviour {
     public int CurrentTurn = 0;
     public int days = 0;
     public int SolarSystemDayMultiplier = 10;
-    public Text text;
+    public Text Daystext;
+    public Text XPtext;
 
     public List<Hex> Hexes = null;
     public int t = 0;
@@ -67,8 +68,18 @@ public class GameController : MonoBehaviour {
         }
 
         MissionController.Instance.InitMissions();
-        MissionController.Instance.StartMission();
+        MissionController.Instance.StartCurrentMainMission();
 
+        CharController.Instance.UpdateUI = UpdateUI;
+
+
+        UpdateUI();
+    }
+    private void UpdateUI()
+    {
+
+        Daystext.text = CurrentTurn.ToString() + " " + days;
+        XPtext.text = "XP: " + CharController.Instance.XP.ToString();
     }
     void Update()
     {
@@ -82,9 +93,10 @@ public class GameController : MonoBehaviour {
     public void NextTurnButton_Click()
     {
         CurrentTurn++;
-        
         days = SolarSystemDayMultiplier * CurrentTurn;
-        text.text = CurrentTurn.ToString() + " " + days;
+
+
+        UpdateUI();
 
         CharController.Instance.MainShip.MovesLeft = CharController.Instance.MainShip.Movement;
 
@@ -94,7 +106,7 @@ public class GameController : MonoBehaviour {
             DrawHexGraphics.Instance.MovePlanetObject(P, SunGO);
         }
 
-        MissionController.Instance.CheckOnCurrentMainMissionProgress();
+        MissionController.Instance.MainMissionProgress();
         
 
 
@@ -107,5 +119,9 @@ public class GameController : MonoBehaviour {
     public void PlanetMoved(Planet P)
     {
 
+    }
+    public void TurnInCurrentMissionGoal()
+    {
+        MissionController.Instance.TurnInGoals();
     }
 }

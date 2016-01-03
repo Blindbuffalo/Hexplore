@@ -14,7 +14,7 @@ public class CharController : MonoBehaviour {
     
     public int MoveShipPos = 1;
 
-    public Action<int> Test;
+    public Action UpdateUI;
     public Hex MouseOverHex;
     public Hex MouseOverHexStart;
     public float speed = 0.0025F;
@@ -22,6 +22,9 @@ public class CharController : MonoBehaviour {
     public float MinNextTileDist = .025f;
 
     public bool checkedMissions = false;
+
+    public int XP {get; protected set; }
+    private int XPtoNextLevel = 100; //need to make this better!
 
     private static CharController instance;
     public static CharController Instance
@@ -117,9 +120,10 @@ public class CharController : MonoBehaviour {
         }
         else
         {
+            //only check on the missions progress at the end of a move cycle.
             if (checkedMissions == false)
             {
-                MissionController.Instance.CheckOnCurrentMainMissionProgress();
+                MissionController.Instance.MainMissionProgress();
 
                 checkedMissions = true;
             }
@@ -310,5 +314,20 @@ public class CharController : MonoBehaviour {
             }
 
         }
+    }
+
+    public void IncreaseXP(int xp)
+    {
+        if (XP + xp >= this.XPtoNextLevel)
+        {
+            int Remainder = this.XPtoNextLevel - XP;
+            XP = Remainder;
+        }
+        else
+        {
+            XP += xp;
+        }
+
+        UpdateUI();
     }
 }

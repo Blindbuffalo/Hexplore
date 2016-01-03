@@ -29,7 +29,7 @@ public class MissionController : MonoBehaviour{
 
 
     public List<MainStoryMission> MainStoryMissions;
-    public bool StartMission()
+    public bool StartCurrentMainMission()
     {
         if (MissionP == MissionProgress.notStarted)
         {
@@ -44,19 +44,18 @@ public class MissionController : MonoBehaviour{
         }
        
     }
-    public void CheckOnCurrentMainMissionProgress()
-    {
-        if(MissionP == MissionProgress.progressing)
-        {
-            MainStoryMissions[CurrentMission].Progress(MainStoryMissions[CurrentMission]);
-        }
-    }
-    public bool EndMission()
+
+    private bool EndCurrentMainMission()
     {
         if (MissionP == MissionProgress.progressing)
         {
-            MissionP = MissionProgress.ending;
-            MainStoryMissions[CurrentMission].End(MainStoryMissions[CurrentMission]);
+
+            CharController.Instance.IncreaseXP(MainStoryMissions[CurrentMission].XPreward);
+
+
+            MissionP = MissionProgress.notStarted;
+            CurrentMission += 1;
+            
             return true;
         }
         else
@@ -70,44 +69,23 @@ public class MissionController : MonoBehaviour{
         MainStoryMissions = new List<MainStoryMission>()
         {
             new MainStoryMission(
-                0,
-                -1,
-                "Good Day to Fly.",
-                "Things about stuff said here!",
-                10,
-                DeliveryMissionStart,
-                DeliveryMissionProgress,
-                DeliveryMissionEnd,
-                new List<Goal>() {
+                id: 0,
+                prereq: -1,
+                name: "Good Day to Fly.",
+                info: "Things about stuff said here!",
+                xpreward: 10,
+                start: DeliveryMissionStart,
+                missiongoals: new List<Goal>() {
                         new DeliveryGoal (
                             name: "Deliver the Hull plating to the guy!",
                             description: "get the guy some hull.",
                             startlocation: "Earth",
                             dropofflocation: "Earth",
                             deliveryitem: new ShipPart("New hull", 1f, 2f, 0, 999f, ShipPartType.HullPlate),
-                            givenitem: new ShipPart("New hull", 1f, 2f, 0, 999f, ShipPartType.HullPlate)
-                            )
-
-                    }
-                ),
-
-                new MainStoryMission(
-                1,
-                0,
-                "Mars and back again",
-                "Things about stuff said here!",
-                10,
-                DeliveryMissionStart,
-                DeliveryMissionProgress,
-                DeliveryMissionEnd,
-                new List<Goal>() {
-                        new DeliveryGoal (
-                            name: "Get Me the Things!",
-                            description: "get the guy an engine.",
-                            startlocation: "Earth",
-                            dropofflocation: "Mars",
-                            deliveryitem: new ShipPart("Engine", 1f, 2f, 0, 999f, ShipPartType.Engine),
-                            givenitem: new ShipPart("Engine", 1f, 2f, 0, 999f, ShipPartType.Engine)
+                            givenitem: new ShipPart("New hull", 1f, 2f, 0, 999f, ShipPartType.HullPlate),
+                            goalprogress: DeliveryGoalCheck,
+                            goalend: DeliveryGoalEnd,
+                            status: GoalStatus.NA
                             )
 
                     }
@@ -131,112 +109,106 @@ public class MissionController : MonoBehaviour{
             
         }
     }
-    private void DeliveryMissionProgress(MainStoryMission m)
+    public void MainMissionProgress()
     {
-        Debug.Log("MSM1:progress");
-        Debug.Log(m.Info);
-        if(MissionP == MissionProgress.progressing)
+        if (MissionP == MissionProgress.progressing)
         {
-            Hex PLoc;
-            foreach (Goal g in m.MissionGoals)
+
+            MainStoryMission m = MainStoryMissions[CurrentMission];
+            Debug.Log("MSM1:progress");
+            if (MissionP == MissionProgress.progressing)
             {
-                DeliveryGoal d = g as DeliveryGoal;
-                if (d != null)
+
+                foreach (Goal g in m.MissionGoals)
                 {
-                    foreach (Planet p  in SolarSystem.Instance.Planets)
+                    if (g as DeliveryGoal != null)
                     {
-                        if(p.Name == d.DropOffLocation)
+                        (g as DeliveryGoal).GoalProgress(g as DeliveryGoal);
+                        if(g.Status == GoalStatus.CanTurnIn)
                         {
-                            PLoc = p.Orbit[p.CurrentPosition];
-                            //List<Hex> ShipsNeighbors = Hex.Neighbors(CharController.Instance.MainShip.CurrentHexPosition);
-                            //if (ShipsNeighbors.Contains(PLoc))
-                            //{
-                            if (Hex.Equals( PLoc, CharController.Instance.MainShip.CurrentHexPosition))
-                            { 
-                                Debug.Log("im in same tile as " + d.DropOffLocation);
-                                foreach (Cargo c in CharController.Instance.MainShip.Cargohold.Hold)
-                                {
-                                    ShipPart sp = c as ShipPart;
-                                    if(sp != null)
-                                    {
-                                        ShipPart CargoNeeded = d.DeliveryItem as ShipPart;
-                                        if (CargoNeeded != null) {
-                                            if (sp.Type == CargoNeeded.Type)
-                                            {
-                                                Debug.Log("i have a " + CargoNeeded.Type.ToString() + " in my cargo hold.");
-                                            }
-                                        }
-                                    }
-                                }
-                            }
+                            Debug.Log("TURN IT IN!!!!!");
                         }
                     }
+
 
                 }
             }
         }
     }
-    private void DeliveryMissionEnd(MainStoryMission m)
+    public void DeliveryGoalCheck(DeliveryGoal d)
     {
-        Debug.Log("MSM1:end");
-        Debug.Log(m.Info);
-        MissionP = MissionProgress.notStarted;
-        CurrentMission += 1;
+        Hex PLoc;
+        if (d != null)
+        {
+            if(d.Status == GoalStatus.TurnedIn)
+            {
+                return;
+            }
+            foreach (Planet p in SolarSystem.Instance.Planets)
+            {
+                if (p.Name == d.DropOffLocation)
+                {
+                    PLoc = p.Orbit[p.CurrentPosition];
+                    //List<Hex> ShipsNeighbors = Hex.Neighbors(CharController.Instance.MainShip.CurrentHexPosition);
+                    //if (ShipsNeighbors.Contains(PLoc))
+                    //{
+                    if (Hex.Equals(PLoc, CharController.Instance.MainShip.CurrentHexPosition))
+                    {
+                        Debug.Log("im in same tile as " + d.DropOffLocation);
+                        foreach (Cargo c in CharController.Instance.MainShip.Cargohold.Hold)
+                        {
+                            ShipPart sp = c as ShipPart;
+                            if (sp != null)
+                            {
+                                ShipPart CargoNeeded = d.DeliveryItem as ShipPart;
+                                if (CargoNeeded != null)
+                                {
+                                    if (sp.Type == CargoNeeded.Type)
+                                    {
+                                        Debug.Log("i have a " + CargoNeeded.Type.ToString() + " in my cargo hold.");
+                                        d.Status = GoalStatus.CanTurnIn;
+                                        return;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            d.Status = GoalStatus.NA;
+        }
+        
+    }
+    public void DeliveryGoalEnd(DeliveryGoal d)
+    {
+        Debug.Log("Goal has been turned in.");
+        d.Status = GoalStatus.TurnedIn;
+
+        //check to see if mission is complete?
+        foreach (Goal g in MainStoryMissions[CurrentMission].MissionGoals)
+        {
+            if(g.Status != GoalStatus.TurnedIn)
+            {
+                return;
+            }
+        }
+        EndCurrentMainMission();
+
+    }
+    public void TurnInGoals()
+    {
+        foreach (Goal g in MainStoryMissions[CurrentMission].MissionGoals)
+        {
+            if(g.Status == GoalStatus.CanTurnIn)
+            {
+                if ((g as DeliveryGoal) != null)
+                {
+                    (g as DeliveryGoal).GoalEnd((g as DeliveryGoal));
+                }
+            }
+        }
     }
 
-    public void foo(MainStoryMission G)
-    {
-
-    }
-    //private Layout L = new Layout(Layout.pointy, new Vector3(.52f, .52f), new Vector3(0f, 0f));
-
-
-    //public int CurrentMSMission = -1;
-    //public int _MSMissionStep = 0;
-    //public int MSMissionStep
-    //{
-    //    get
-    //    {
-    //        return _MSMissionStep;
-    //    }
-    //    set
-    //    {
-    //        _MSMissionStep = value;
-    //        CheckMissionStatus();
-    //    }
-    //}
-    //public bool MSMissionCompleted = false;
-    //public void SpawnMissions(SolarSystem Sol, GameObject Sun)
-    //{
-    //    if(CurrentMSMission == -1 || MSMissionCompleted)
-    //    {
-    //        CurrentMSMission++;
-
-    //        Debug.Log(MainStoryMissions[CurrentMSMission].Name);
-
-    //        MainStoryMissions[CurrentMSMission].Start(MainStoryMissions[CurrentMSMission]);
-
-    //        Planet P = (from s in Sol.Planets
-    //                    where s.Name.ToLower() == MainStoryMissions[CurrentMSMission].LocationName.ToLower()
-    //                    select s).FirstOrDefault();
-    //        if (P == null)
-    //        {
-    //            Debug.Log("oops");
-    //        }
-    //        else
-    //        {
-
-    //            GameObject MissionMarker = (GameObject)Instantiate(MissionMarkerPrefab, Layout.HexToPixel(L, P.Orbit[P.CurrentPosition], -10.2f), Quaternion.identity);
-
-    //            MissionMarker.transform.SetParent(DrawHexGraphics.Instance.GetPlanetGO(P, Sun).transform);
-    //            MissionMarker.transform.localScale = new Vector3(.5f, .5f, .5f);
-    //            MissionMarker.transform.localPosition = new Vector3(0f, .46f, -1f); ;
-    //        }
-
-
-    //        MSMissionCompleted = false;
-    //    }
-    //}
 
 
 }
