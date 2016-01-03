@@ -85,7 +85,7 @@ public class DrawHexGraphics : MonoBehaviour {
 
     public void PlanetMoved(Planet P)
     {
-
+        //Debug.Log(P.CurrentPosition);
     }
     //public void DrawPlanetHex(Planet Planet, Color OrbitColor)
     //{

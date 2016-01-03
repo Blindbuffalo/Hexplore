@@ -39,7 +39,7 @@ public class GameController : MonoBehaviour {
         Hex Sun = new Hex(0, 0, 0);
         List<Planet> Planets = new List<Planet>();
         
-        Planets.Add(new Planet("Mercury", 2, Sun, 1, Color.cyan, 1, .5f, DrawHexGraphics.Instance.PlanetMoved));
+        Planets.Add(new Planet("Mercury", 2, Sun, 1, Color.cyan, 9, .5f, DrawHexGraphics.Instance.PlanetMoved));
         Planets.Add(new Planet("Venus", 4, Sun, 1, Color.green, 1, .5f, DrawHexGraphics.Instance.PlanetMoved));
         Planets.Add(new Planet("Earth", 6, Sun, 1, Color.blue, 1, .6f, DrawHexGraphics.Instance.PlanetMoved));
         Planets.Add(new Planet("Mars", 9, Sun, 1, Color.red, 1, .55f, DrawHexGraphics.Instance.PlanetMoved));
