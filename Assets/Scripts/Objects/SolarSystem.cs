@@ -21,7 +21,7 @@ public class SolarSystem  {
         }
     }
     public Color OrbitColor = new Color(.05f, .05f, .05f, 1f);
-    public SolarSystem(string name, Hex sun, int sunradius, List<Planet> planets)
+    public SolarSystem(string name, Hex sun, int sunradius, Dictionary<string, Planet> planets)
     {
         if (instance == null)
         {
@@ -36,6 +36,7 @@ public class SolarSystem  {
 
     public string Name { get; set; }
     public Hex Sun { get; set; }
-    public List<Planet> Planets { get; set; }
+    //public List<Planet> Planets { get; set; }
+    public Dictionary<string, Planet> Planets { get; set; }
     public int SunRadius { get; set; }
 }

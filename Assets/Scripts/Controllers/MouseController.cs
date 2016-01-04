@@ -54,20 +54,23 @@ public class MouseController : MonoBehaviour {
             if (Physics.Raycast(ray, out hit))
             {
 
-                foreach (Planet p in SolarSystem.Instance.Planets)
+                foreach (KeyValuePair<string, Planet> p in SolarSystem.Instance.Planets)
                 {
-                    if(p.Name + "_GO" == hit.transform.name)
+                    if(p.Value.Name + "_GO" == hit.transform.name)
                     {
                         Debug.Log(hit.transform.name);
                         PlanetUIwindow.SetActive(true);
-                        PlanetName.text = p.Name;
+                        PlanetName.text = p.Value.Name;
                         break;
                     }
-                }
 
-            }else
-            {
+                }
                 
+
+            }
+            else
+            {
+                PlanetUIwindow.SetActive(false);
             }
         }
 

@@ -4,8 +4,9 @@ using System.Collections.Generic;
 using System.Linq;
 public class MissionController : MonoBehaviour{
     public enum MissionProgress { notStarted, progressing, ending, noMore }
-    
+
     public GameObject MissionMarkerPrefab;
+
     //public GameObject MainShip;
     private MissionController() { }
     public int CurrentMission = 0;
@@ -26,7 +27,26 @@ public class MissionController : MonoBehaviour{
             return instance;
         }
     }
+    public void DrawMissionIndicators()
+    {
+        GameObject GOmm;
+        switch (MissionP)
+        {
+            case MissionProgress.notStarted:
+                //string P = MainStoryMissions[CurrentMission].LocationName;
+                //GameObject Pgo = DrawHexGraphics.Instance.GetPlanetGO(P, GameController.Instance.SunGO);
+                //GOmm = (GameObject)Instantiate(MissionMarkerPrefab, Pgo.transform.position, Quaternion.identity);
+                //GOmm.transform.SetParent(Pgo.transform);
+                break;
+            case MissionProgress.progressing:
 
+                break;
+            case MissionProgress.ending:
+                break;
+            case MissionProgress.noMore:
+                break;
+        }
+    }
 
     public List<MainStoryMission> MainStoryMissions;
     public bool StartCurrentMainMission()
@@ -63,12 +83,12 @@ public class MissionController : MonoBehaviour{
         if (MissionP == MissionProgress.progressing)
         {
 
-            CharController.Instance.IncreaseXP(MainStoryMissions[CurrentMission].XPreward);
+            GameController.Instance.IncreaseXP(MainStoryMissions[CurrentMission].XPreward);
 
 
             MissionP = MissionProgress.notStarted;
             CurrentMission += 1;
-            StartCurrentMainMission();
+
             return true;
         }
         else
@@ -86,6 +106,7 @@ public class MissionController : MonoBehaviour{
                 prereq: -1,
                 name: "Good Day to Fly.",
                 info: "Things about stuff said here!",
+                LocationName: "Earth",
                 xpreward: 10,
                 start: DeliveryMissionStart,
                 missiongoals: new List<Goal>() {
@@ -108,6 +129,7 @@ public class MissionController : MonoBehaviour{
                 prereq: 0,
                 name: "To Mars and back again.",
                 info: "Bring some stuff to mars.",
+                LocationName: "Mars",
                 xpreward: 10,
                 start: DeliveryMissionStart,
                 missiongoals: new List<Goal>() {
@@ -192,10 +214,14 @@ public class MissionController : MonoBehaviour{
             {
                 return;
             }
-            foreach (Planet p in SolarSystem.Instance.Planets)
-            {
-                if (p.Name == d.DropOffLocation)
-                {
+
+            Planet p = SolarSystem.Instance.Planets[d.DropOffLocation];
+            //foreach (KeyValuePair<string, Planet> p in SolarSystem.Instance.Planets)
+            //{
+
+
+            //    if (p.Name == d.DropOffLocation)
+            //    {
                     PLoc = p.Orbit[p.CurrentPosition];
                     //List<Hex> ShipsNeighbors = Hex.Neighbors(CharController.Instance.MainShip.CurrentHexPosition);
                     //if (ShipsNeighbors.Contains(PLoc))
@@ -210,8 +236,8 @@ public class MissionController : MonoBehaviour{
                             return;
                         }
                     }
-                }
-            }
+            //    }
+            //}
             d.Status = GoalStatus.NA;
         }
         
