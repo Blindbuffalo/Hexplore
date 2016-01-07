@@ -169,13 +169,13 @@ public class DrawHexGraphics : MonoBehaviour {
     }
     public void MovePlanetObject(Planet planet, GameObject Sun)
     {       
-        GameObject pGO = GetPlanetGO(planet.Name, Sun);
+        GameObject pGO = GetPlanetGO(planet, Sun);
         pGO.transform.position = Layout.HexToPixel(L, planet.Orbit[planet.CurrentPosition], -10f);
 
     }
-    public GameObject GetPlanetGO(string planetName, GameObject Sun)
+    public GameObject GetPlanetGO(Planet planet, GameObject Sun)
     {
-        string planetNameCheck = planetName + "_GO";
+        string planetNameCheck = planet.Name + "_GO";
         for (int i = 0; i < Sun.transform.childCount; i++)
         {
             GameObject pGO = Sun.transform.GetChild(i).gameObject;

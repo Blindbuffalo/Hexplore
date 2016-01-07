@@ -6,7 +6,6 @@ using System;
 public class CharController : MonoBehaviour {
 
     public GameObject MovementInd;
-    public GameObject Ship_GO;
     Layout L = new Layout(Layout.pointy, new Vector3(.52f, .52f), new Vector3(0f, 0f));
     public Hex Center = new Hex(0, 0, 0);
     public Ship MainShip;
@@ -26,8 +25,8 @@ public class CharController : MonoBehaviour {
 
     public bool checkedMissions = false;
 
-
-
+    public int XP {get; protected set; }
+    private int XPtoNextLevel = 100; //need to make this better!
 
     private static CharController instance;
     public static CharController Instance
@@ -48,10 +47,10 @@ public class CharController : MonoBehaviour {
     void Start () {
         MovementInd.SetActive(false);
         MainShip = new Ship(5, new Hex(-5, 6, -1), 10f, 5f);
-        MainShip.RegisterMovesLeftCB(ShipMoved);
+        MainShip.RegisterMovesLeftCB(RedrawMovementHexes);
 
-        // MainShip.Cargohold.Add(new BiologicalSamples("Icky Goo", 0f, 0f, 0f, BioSampleType.Animal));
-        // MainShip.Cargohold.Add(new ShipPart("Super Engine", 0f, 0f, 0, 0f, ShipPartType.Engine));
+       // MainShip.Cargohold.Add(new BiologicalSamples("Icky Goo", 0f, 0f, 0f, BioSampleType.Animal));
+       // MainShip.Cargohold.Add(new ShipPart("Super Engine", 0f, 0f, 0, 0f, ShipPartType.Engine));
 
         placeShipOnHex(MainShip.CurrentHexPosition);
 
@@ -81,7 +80,7 @@ public class CharController : MonoBehaviour {
         {
             shipMoving = true;
             MoveShip = false;
-            Ship_GO.transform.GetChild(0).localPosition = new Vector3(0, 0, 0);
+            this.transform.GetChild(0).localPosition = new Vector3(0, 0, 0);
         }
         if (shipMoving && MainShip.MovesLeft > 0)
         {
@@ -90,16 +89,16 @@ public class CharController : MonoBehaviour {
             Vector3 t = Layout.HexToPixel(L, MainShip.PathToTarget[MoveShipPos], -15f);
             Vector3 c = Layout.HexToPixel(L, MainShip.CurrentHexPosition, 0f);
             Vector3 n = new Vector3(t.x - c.x, t.y - c.y, 0f);
-            Vector3 m = new Vector3(Ship_GO.transform.position.x, Ship_GO.transform.position.y, -15);
+            Vector3 m = new Vector3(this.transform.position.x, this.transform.position.y, -15);
             //Debug.Log(Utility.HexNameStr(MainShip.PathToTarget[MoveShipPos]));
 
 
             //Child.transform.Rotate(Vector3.forward, .1f);
 
 
-            if (RotateShip(Ship_GO.transform.GetChild(0).gameObject, n))
+            if (RotateShip(this.transform.GetChild(0).gameObject, n))
             {
-                Ship_GO.transform.Translate(n.normalized * 2f * Time.deltaTime);
+                this.transform.Translate(n.normalized * 2f * Time.deltaTime);
 
                 if ((t - m).sqrMagnitude < MinNextTileDist * MinNextTileDist)
                 {
@@ -202,12 +201,12 @@ public class CharController : MonoBehaviour {
 
             if (OnHexWithPlanet())
             {
-
-                Ship_GO.transform.GetChild(0).localPosition = new Vector3(0, .4f, 0);
+                
+                this.transform.GetChild(0).localPosition = new Vector3(0, .4f, 0);
             }
             else
             {
-                Ship_GO.transform.GetChild(0).localPosition = new Vector3(0, 0, 0);
+                this.transform.GetChild(0).localPosition = new Vector3(0, 0, 0);
             }
         }
 
@@ -217,11 +216,15 @@ public class CharController : MonoBehaviour {
     public bool OnHexWithPlanet()
     {
         // check to see if we are on a tile with a planet
-        foreach (KeyValuePair<string, Planet> p in SolarSystem.Instance.Planets)
+        foreach (Planet p in SolarSystem.Instance.Planets)
         {
-            if (Hex.Equals(MainShip.CurrentHexPosition, p.Value.Orbit[p.Value.CurrentPosition]))
+            if (Hex.Equals(MainShip.CurrentHexPosition, p.Orbit[p.CurrentPosition]))
             {
                 //Debug.Log("in the same square as a planet! " + p.Name);
+
+
+                
+
                 return true;
             }
         }
@@ -302,26 +305,35 @@ public class CharController : MonoBehaviour {
     private void placeShipOnHex(Hex h)
     {
 
-        Ship_GO.transform.position = Layout.HexToPixel(L, h, -15f);
+        this.transform.position = Layout.HexToPixel(L, h, -15f);
         
     }
-    void ShipMoved()
+    void RedrawMovementHexes()
     {
+        List<Hex> Reachable = Hex.Reachable(MainShip.CurrentHexPosition, MainShip.MovesLeft);
 
+        foreach (Transform child in transform)
+        {
+            if (!child.name.StartsWith("ship"))
+            {
+                GameObject.Destroy(child.gameObject);
+            }
+
+        }
     }
-    //void RedrawMovementHexes()
-    //{
-    //    List<Hex> Reachable = Hex.Reachable(MainShip.CurrentHexPosition, MainShip.MovesLeft);
 
-    //    foreach (Transform child in transform)
-    //    {
-    //        if (!child.name.StartsWith("ship"))
-    //        {
-    //            GameObject.Destroy(child.gameObject);
-    //        }
+    public void IncreaseXP(int xp)
+    {
+        if (XP + xp >= this.XPtoNextLevel)
+        {
+            int Remainder = this.XPtoNextLevel - XP;
+            XP = Remainder;
+        }
+        else
+        {
+            XP += xp;
+        }
 
-    //    }
-    //}
-
-
+        UpdateUI();
+    }
 }

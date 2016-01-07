@@ -13,7 +13,7 @@ public class Mission
 }
 public class MainStoryMission : Mission
 {
-    public MainStoryMission(int id, int prereq, string name, string info, string LocationName, int xpreward, 
+    public MainStoryMission(int id, int prereq, string name, string info, int xpreward, 
         Action<MainStoryMission> start, 
         List<Goal> missiongoals)
     {
