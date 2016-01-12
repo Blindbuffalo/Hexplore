@@ -6,7 +6,7 @@ using System.Collections.Generic;
 public class SolarSystem  {
 
     public Color OrbitColor = new Color(.05f, .05f, .05f, 1f);
-    public SolarSystem(string name, Hex sun, int sunradius, Dictionary<int, Planet> planets)
+    public SolarSystem(string name, Hex sun, int sunradius, Dictionary<string, Planet> planets)
     {
         Name = name;
         Sun = sun;
@@ -17,6 +17,6 @@ public class SolarSystem  {
 
     public string Name { get; set; }
     public Hex Sun { get; set; }
-    public Dictionary<int, Planet> Planets { get; set; }
+    public Dictionary<string, Planet> Planets { get; set; }
     public int SunRadius { get; set; }
 }

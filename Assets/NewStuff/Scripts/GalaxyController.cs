@@ -7,8 +7,8 @@ public class GalaxyController : MonoBehaviour {
     private Dictionary<int, SolarSystem> Galaxy;
 
     private int CurrentSolarsystem = 0;
-    public GameObject PlanetPrefab;
-    public GameObject HexPrefab;
+    private float Interval = .5f;
+    private float CurrentTime = 0;
 
     // Use this for initialization
     void Start () {
@@ -19,34 +19,41 @@ public class GalaxyController : MonoBehaviour {
 
             Galaxy = new Dictionary<int, SolarSystem>();
 
-            Dictionary<int, Planet> Planets = new Dictionary<int, Planet>();
+            Dictionary<string, Planet> Planets = new Dictionary<string, Planet>();
 
-            Planets.Add(0, new Planet("Mercury", 2, Sun, 1, Color.cyan, 9, 1f, DrawHexGraphics.Instance.PlanetMoved));
-            Planets.Add(1, new Planet("Venus", 4, Sun, 1, Color.green, 1, 1f, DrawHexGraphics.Instance.PlanetMoved));
-            Planets.Add(2, new Planet("Earth", 6, Sun, 1, Color.blue, 1, 1.5f, DrawHexGraphics.Instance.PlanetMoved));
-            Planets.Add(3, new Planet("Mars", 9, Sun, 1, Color.red, 1, 1.4f, DrawHexGraphics.Instance.PlanetMoved));
-            Planets.Add(4, new Planet("Jupitor", 31, Sun, 2, Color.magenta, 1, 3f, DrawHexGraphics.Instance.PlanetMoved));
-            Planets.Add(5, new Planet("Saturn", 57, Sun, 3, Utilites.Instance.RGBcolor(176, 159, 114, 255), 55, 3f, DrawHexGraphics.Instance.PlanetMoved));
+            Planets.Add("Mercury", new Planet("Mercury", 2, Sun, 1, Color.cyan, 1, 1f ));
+            Planets.Add("Venus", new Planet("Venus", 4, Sun, 1, Color.green, 1, 1f ));
+            Planets.Add("Earth", new Planet("Earth", 6, Sun, 1, Color.blue, 1, 1.5f ));
+            Planets.Add("Mars", new Planet("Mars", 9, Sun, 1, Color.red, 1, 1.4f ));
+            Planets.Add("Jupiter", new Planet("Jupiter", 31, Sun, 2, Color.magenta, 1, 3f ));
+            Planets.Add("Saturn", new Planet("Saturn", 57, Sun, 3, Utilites.Instance.RGBcolor(176, 159, 114, 255), 1, 3f ));
             //Planets.Add(5, new Planet("Saturn", 57, Sun, 3, Utilites.Instance.RGBcolor(176, 159, 114, 255), 55, 1.5f, DrawHexGraphics.Instance.PlanetMoved, rings: new Rings(1f, Utilites.Instance.RGBcolor(159, 183, 195, 115))));
-            Planets.Add(6, new Planet("Uranus", 85, Sun, 3, Color.magenta, 250, 1.6f, DrawHexGraphics.Instance.PlanetMoved));
-            Planets.Add(7, new Planet("Neptune", 110, Sun, 3, Color.magenta, 119, 1.6f, DrawHexGraphics.Instance.PlanetMoved));
-            Planets.Add(8, new Planet("Pluto", 145, Sun, 2, Color.magenta, 350, .5f, DrawHexGraphics.Instance.PlanetMoved));
+            Planets.Add("Uranus", new Planet("Uranus", 85, Sun, 3, Color.magenta, 1, 1.6f ));
+            Planets.Add("Neptune", new Planet("Neptune", 110, Sun, 3, Color.magenta, 1, 1.6f ));
+            Planets.Add("Pluto", new Planet("Pluto", 145, Sun, 2, Color.magenta, 1, .5f ));
 
 
-            SolarSystem Sol = new SolarSystem("sol", Sun, 2, Planets);
+            SolarSystem Sol = new SolarSystem("sol", Sun, 5, Planets);
 
             Galaxy.Add(0, Sol);
             
         }
-        foreach (KeyValuePair<int, Planet> planet in Galaxy[CurrentSolarsystem].Planets)
-        {
-            DrawHexGraphics.Instance.DrawPlanetObject(planet.Value, PlanetPrefab, this.gameObject, null);
-            DrawHexGraphics.Instance.DrawPlanetHex(planet.Value, HexPrefab, this.gameObject);
-        }
+        DrawGraphics.Instance.DrawSolarSystem(Galaxy[CurrentSolarsystem]);
     }
 	
 	// Update is called once per frame
 	void Update () {
-	    
+        CurrentTime += Time.deltaTime;
+        if(CurrentTime >= Interval)
+        {
+            foreach(KeyValuePair<string, Planet> p in Galaxy[0].Planets)
+            {
+                p.Value.MovePlanet();
+                DrawGraphics.Instance.MovePlanetObject(p.Value);
+                DrawGraphics.Instance.MovePlanetHex(p.Value);
+            }
+            CurrentTime = 0f;
+        }
+
 	}
 }

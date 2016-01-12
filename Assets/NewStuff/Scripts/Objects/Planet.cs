@@ -15,10 +15,9 @@ public class Rings
 }
 public class Planet {
     Action<Planet> PlanetMoved;
-    public Planet(string name, int orbitRadius, Hex parent, int numberofmoves, Color color, int position, float size, Action<Planet> planetmoved, OrbitDir OD = OrbitDir.CCW, Rings rings = null)
+    public Planet(string name, int orbitRadius, Hex parent, int numberofmoves, Color color, int position, float size, OrbitDir OD = OrbitDir.CCW, Rings rings = null)
     {
 
-        PlanetMoved = planetmoved;
         Name = name;
         OrbitRadius = orbitRadius;
         Parent = parent;
@@ -59,7 +58,7 @@ public class Planet {
         set
         {
             _currentPosition = value;
-            PlanetMoved(this);
+            //PlanetMoved(this);
         }
     }
     public int LastPosition { get; set; }
@@ -92,9 +91,6 @@ public class Planet {
     public void MovePlanet ()
     {
         CurrentPosition = PredictPlanetPos(1);
-        //LastPosition = CurrentPosition;
-
-
     }
     private List<Hex> CalcOrbit()
     {
