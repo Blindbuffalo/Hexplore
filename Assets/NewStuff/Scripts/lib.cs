@@ -386,14 +386,14 @@ struct Layout
     static public Orientation pointy = new Orientation(Math.Sqrt(3.0), Math.Sqrt(3.0) / 2.0, 0.0, 3.0 / 2.0, Math.Sqrt(3.0) / 3.0, -1.0 / 3.0, 0.0, 2.0 / 3.0, 0.5);
     static public Orientation flat = new Orientation(3.0 / 2.0, 0.0, Math.Sqrt(3.0) / 2.0, Math.Sqrt(3.0), 2.0 / 3.0, 0.0, -1.0 / 3.0, Math.Sqrt(3.0) / 3.0, 0.0);
 
-    static public Vector3 HexToPixel(Layout layout, Hex h, float zPos)
+    static public Vector3 HexToPixel(Layout layout, Hex h, float yPos)
     {
         Orientation M = layout.orientation;
         Vector3 size = layout.size;
         Vector3 origin = layout.origin;
         double x = (M.f0 * h.q + M.f1 * h.r) * size.x;
         double y = (M.f2 * h.q + M.f3 * h.r) * size.y;
-        return new Vector3((float)(x + origin.x), (float)(y + origin.y), zPos);
+        return new Vector3((float)(x + origin.x),  yPos, (float)(y + origin.y));
     }
 
 
@@ -402,9 +402,9 @@ struct Layout
         Orientation M = layout.orientation;
         Vector3 size = layout.size;
         Vector3 origin = layout.origin;
-        Vector3 pt = new Vector3((p.x - origin.x) / size.x, (p.y - origin.y) / size.y);
-        double q = M.b0 * pt.x + M.b1 * pt.y;
-        double r = M.b2 * pt.x + M.b3 * pt.y;
+        Vector3 pt = new Vector3((p.x - origin.x) / size.x, (p.z - origin.z) / size.z);
+        double q = M.b0 * pt.x + M.b1 * pt.z;
+        double r = M.b2 * pt.x + M.b3 * pt.z;
         return new FractionalHex(q, r, -q - r);
     }
 
@@ -414,18 +414,18 @@ struct Layout
         Orientation M = layout.orientation;
         Vector3 size = layout.size;
         double angle = 2.0 * Math.PI * (corner + M.start_angle) / 6;
-        return new Vector3((float)(size.x * Math.Cos(angle)), (float)(size.y * Math.Sin(angle)));
+        return new Vector3((float)(size.x * Math.Cos(angle)), (float)(size.z * Math.Sin(angle)));
     }
 
 
-    static public List<Vector3> PolygonCorners(Layout layout, Hex h, float zPos)
+    static public List<Vector3> PolygonCorners(Layout layout, Hex h, float yPos)
     {
         List<Vector3> corners = new List<Vector3> {};
-        Vector3 center = Layout.HexToPixel(layout, h, zPos);
+        Vector3 center = Layout.HexToPixel(layout, h, yPos);
         for (int i = 0; i < 6; i++)
         {
             Vector3 offset = Layout.HexCornerOffset(layout, i);
-            corners.Add(new Vector3(center.x + offset.x, center.y + offset.y));
+            corners.Add(new Vector3(center.x + offset.x, center.z + offset.z));
         }
         return corners;
     }

@@ -28,7 +28,7 @@ public class DrawHexGraphics : MonoBehaviour {
 
     public Dictionary<string, GameObject> HexGraphics = null;
 
-    private Layout L = new Layout(Layout.pointy, new Vector3(.52f, .52f), new Vector3(0f, 0f));
+    private Layout L = new Layout(Layout.pointy, new Vector3(1f, 1f), new Vector3(0f, 0f));
     public void GenerateGraphics(List<Hex> Hexes, GameObject Prefab)
     {
         //this function lays out all of the hex grid data as unity sprites on screen
@@ -125,7 +125,7 @@ public class DrawHexGraphics : MonoBehaviour {
     //}
     public void DrawPlanetObject(Planet planet, GameObject PlanetPrefab, GameObject Sun, GameObject Rings)
     {
-        Vector3 p = Layout.HexToPixel(L, planet.Orbit[planet.CurrentPosition], -10f);
+        Vector3 p = Layout.HexToPixel(L, planet.Orbit[planet.CurrentPosition], 10f);
         GameObject GO = (GameObject)Instantiate(PlanetPrefab, p, Quaternion.identity);
         GO.name = planet.Name + "_GO";
         GO.transform.localScale *= planet.Size;
@@ -146,9 +146,9 @@ public class DrawHexGraphics : MonoBehaviour {
     {
         Hex hToPlace = Planet.Orbit[Planet.CurrentPosition];
 
-        GameObject g = (GameObject)Instantiate(Prefab, Layout.HexToPixel(L, hToPlace, -2), Quaternion.identity);
+        GameObject g = (GameObject)Instantiate(Prefab, Layout.HexToPixel(L, hToPlace, 8), Quaternion.identity);
         g.name = Planet.Name + "_Hex";
-        g.GetComponent<SpriteRenderer>().color = Planet.Col;
+        //g.GetComponent<SpriteRenderer>().color = Planet.Col;
         g.transform.SetParent(parent.transform);
     }
     public void MovePlanetHex(Planet planet, GameObject Sun, int PlanetPos)
