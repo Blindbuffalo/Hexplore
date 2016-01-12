@@ -42,7 +42,10 @@ public class CharController : MonoBehaviour {
             return instance;
         }
     }
-
+    void Awake()
+    {
+        DontDestroyOnLoad(this);
+    }
     // Use this for initialization
     void Start () {
         MovementInd.SetActive(false);

@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System;
 using System.Linq;
-public class Ship  {
+public class Ship : MonoBehaviour  {
     Action CB_MovesLeftChanged;
     public Ship(int movement, Hex hexposition, float CHweight, float CHsize)
     {

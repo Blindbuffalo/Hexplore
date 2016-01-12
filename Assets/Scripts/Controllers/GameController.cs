@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class GameController : MonoBehaviour {
   
@@ -24,7 +25,10 @@ public class GameController : MonoBehaviour {
 
     private GameObject SunGO;
 
-
+    void Awake()
+    {
+        DontDestroyOnLoad(this);
+    }
     // Use this for initialization
     void Start()
     {
@@ -34,11 +38,11 @@ public class GameController : MonoBehaviour {
         GridData.Instance.GenerateGridData(GridRadius);
 
         Hexes = GridData.Instance.HexData;
-        DrawHexGraphics.Instance.GenerateGraphics(Hexes, Prefab);
+        //DrawHexGraphics.Instance.GenerateGraphics(Hexes, Prefab);
 
         Hex Sun = new Hex(0, 0, 0);
         List<Planet> Planets = new List<Planet>();
-        
+
         Planets.Add(new Planet("Mercury", 2, Sun, 1, Color.cyan, 9, .5f, DrawHexGraphics.Instance.PlanetMoved));
         Planets.Add(new Planet("Venus", 4, Sun, 1, Color.green, 1, .5f, DrawHexGraphics.Instance.PlanetMoved));
         Planets.Add(new Planet("Earth", 6, Sun, 1, Color.blue, 1, .6f, DrawHexGraphics.Instance.PlanetMoved));
@@ -62,7 +66,7 @@ public class GameController : MonoBehaviour {
         foreach (Planet P in SolarSystem.Instance.Planets)
         {
 
-            DrawHexGraphics.Instance.DrawOrbit(P, SolarSystem.Instance.OrbitColor);
+
             DrawHexGraphics.Instance.DrawPlanetHex(P, Prefab, SunGO);
             DrawHexGraphics.Instance.DrawPlanetObject(P, PlanetPreFab, SunGO, Rings);
         }
@@ -75,6 +79,7 @@ public class GameController : MonoBehaviour {
 
         UpdateUI();
     }
+
     private void UpdateUI()
     {
 
@@ -132,4 +137,10 @@ public class GameController : MonoBehaviour {
     {
         MissionController.Instance.TurnInGoals();
     }
+    public void TEMPnavtootherScene()
+    {
+        SceneManager.LoadScene("PlanetSurface");
+
+    }
+
 }

@@ -21,7 +21,10 @@ public class DrawHexGraphics : MonoBehaviour {
             return instance;
         }
     }
-
+    void Awake()
+    {
+        DontDestroyOnLoad(this);
+    }
 
     public Dictionary<string, GameObject> HexGraphics = null;
 
