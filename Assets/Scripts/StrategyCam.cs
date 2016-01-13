@@ -37,7 +37,10 @@ public class StrategyCam : MonoBehaviour {
 	// snapping rotation or inclination back to initial values after rotation or inclination keys have been released
 	public bool snapBackRotation = false;
 	public bool snapBackInclination = false;
-	
+
+    // Edge Scrolling
+    public bool MouseEdgeScrolling = false;
+
 	// snapping speed (for rotation and inclination)
 	public float snapBackSpeed = 6f;
 	
@@ -198,19 +201,19 @@ public class StrategyCam : MonoBehaviour {
 		
 		
 		// scrolling when the cursor touches the screen boundaries or when WASD keys are used
-		if(Input.mousePosition.x >= Screen.width - scrollBoundaries || Input.GetKey(keyScrollRight)) {
+		if((Input.mousePosition.x >= Screen.width - scrollBoundaries && MouseEdgeScrolling) || Input.GetKey(keyScrollRight)) {
 			targetLookAt.x = targetLookAt.x + xDirection.x*scrollSpeed*time*targetZoom;
 			targetLookAt.z = targetLookAt.z + xDirection.z*scrollSpeed*time*targetZoom;
 		}
-		if(Input.mousePosition.x <= scrollBoundaries || Input.GetKey(keyScrollLeft)) {
+		if((Input.mousePosition.x <= scrollBoundaries && MouseEdgeScrolling) || Input.GetKey(keyScrollLeft)) {
 			targetLookAt.x = targetLookAt.x - xDirection.x*scrollSpeed*time*targetZoom;
 			targetLookAt.z = targetLookAt.z - xDirection.z*scrollSpeed*time*targetZoom;
 		}
-		if(Input.mousePosition.y >= Screen.height - scrollBoundaries || Input.GetKey(keyScrollForward)) {
+		if((Input.mousePosition.y >= Screen.height - scrollBoundaries && MouseEdgeScrolling) || Input.GetKey(keyScrollForward)) {
 			targetLookAt.x = targetLookAt.x + yDirection.x*scrollSpeed*time*targetZoom;
 			targetLookAt.z = targetLookAt.z + yDirection.z*scrollSpeed*time*targetZoom;
 		}
-		if(Input.mousePosition.y <= scrollBoundaries || Input.GetKey(keyScrollBack)) {
+		if((Input.mousePosition.y <= scrollBoundaries && MouseEdgeScrolling) || Input.GetKey(keyScrollBack)) {
 			targetLookAt.x = targetLookAt.x - yDirection.x*scrollSpeed*time*targetZoom;
 			targetLookAt.z = targetLookAt.z - yDirection.z*scrollSpeed*time*targetZoom;
 		}
@@ -403,7 +406,7 @@ public class StrategyCam : MonoBehaviour {
 		if (initialZoom < minZoom) initialZoom = minZoom;
 		if (initialZoom > maxZoom) initialZoom = maxZoom;
 		
-		initialLookAt.y = 0f;
+		//initialLookAt.y = 0f;
 		if (initialLookAt.x > maxX) initialLookAt.x = maxX;
 		if (initialLookAt.x < minX) initialLookAt.x = minX;
 		if (initialLookAt.z > maxZ) initialLookAt.z = maxZ;

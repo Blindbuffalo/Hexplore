@@ -30,13 +30,23 @@ public class DrawGraphics : MonoBehaviour {
     void Awake()
     {
         DontDestroyOnLoad(this);
+        GalaxyController.Instance.RegisterOnNextTurn(OnNextTurn);
     }
-
+    
     public Dictionary<string, GameObject> HexGraphics = null;
 
     private Layout L = new Layout(Layout.pointy, new Vector3(1f, 1f), new Vector3(0f, 0f));
 
+    private void OnNextTurn(SolarSystem Sol)
+    {
+        foreach (KeyValuePair<string, Planet> p in Sol.Planets)
+        {
+            MovePlanetObject(p.Value);
+            MovePlanetHex(p.Value);
 
+        }
+        
+    }
 
     public void DrawSolarSystem(SolarSystem Sol)
     {

@@ -1,6 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System;
+using System.Linq;
 using UnityEditor;
 
 public class GalaxyController : MonoBehaviour {
@@ -9,6 +11,28 @@ public class GalaxyController : MonoBehaviour {
     private int CurrentSolarsystem = 0;
     private float Interval = .5f;
     private float CurrentTime = 0;
+
+    private Action<SolarSystem> OnNextTurnCB;
+
+
+    private GalaxyController() { }
+    private static GalaxyController instance;
+
+
+    public static GalaxyController Instance
+    {
+        get
+        {
+            if (instance == null)
+            {
+                instance = (GalaxyController)FindObjectOfType(typeof(GalaxyController));
+                if (instance == null)
+                    instance = (new GameObject("GalaxyController")).AddComponent<GalaxyController>();
+            }
+            return instance;
+        }
+    }
+
 
     // Use this for initialization
     void Start () {
@@ -39,21 +63,34 @@ public class GalaxyController : MonoBehaviour {
             
         }
         DrawGraphics.Instance.DrawSolarSystem(Galaxy[CurrentSolarsystem]);
+
+
     }
 	
 	// Update is called once per frame
 	void Update () {
-        //CurrentTime += Time.deltaTime;
-        //if (CurrentTime >= Interval)
-        //{
-        //    foreach (KeyValuePair<string, Planet> p in Galaxy[0].Planets)
-        //    {
-        //        p.Value.MovePlanet();
-        //        DrawGraphics.Instance.MovePlanetObject(p.Value);
-        //        DrawGraphics.Instance.MovePlanetHex(p.Value);
-        //    }
-        //    CurrentTime = 0f;
-        //}
+        CurrentTime += Time.deltaTime;
+        if (CurrentTime >= Interval)
+        {
+            foreach (KeyValuePair<string, Planet> p in Galaxy[0].Planets)
+            {
+                p.Value.MovePlanet();
 
+            }
+            CurrentTime = 0f;
+        }
+
+
+
+        OnNextTurnCB(Galaxy[0]);
+    }
+
+    public void RegisterOnNextTurn(Action<SolarSystem> func)
+    {
+        OnNextTurnCB += func;
+    }
+    public void UnregisterOnNextTurn(Action<SolarSystem> func)
+    {
+        OnNextTurnCB -= func;
     }
 }
