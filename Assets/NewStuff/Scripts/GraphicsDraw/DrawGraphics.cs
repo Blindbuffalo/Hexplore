@@ -12,6 +12,8 @@ public class DrawGraphics : MonoBehaviour {
 
     private DrawGraphics() { }
 
+    
+
     public static DrawGraphics Instance
     {
         get
@@ -123,7 +125,7 @@ public class DrawGraphics : MonoBehaviour {
         GO.transform.SetParent(this.transform);
     }
 
-    private void DrawHex(Hex h, string ObjectName, Color C)
+    public void DrawHex(Hex h, string ObjectName, Color C)
     {
         GameObject g = (GameObject)Instantiate(HexPrefab, Layout.HexToPixel(L, h, 8), Quaternion.identity);
 

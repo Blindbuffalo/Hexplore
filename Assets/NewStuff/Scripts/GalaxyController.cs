@@ -21,7 +21,7 @@ public class GalaxyController : MonoBehaviour {
 
             Dictionary<string, Planet> Planets = new Dictionary<string, Planet>();
 
-            Planets.Add("Mercury", new Planet("Mercury", 2, Sun, 1, Color.cyan, 1, 1f ));
+            Planets.Add("Mercury", new Planet("Mercury", 2, Sun, 1, Color.cyan, 4, 1f ));
             Planets.Add("Venus", new Planet("Venus", 4, Sun, 1, Color.green, 1, 1f ));
             Planets.Add("Earth", new Planet("Earth", 6, Sun, 1, Color.blue, 1, 1.5f ));
             Planets.Add("Mars", new Planet("Mars", 9, Sun, 1, Color.red, 1, 1.4f ));
@@ -43,17 +43,17 @@ public class GalaxyController : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        CurrentTime += Time.deltaTime;
-        if(CurrentTime >= Interval)
-        {
-            foreach(KeyValuePair<string, Planet> p in Galaxy[0].Planets)
-            {
-                p.Value.MovePlanet();
-                DrawGraphics.Instance.MovePlanetObject(p.Value);
-                DrawGraphics.Instance.MovePlanetHex(p.Value);
-            }
-            CurrentTime = 0f;
-        }
+        //CurrentTime += Time.deltaTime;
+        //if(CurrentTime >= Interval)
+        //{
+        //    foreach(KeyValuePair<string, Planet> p in Galaxy[0].Planets)
+        //    {
+        //        p.Value.MovePlanet();
+        //        DrawGraphics.Instance.MovePlanetObject(p.Value);
+        //        DrawGraphics.Instance.MovePlanetHex(p.Value);
+        //    }
+        //    CurrentTime = 0f;
+        //}
 
 	}
 }

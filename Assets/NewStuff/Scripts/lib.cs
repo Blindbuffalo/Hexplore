@@ -402,9 +402,9 @@ struct Layout
         Orientation M = layout.orientation;
         Vector3 size = layout.size;
         Vector3 origin = layout.origin;
-        Vector3 pt = new Vector3((p.x - origin.x) / size.x, (p.z - origin.z) / size.z);
-        double q = M.b0 * pt.x + M.b1 * pt.z;
-        double r = M.b2 * pt.x + M.b3 * pt.z;
+        Vector3 pt = new Vector3((p.x - origin.x) / size.x, (p.z - origin.y) / size.y);
+        double q = M.b0 * pt.x + M.b1 * pt.y;
+        double r = M.b2 * pt.x + M.b3 * pt.y;
         return new FractionalHex(q, r, -q - r);
     }
 
