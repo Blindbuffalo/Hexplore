@@ -4,39 +4,53 @@ using System.Collections.Generic;
 
 public class DrawGraphics : MonoBehaviour {
 
-    private static DrawGraphics instance;
-
     public GameObject PlanetPrefab;
     public GameObject HexPrefab;
     public GameObject Rings;
 
     private DrawGraphics() { }
 
-    
+    private bool SystemDrawn = false;
 
-    public static DrawGraphics Instance
-    {
-        get
-        {
-            if (instance == null)
-            {
-                instance = (DrawGraphics)FindObjectOfType(typeof(DrawGraphics));
-                if (instance == null)
-                    instance = (new GameObject("DrawGraphics")).AddComponent<DrawGraphics>();
-            }
-            return instance;
-        }
-    }
+    public static DrawGraphics Instance;
     void Awake()
     {
-        DontDestroyOnLoad(this);
-        GalaxyController.Instance.RegisterOnNextTurn(OnNextTurn);
+        Debug.Log("Drawing System awake()");
+        if (Instance)
+        {
+            DestroyImmediate(gameObject);
+        }
+        else
+        {
+            Instance = this;
+        }
+        
     }
-    
+    void Start()
+    {
+        Debug.Log("Drawing System start()");
+        GalaxyController.Instance.RegisterNextTurnCycled(OnNextTurn);
+
+    }
+    void Update()
+    {
+        if (SystemDrawn == false)
+        {
+            DrawSolarSystem(GalaxyController.Instance.GetCurrentSolarSystem());
+            SystemDrawn = true;
+        }
+    }
+    void OnDestroy()
+    {
+        Debug.Log("Drawing System destroy()");
+        GalaxyController.Instance.UnregisterNextTurnCycled(OnNextTurn);
+
+    }
     public Dictionary<string, GameObject> HexGraphics = null;
 
     private Layout L = new Layout(Layout.pointy, new Vector3(1f, 1f), new Vector3(0f, 0f));
 
+    #region CallBacks
     private void OnNextTurn(SolarSystem Sol)
     {
         foreach (KeyValuePair<string, Planet> p in Sol.Planets)
@@ -47,9 +61,15 @@ public class DrawGraphics : MonoBehaviour {
         }
         
     }
-
+    private void OnSolarSystemCreated(SolarSystem Sol)
+    {
+        Debug.Log("SolarSys Created CB fired");
+        DrawSolarSystem(Sol);
+    }
+    #endregion
     public void DrawSolarSystem(SolarSystem Sol)
     {
+        Debug.Log("Drawing Solar System");
         this.transform.localScale = new Vector3(Sol.SunRadius, Sol.SunRadius, Sol.SunRadius);
         foreach( KeyValuePair<string,Planet> p in Sol.Planets)
         {
@@ -147,14 +167,16 @@ public class DrawGraphics : MonoBehaviour {
     public void MovePlanetHex(Planet planet)
     {
         GameObject pHex = GetPlanetHex(planet);
-        pHex.transform.position = Layout.HexToPixel(L, planet.Orbit[planet.CurrentPosition], 8f);
+        if(pHex != null)
+            pHex.transform.position = Layout.HexToPixel(L, planet.Orbit[planet.CurrentPosition], 8f);
 
     }
 
     public void MovePlanetObject(Planet planet)
     {       
         GameObject pGO = GetPlanetGO(planet);
-        pGO.transform.position = Layout.HexToPixel(L, planet.Orbit[planet.CurrentPosition], 10f);
+        if(pGO != null)
+            pGO.transform.position = Layout.HexToPixel(L, planet.Orbit[planet.CurrentPosition], 10f);
 
     }
     public GameObject GetPlanetGO(Planet planet)

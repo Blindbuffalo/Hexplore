@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System;
 using System.Linq;
 using UnityEditor;
+using UnityEngine.SceneManagement;
 
 public class GalaxyController : MonoBehaviour {
     private Dictionary<int, SolarSystem> Galaxy;
@@ -12,31 +13,31 @@ public class GalaxyController : MonoBehaviour {
     private float Interval = .5f;
     private float CurrentTime = 0;
 
-    private Action<SolarSystem> OnNextTurnCB;
+    private Action<SolarSystem> NextTurnCycledCB;
+
 
 
     private GalaxyController() { }
-    private static GalaxyController instance;
-
-
-    public static GalaxyController Instance
+    public static GalaxyController Instance;
+    void Awake()
     {
-        get
+        Debug.Log("Galaxy Controller awake()");
+        if (Instance)
         {
-            if (instance == null)
-            {
-                instance = (GalaxyController)FindObjectOfType(typeof(GalaxyController));
-                if (instance == null)
-                    instance = (new GameObject("GalaxyController")).AddComponent<GalaxyController>();
-            }
-            return instance;
+            DestroyImmediate(gameObject);
         }
+        else
+        {
+            DontDestroyOnLoad(gameObject);
+            Instance = this;
+        }
+        DontDestroyOnLoad(this);
     }
 
-
-    // Use this for initialization
-    void Start () {
-        if(Galaxy == null)
+        // Use this for initialization
+   void Start () {
+        Debug.Log("Galaxy Controller start()");
+        if (Galaxy == null)
         {
             Hex Sun = new Hex(0, 0, 0);
             //create the galaxy eventually this will load from a save file if one exists
@@ -62,35 +63,79 @@ public class GalaxyController : MonoBehaviour {
             Galaxy.Add(0, Sol);
             
         }
-        DrawGraphics.Instance.DrawSolarSystem(Galaxy[CurrentSolarsystem]);
 
+            
 
+        
     }
 	
+   
 	// Update is called once per frame
 	void Update () {
+
+
+
+        //Cycle all data for the next turn
+        //FIX: time intervals are temporary until i work our an actual next turn system
         CurrentTime += Time.deltaTime;
         if (CurrentTime >= Interval)
         {
-            foreach (KeyValuePair<string, Planet> p in Galaxy[0].Planets)
+            //move all the planets into their "next turn" position in the data
+            //this does not directly move the gameobjects (visuals)
+            foreach (KeyValuePair<string, Planet> p in Galaxy[CurrentSolarsystem].Planets)
             {
                 p.Value.MovePlanet();
-
+                
             }
             CurrentTime = 0f;
         }
 
 
+        //check to see what scene we are in.
+        //eventually this will be triggered by things like deploying on a planet
+        //or maybe going onto the ships bridge.  this section calls the drawing 
+        //system to render the correct visuals
+        Scene s = SceneManager.GetActiveScene();
+        if (s.name == "test")
+        {
+            if (Input.GetKeyDown(KeyCode.Escape))
+            {
+                SceneManager.LoadScene(0);
+            }
+        }
+        else
+        {
+            
+            if (Input.GetKeyDown(KeyCode.Escape))
+            {
 
-        OnNextTurnCB(Galaxy[0]);
+                SceneManager.LoadScene("test");
+            }
+            if(NextTurnCycledCB != null)
+                NextTurnCycledCB(Galaxy[0]);
+        }
+        
+        
+
+        
     }
 
-    public void RegisterOnNextTurn(Action<SolarSystem> func)
+    public SolarSystem GetSolarSystem(int SystemID)
     {
-        OnNextTurnCB += func;
+        return Galaxy[SystemID];
     }
-    public void UnregisterOnNextTurn(Action<SolarSystem> func)
+    public SolarSystem GetCurrentSolarSystem()
     {
-        OnNextTurnCB -= func;
+        return GetSolarSystem(CurrentSolarsystem);
     }
+
+    public void RegisterNextTurnCycled(Action<SolarSystem> func)
+    {
+        NextTurnCycledCB += func;
+    }
+    public void UnregisterNextTurnCycled(Action<SolarSystem> func)
+    {
+        NextTurnCycledCB -= func;
+    }
+
 }
