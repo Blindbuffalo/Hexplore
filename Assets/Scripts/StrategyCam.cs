@@ -113,18 +113,19 @@ public class StrategyCam : MonoBehaviour {
 	private float zoomPart = 0f;
 	private Vector3 cursorPosition = new Vector3(0f, 0f, 0f);
 	private Vector3 cursorDifference = new Vector3(0f, 0f, 0f);
-	
-	// for calculations (making camera behaviour framerate-independent)
-	private float time = 0f;
+
+    // for calculations (making camera behaviour framerate-independent)
+    private float time = 0f;
 	
 	// to determine if camera is currently being rotated by the user
 	private bool rotating = false;
 	private Vector3 lastMousePosition = new Vector3(0f, 0f);
+
+    // for trigonometry
+    private static float TAU = Mathf.PI*2;
 	
-	// for trigonometry
-	private static float TAU = Mathf.PI*2;
-	
-	
+	private float LastFrameLookat = 0;
+
 	// access methods for camera values for "jumps"
 	private float desiredZoom = 0f;
 	private bool changeZoom = false;
@@ -217,10 +218,32 @@ public class StrategyCam : MonoBehaviour {
 			targetLookAt.x = targetLookAt.x - yDirection.x*scrollSpeed*time*targetZoom;
 			targetLookAt.z = targetLookAt.z - yDirection.z*scrollSpeed*time*targetZoom;
 		}
-		
-		
-		// zooming when the mousewheel or the zoom keys are used
-		zoomRequest = Input.GetAxis("Mouse ScrollWheel");
+
+        //if (Input.GetMouseButton(0))
+        //{ // if left button pressed...
+        //    cursorDifference = Input.mousePosition - lastMousePosition;
+
+        //    targetLookAt += cursorDifference;
+
+        //    Debug.Log("thing " + cursorDifference.x);
+        //    lastMousePosition = Input.mousePosition;
+        //}
+        
+        if (Input.GetMouseButton(0)) // MMB
+        {
+
+            // Hold button and drag camera around
+            targetLookAt -= new Vector3(Input.GetAxis("Mouse X") * 2 * currentZoom * Time.deltaTime, 0,
+                               Input.GetAxis("Mouse Y") * 2 * currentZoom * Time.deltaTime);
+
+        }
+
+        
+
+
+
+        // zooming when the mousewheel or the zoom keys are used
+        zoomRequest = Input.GetAxis("Mouse ScrollWheel");
 		if (Input.GetKey(keyZoomIn)) zoomRequest += keyZoomSpeedFactor*time;
 		if (Input.GetKey(keyZoomOut)) zoomRequest -= keyZoomSpeedFactor*time;
 		if (zoomRequest != 0) {
