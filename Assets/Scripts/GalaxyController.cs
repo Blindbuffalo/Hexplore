@@ -14,7 +14,7 @@ public class GalaxyController : MonoBehaviour {
     private float CurrentTime = 0;
 
     private Action<SolarSystem> NextTurnCycledCB;
-
+    private Action SolarSystemChanged;
 
 
     private GalaxyController() { }
@@ -61,7 +61,16 @@ public class GalaxyController : MonoBehaviour {
             SolarSystem Sol = new SolarSystem("sol", Sun, 5, Planets);
 
             Galaxy.Add(0, Sol);
-            
+
+            Dictionary<string, Planet> Planets2 = new Dictionary<string, Planet>();
+
+            Planets2.Add("1", new Planet("1", 4, Sun, 1, Color.red, 4, 3f));
+            Planets2.Add("2", new Planet("2", 8, Sun, 1, Color.green, 1, 2f));
+
+            SolarSystem Sol2 = new SolarSystem("sol2", Sun, 3, Planets2);
+
+            Galaxy.Add(1, Sol2);
+
         }
 
             
@@ -82,11 +91,15 @@ public class GalaxyController : MonoBehaviour {
         {
             //move all the planets into their "next turn" position in the data
             //this does not directly move the gameobjects (visuals)
-            foreach (KeyValuePair<string, Planet> p in Galaxy[CurrentSolarsystem].Planets)
+            foreach(KeyValuePair<int, SolarSystem> Sol in Galaxy)
             {
-                p.Value.MovePlanet();
-                
+                foreach (KeyValuePair<string, Planet> p in Sol.Value.Planets)
+                {
+                    p.Value.MovePlanet();
+
+                }
             }
+            
             CurrentTime = 0f;
         }
 
@@ -105,19 +118,30 @@ public class GalaxyController : MonoBehaviour {
         }
         else
         {
-            
+            if (Input.GetKeyDown(KeyCode.Return))
+            {
+                if (CurrentSolarsystem == 0)
+                {
+                    CurrentSolarsystem = 1;
+                }
+                else
+                {
+                    CurrentSolarsystem = 0;
+                }
+                SolarSystemChanged();
+            }
             if (Input.GetKeyDown(KeyCode.Escape))
             {
 
                 SceneManager.LoadScene("test");
             }
             if(NextTurnCycledCB != null)
-                NextTurnCycledCB(Galaxy[0]);
+                NextTurnCycledCB(Galaxy[CurrentSolarsystem]);
         }
-        
-        
 
         
+
+
     }
 
     public SolarSystem GetSolarSystem(int SystemID)
@@ -138,4 +162,12 @@ public class GalaxyController : MonoBehaviour {
         NextTurnCycledCB -= func;
     }
 
+    public void RegisterSolarSystemChanged(Action func)
+    {
+        SolarSystemChanged += func;
+    }
+    public void UnregisterSolarSystemChanged(Action func)
+    {
+        SolarSystemChanged += func;
+    }
 }

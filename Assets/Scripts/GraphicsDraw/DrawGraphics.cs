@@ -30,7 +30,7 @@ public class DrawGraphics : MonoBehaviour {
     {
         Debug.Log("Drawing System start()");
         GalaxyController.Instance.RegisterNextTurnCycled(OnNextTurn);
-
+        GalaxyController.Instance.RegisterSolarSystemChanged(OnSolarSystemChanged);
     }
     void Update()
     {
@@ -44,7 +44,7 @@ public class DrawGraphics : MonoBehaviour {
     {
         Debug.Log("Drawing System destroy()");
         GalaxyController.Instance.UnregisterNextTurnCycled(OnNextTurn);
-
+        GalaxyController.Instance.UnregisterSolarSystemChanged(OnSolarSystemChanged);
     }
     public Dictionary<string, GameObject> HexGraphics = null;
 
@@ -66,27 +66,51 @@ public class DrawGraphics : MonoBehaviour {
         Debug.Log("SolarSys Created CB fired");
         DrawSolarSystem(Sol);
     }
+    private void OnSolarSystemChanged()
+    {
+        Debug.Log("SolarSys Changed CB fired");
+        EraseSolarSystem();
+        SystemDrawn = false;
+    }
     #endregion
+
     public void DrawSolarSystem(SolarSystem Sol)
     {
         Debug.Log("Drawing Solar System");
+
+        //size the sun object (the script is on the sun)
         this.transform.localScale = new Vector3(Sol.SunRadius, Sol.SunRadius, Sol.SunRadius);
-        foreach( KeyValuePair<string,Planet> p in Sol.Planets)
+        //lay down some hexes under the sun!
+        Hex CenterSunHex = new Hex(0, 0, 0);
+        List<Hex> SunHexes = Hex.Neighbors(CenterSunHex);
+        DrawHex(CenterSunHex, "Sun_HEX", Color.red);
+        foreach (Hex h in SunHexes)
+        {
+            DrawHex(h, "Sun_HEX", Sol.OrbitColor);
+        }
+
+        foreach ( KeyValuePair<string,Planet> p in Sol.Planets)
         {
             DrawPlanetObject(p.Value);
             DrawHex(p.Value.Orbit[p.Value.CurrentPosition], p.Value.Name, p.Value.Col);
-            Hex CenterSunHex = new Hex(0, 0, 0);
-            List<Hex> SunHexes = Hex.Neighbors(CenterSunHex);
-            DrawHex(CenterSunHex, "Sun_HEX", Sol.OrbitColor);
-            foreach (Hex h in SunHexes)
-            {
-                DrawHex(h, "Sun_HEX", Sol.OrbitColor);
-            }
+
             
         }
     }
 
+    public void EraseSolarSystem()
+    {
+        var children = new List<GameObject>();
+        foreach (Transform child in DrawGraphics.Instance.transform) children.Add(child.gameObject);
 
+        foreach (GameObject c in children)
+        {
+            if (c.name.Contains("~DND~") == false)
+            {
+                Destroy(c);
+            }
+        }
+    }
 
 
 
