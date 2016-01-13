@@ -57,8 +57,8 @@ public class GalaxyController : MonoBehaviour {
             Planets.Add("Neptune", new Planet("Neptune", 110, Sun, 3, Color.magenta, 1, 1.6f ));
             Planets.Add("Pluto", new Planet("Pluto", 145, Sun, 2, Color.magenta, 1, .5f ));
 
-
-            SolarSystem Sol = new SolarSystem("sol", Sun, 5, Planets);
+            Dictionary<string, Ship> Ships = new Dictionary<string, Ship>();
+            SolarSystem Sol = new SolarSystem("sol", Sun, 5, Planets, Ships);
 
             Galaxy.Add(0, Sol);
 
@@ -67,7 +67,8 @@ public class GalaxyController : MonoBehaviour {
             Planets2.Add("1", new Planet("1", 4, Sun, 1, Color.red, 4, 3f));
             Planets2.Add("2", new Planet("2", 8, Sun, 1, Color.green, 1, 2f));
 
-            SolarSystem Sol2 = new SolarSystem("sol2", Sun, 3, Planets2);
+            Ships = new Dictionary<string, Ship>();
+            SolarSystem Sol2 = new SolarSystem("sol2", Sun, 3, Planets2, Ships);
 
             Galaxy.Add(1, Sol2);
 
@@ -118,6 +119,11 @@ public class GalaxyController : MonoBehaviour {
         }
         else
         {
+            if (Input.GetKeyDown(KeyCode.F1))
+            {
+                Ship ship = new Ship("Intrepid", 4, new Hex(0, 0, 0), 500f, 500f);
+                AddShipToSolarSystem(CurrentSolarsystem, ship);
+            }
             if (Input.GetKeyDown(KeyCode.Return))
             {
                 if (CurrentSolarsystem == 0)
@@ -143,6 +149,12 @@ public class GalaxyController : MonoBehaviour {
 
 
     }
+
+    public void AddShipToSolarSystem(int SystemID, Ship ship)
+    {
+        Galaxy[SystemID].Ships.Add(ship.Name, ship);
+    }
+
 
     public SolarSystem GetSolarSystem(int SystemID)
     {

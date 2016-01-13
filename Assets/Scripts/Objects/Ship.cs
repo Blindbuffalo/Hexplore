@@ -3,10 +3,13 @@ using System.Collections;
 using System.Collections.Generic;
 using System;
 using System.Linq;
-public class Ship : MonoBehaviour  {
+public class Ship  {
     Action CB_MovesLeftChanged;
-    public Ship(int movement, Hex hexposition, float CHweight, float CHsize)
+
+    public string Name { get; set; }
+    public Ship(string name, int movement, Hex hexposition, float CHweight, float CHsize)
     {
+        Name = name;
         Movement = movement;
         CurrentHexPosition = hexposition;
         Cargohold = new CargoHold(CHsize, CHweight);

@@ -7,6 +7,7 @@ public class DrawGraphics : MonoBehaviour {
     public GameObject PlanetPrefab;
     public GameObject HexPrefab;
     public GameObject Rings;
+    public GameObject AIship;
 
     private DrawGraphics() { }
 
@@ -86,7 +87,7 @@ public class DrawGraphics : MonoBehaviour {
         DrawHex(CenterSunHex, "Sun_HEX", Color.red);
         foreach (Hex h in SunHexes)
         {
-            DrawHex(h, "Sun_HEX", Sol.OrbitColor);
+            DrawHex(h, "Sun_HEX_n", Color.red);
         }
 
         foreach ( KeyValuePair<string,Planet> p in Sol.Planets)
