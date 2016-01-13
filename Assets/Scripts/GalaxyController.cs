@@ -44,9 +44,9 @@ public class GalaxyController : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
         //CurrentTime += Time.deltaTime;
-        //if(CurrentTime >= Interval)
+        //if (CurrentTime >= Interval)
         //{
-        //    foreach(KeyValuePair<string, Planet> p in Galaxy[0].Planets)
+        //    foreach (KeyValuePair<string, Planet> p in Galaxy[0].Planets)
         //    {
         //        p.Value.MovePlanet();
         //        DrawGraphics.Instance.MovePlanetObject(p.Value);
@@ -55,5 +55,5 @@ public class GalaxyController : MonoBehaviour {
         //    CurrentTime = 0f;
         //}
 
-	}
+    }
 }
