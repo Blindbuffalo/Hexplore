@@ -31,7 +31,6 @@ public class GalaxyController : MonoBehaviour {
             DontDestroyOnLoad(gameObject);
             Instance = this;
         }
-        DontDestroyOnLoad(this);
     }
 
         // Use this for initialization
@@ -48,7 +47,7 @@ public class GalaxyController : MonoBehaviour {
 
             Planets.Add("Mercury", new Planet("Mercury", 2, Sun, 1, Color.cyan, 4, 1f ));
             Planets.Add("Venus", new Planet("Venus", 4, Sun, 1, Color.green, 1, 1f ));
-            Planets.Add("Earth", new Planet("Earth", 6, Sun, 1, Color.blue, 1, 1.5f ));
+            Planets.Add("Earth", new Planet("Earth", 6, Sun, 1, Color.blue, 6, 1.5f ));
             Planets.Add("Mars", new Planet("Mars", 9, Sun, 1, Color.red, 1, 1.4f ));
             Planets.Add("Jupiter", new Planet("Jupiter", 31, Sun, 2, Color.magenta, 1, 3f ));
             Planets.Add("Saturn", new Planet("Saturn", 57, Sun, 3, Utilites.Instance.RGBcolor(176, 159, 114, 255), 1, 3f ));
@@ -58,6 +57,8 @@ public class GalaxyController : MonoBehaviour {
             Planets.Add("Pluto", new Planet("Pluto", 145, Sun, 2, Color.magenta, 1, .5f ));
 
             Dictionary<string, Ship> Ships = new Dictionary<string, Ship>();
+            Ship ship = new Ship("Intrepid", 1, new Hex(5, 2, -7), 500f, 500f);
+            Ships.Add(ship.Name, ship);
             SolarSystem Sol = new SolarSystem("sol", Sun, 5, Planets, Ships);
 
             Galaxy.Add(0, Sol);
@@ -72,6 +73,7 @@ public class GalaxyController : MonoBehaviour {
 
             Galaxy.Add(1, Sol2);
 
+            //BlockedHexes.Instance.HexData.Add(new Hex(0, 0, 0));
         }
 
             
@@ -87,22 +89,22 @@ public class GalaxyController : MonoBehaviour {
 
         //Cycle all data for the next turn
         //FIX: time intervals are temporary until i work our an actual next turn system
-        CurrentTime += Time.deltaTime;
-        if (CurrentTime >= Interval)
-        {
-            //move all the planets into their "next turn" position in the data
-            //this does not directly move the gameobjects (visuals)
-            foreach(KeyValuePair<int, SolarSystem> Sol in Galaxy)
-            {
-                foreach (KeyValuePair<string, Planet> p in Sol.Value.Planets)
-                {
-                    p.Value.MovePlanet();
+        //CurrentTime += Time.deltaTime;
+        //if (CurrentTime >= Interval)
+        //{
+        //    //move all the planets into their "next turn" position in the data
+        //    //this does not directly move the gameobjects (visuals)
+        //    foreach(KeyValuePair<int, SolarSystem> Sol in Galaxy)
+        //    {
+        //        foreach (KeyValuePair<string, Planet> p in Sol.Value.Planets)
+        //        {
+        //            p.Value.MovePlanet();
 
-                }
-            }
+        //        }
+        //    }
             
-            CurrentTime = 0f;
-        }
+        //    CurrentTime = 0f;
+        //}
 
 
         //check to see what scene we are in.

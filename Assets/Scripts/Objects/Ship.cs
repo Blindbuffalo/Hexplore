@@ -11,6 +11,7 @@ public class Ship  {
     {
         Name = name;
         Movement = movement;
+        MovesLeft = movement;
         CurrentHexPosition = hexposition;
         Cargohold = new CargoHold(CHsize, CHweight);
 
@@ -36,7 +37,8 @@ public class Ship  {
         set
         {
             _movesleft = value;
-            CB_MovesLeftChanged();
+            if(CB_MovesLeftChanged != null)
+                CB_MovesLeftChanged();
         }
     }
     public Hex CurrentHexPosition { get; set; }

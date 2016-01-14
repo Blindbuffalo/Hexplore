@@ -200,11 +200,11 @@ public struct Hex
             {
                 int newCost = costSoFar[current];
 
-
-                if (BlockedHexes.Instance.HexData.Contains(current))
-                {
-                    newCost += 5;
-                }
+                
+                //if (BlockedHexes.Instance.HexData.Contains(current))
+                //{
+                //    newCost += 5;
+                //}
                 if (Equals(current, new Hex(0, 0, 0)))
                 {
                     
