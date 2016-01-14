@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System;
 
 public class DrawGraphics : MonoBehaviour {
 
@@ -30,7 +31,7 @@ public class DrawGraphics : MonoBehaviour {
     void Start()
     {
         Debug.Log("Drawing System start()");
-        GalaxyController.Instance.RegisterNextTurnCycled(OnNextTurn);
+        NextTurnController.Instance.RegisterGalaxyNextTurnsGraphicsDrawn(OnNextTurn);
         GalaxyController.Instance.RegisterSolarSystemChanged(OnSolarSystemChanged);
     }
     void Update()
@@ -44,7 +45,7 @@ public class DrawGraphics : MonoBehaviour {
     void OnDestroy()
     {
         Debug.Log("Drawing System destroy()");
-        GalaxyController.Instance.UnregisterNextTurnCycled(OnNextTurn);
+        NextTurnController.Instance.UnregisterGalaxyNextTurnsGraphicsDrawn(OnNextTurn);
         GalaxyController.Instance.UnregisterSolarSystemChanged(OnSolarSystemChanged);
     }
     public Dictionary<string, GameObject> HexGraphics = null;
@@ -52,15 +53,27 @@ public class DrawGraphics : MonoBehaviour {
     private Layout L = new Layout(Layout.pointy, new Vector3(1f, 1f), new Vector3(0f, 0f));
 
     #region CallBacks
-    private void OnNextTurn(SolarSystem Sol)
+    private bool OnNextTurn()
     {
-        foreach (KeyValuePair<string, Planet> p in Sol.Planets)
+        try
         {
-            MovePlanetObject(p.Value);
-            MovePlanetHex(p.Value);
+            Debug.Log("Draw Next turn data");
+            SolarSystem Sol = GalaxyController.Instance.GetCurrentSolarSystem();
 
+            foreach (KeyValuePair<string, Planet> p in Sol.Planets)
+            {
+                MovePlanetObject(p.Value);
+                MovePlanetHex(p.Value);
+
+            }
+            return true;
         }
-        
+        catch(Exception ex)
+        {
+            Debug.LogError(ex);
+            return false;
+        }
+
     }
     private void OnSolarSystemCreated(SolarSystem Sol)
     {
@@ -180,13 +193,14 @@ public class DrawGraphics : MonoBehaviour {
         GO.transform.SetParent(this.transform);
     }
 
-    public void DrawHex(Hex h, string ObjectName, Color C)
+    public void DrawHex(Hex h, string ObjectName, Color C, int offset = 0)
     {
         GameObject g = (GameObject)Instantiate(HexPrefab, Layout.HexToPixel(L, h, 8), Quaternion.identity);
 
         g.name = ObjectName + "_Hex";
         //g.GetComponent<SpriteRenderer>().color = Planet.Col;
         g.GetComponentInChildren<Renderer>().material.color = C;
+        g.transform.position = new Vector3(g.transform.position.x, g.transform.position.y - offset, g.transform.position.z);
         g.transform.SetParent(this.transform);
     }
     public void MovePlanetHex(Planet planet)

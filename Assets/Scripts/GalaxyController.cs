@@ -13,7 +13,7 @@ public class GalaxyController : MonoBehaviour {
     private float Interval = .5f;
     private float CurrentTime = 0;
 
-    private Action<SolarSystem> NextTurnCycledCB;
+    
     private Action SolarSystemChanged;
 
 
@@ -76,7 +76,7 @@ public class GalaxyController : MonoBehaviour {
             //BlockedHexes.Instance.HexData.Add(new Hex(0, 0, 0));
         }
 
-            
+        NextTurnController.Instance.RegisterGalaxysNextTurnData(GenerateGalaxysNextTurnData);
 
         
     }
@@ -143,13 +143,32 @@ public class GalaxyController : MonoBehaviour {
 
                 SceneManager.LoadScene("test");
             }
-            if(NextTurnCycledCB != null)
-                NextTurnCycledCB(Galaxy[CurrentSolarsystem]);
+            
         }
 
         
 
 
+    }
+    void OnDestroy()
+    {
+        Debug.Log("Galaxy controller destroy()");
+        NextTurnController.Instance.UnregisterGalaxysNextTurnData(GenerateGalaxysNextTurnData);
+    }
+    public bool GenerateGalaxysNextTurnData()
+    {
+        Debug.Log("Generate Galaxy Next turn data");
+
+        foreach (KeyValuePair<int, SolarSystem> Sol in Galaxy)
+        {
+            foreach (KeyValuePair<string, Planet> p in Sol.Value.Planets)
+            {
+                p.Value.MovePlanet();
+
+            }
+        }
+
+        return true;
     }
 
     public void AddShipToSolarSystem(int SystemID, Ship ship)
@@ -167,14 +186,7 @@ public class GalaxyController : MonoBehaviour {
         return GetSolarSystem(CurrentSolarsystem);
     }
 
-    public void RegisterNextTurnCycled(Action<SolarSystem> func)
-    {
-        NextTurnCycledCB += func;
-    }
-    public void UnregisterNextTurnCycled(Action<SolarSystem> func)
-    {
-        NextTurnCycledCB -= func;
-    }
+
 
     public void RegisterSolarSystemChanged(Action func)
     {

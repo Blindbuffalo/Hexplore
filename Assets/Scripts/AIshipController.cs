@@ -31,7 +31,7 @@ public class AIshipController : MonoBehaviour {
 	void Update () {
         if(Input.GetKeyDown(KeyCode.F2))
         {
-            Planet p = GalaxyController.Instance.GetSolarSystem(0).Planets["Pluto"];
+            Planet p = GalaxyController.Instance.GetSolarSystem(0).Planets["Saturn"];
             Ship s = GalaxyController.Instance.GetSolarSystem(0).Ships["Intrepid"];
 
             List<Hex> Hexs = RendevousWithOrbitingObject(p, s);
@@ -40,16 +40,16 @@ public class AIshipController : MonoBehaviour {
                 run = true;
                 return;
             }
-            foreach (Hex h in Hexs)
-            {
-              //  Debug.Log(Utilites.Instance.HexNameStr(h));
-                DrawGraphics.Instance.DrawHex(h, Utilites.Instance.HexNameStr(h), Color.red);
-            }
-            foreach (Hex h in p.Orbit)
-            {
-                DrawGraphics.Instance.DrawHex(h, Utilites.Instance.HexNameStr(h), Color.blue);
-            }
-            
+            DrawGraphics.Instance.DrawHex(Hexs[0],"tttt", Color.red, offset: -1);
+            //foreach (Hex h in p.Orbit)
+            //{
+            //    DrawGraphics.Instance.DrawHex(h, Utilites.Instance.HexNameStr(h), Color.blue, offset: 1);
+            //}
+            //foreach (Hex h in Hexs)
+            //{
+            //    //  Debug.Log(Utilites.Instance.HexNameStr(h));
+            //    DrawGraphics.Instance.DrawHex(h, Utilites.Instance.HexNameStr(h), Color.red);
+            //}
             run = true;
         }
 	}
@@ -68,9 +68,9 @@ public class AIshipController : MonoBehaviour {
         int predictedDist;
         int InitialDist = distance;
         Debug.Log("Initial Dist: " + InitialDist);
-        int turns = (int)Mathf.Round(distance / ship.MovesLeft);
+        int Intturns = (int)Mathf.Ceil(distance / ship.MovesLeft);
 
-        if(turns <= 1)
+        if(Intturns <= 1)
         {
             //the number of moves the ship has left is enough to make it to the target this turn
             //just return the current hex of the target > this will be used as the ships target of movement
@@ -80,9 +80,10 @@ public class AIshipController : MonoBehaviour {
 
 
         //target will have moved before we make it to its current hex.  try to predict our rendevous
-        
+        int LowestTurns = Intturns;
+        int test = 0;
         bool t = true;
-        for (int turn = (turns); turn <= (turns); turn++)
+        for (int turn = 0; turn <= (Intturns + 50); turn++)
         {
 
             TargetsPredictedHex = OO.Orbit[OO.PredictPlanetPos(turn)];
@@ -91,20 +92,26 @@ public class AIshipController : MonoBehaviour {
 
             distance = Path.Count - 1;
 
-            turns = (int)Mathf.Ceil(distance / ship.Movement);
+           int turns = (int)Mathf.Ceil(distance / ship.Movement);
             
-            if(turns == turn)
+            if (turns == turn)
             {
-                Debug.Log("Turns: " + turns + " Turn: " + turn + " Pathcount: " + Path.Count + " dist: " + distance);
+                
                 return Path;
             }
+            test = Mathf.Abs( turns - turn);
 
 
+            if (test <= 1 )
+                LowestTurns = turns;
+
+           // Debug.Log("Test: " + test  + "LowestTurn: " + LowestTurns + "Turns: " + turns + " IntTurns: " + Intturns + " Turn: " + turn + " Pathcount: " + Path.Count + " dist: " + distance);
         }
-
-
+        TargetsPredictedHex = OO.Orbit[OO.PredictPlanetPos(LowestTurns)];
+        Path = Hex.AstarPath(TargetsPredictedHex, ShipsCurrentHex);
+        return Path;
         //something is not working correctly
-        Debug.LogError("RendevousWithOrbitingObject: did not find a rendevous.");
-        return null;
+        //Debug.LogError("RendevousWithOrbitingObject: did not find a rendevous.");
+        //return null;
     }
 }
