@@ -29,13 +29,17 @@ public class AIshipController : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        if(run == false)
+        if(Input.GetKeyDown(KeyCode.F2))
         {
-            Planet p = GalaxyController.Instance.GetSolarSystem(0).Planets["Earth"];
+            Planet p = GalaxyController.Instance.GetSolarSystem(0).Planets["Pluto"];
             Ship s = GalaxyController.Instance.GetSolarSystem(0).Ships["Intrepid"];
 
             List<Hex> Hexs = RendevousWithOrbitingObject(p, s);
-
+            if (Hexs == null)
+            {
+                run = true;
+                return;
+            }
             foreach (Hex h in Hexs)
             {
               //  Debug.Log(Utilites.Instance.HexNameStr(h));
@@ -62,8 +66,8 @@ public class AIshipController : MonoBehaviour {
 
         int distance = Path.Count;
         int predictedDist;
-        
-
+        int InitialDist = distance;
+        Debug.Log("Initial Dist: " + InitialDist);
         int turns = (int)Mathf.Round(distance / ship.MovesLeft);
 
         if(turns <= 1)
@@ -78,7 +82,7 @@ public class AIshipController : MonoBehaviour {
         //target will have moved before we make it to its current hex.  try to predict our rendevous
         
         bool t = true;
-        for (int turn = 0; turn < 100; turn++)
+        for (int turn = (turns); turn <= (turns); turn++)
         {
 
             TargetsPredictedHex = OO.Orbit[OO.PredictPlanetPos(turn)];

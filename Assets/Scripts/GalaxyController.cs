@@ -57,9 +57,9 @@ public class GalaxyController : MonoBehaviour {
             Planets.Add("Pluto", new Planet("Pluto", 145, Sun, 2, Color.magenta, 1, .5f ));
 
             Dictionary<string, Ship> Ships = new Dictionary<string, Ship>();
-            Ship ship = new Ship("Intrepid", 1, new Hex(5, 2, -7), 500f, 500f);
+            Ship ship = new Ship("Intrepid", 4, new Hex(25, 10, -35), 500f, 500f);
             Ships.Add(ship.Name, ship);
-            SolarSystem Sol = new SolarSystem("sol", Sun, 5, Planets, Ships);
+            SolarSystem Sol = new SolarSystem("sol", Sun, 7, Planets, Ships);
 
             Galaxy.Add(0, Sol);
 
