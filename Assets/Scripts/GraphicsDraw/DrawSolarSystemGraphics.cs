@@ -152,49 +152,7 @@ public class DrawSolarSystemGraphics : MonoBehaviour {
 
 
 
-    public void GenerateGraphics(List<Hex> Hexes, GameObject Prefab)
-    {
-        //this function lays out all of the hex grid data as unity sprites on screen
-        HexGraphics = new Dictionary<string, GameObject>();
-        foreach (Hex h in Hexes)
-        {
 
-            if (HexGraphics.ContainsKey(Utilites.Instance.HexNameStr(h)))
-            {
-
-            }
-            else
-            {
-
-                GameObject g = (GameObject)Instantiate(Prefab, Layout.HexToPixel(L, h, 0), Quaternion.identity);
-                g.name = Utilites.Instance.HexNameStr(h);
-                g.transform.SetParent(this.transform);
-                HexGraphics.Add(Utilites.Instance.HexNameStr(h), g);
-
-            }
-
-        }
-    }
-
-    public void ChangeHexesColor(Hex h, Color color)
-    {
-        string HexName = Utilites.Instance.HexNameStr(h);
-        if (HexGraphics.ContainsKey(HexName))
-        {
-            GameObject HexGO = HexGraphics[HexName];
-            HexGO.GetComponent<SpriteRenderer>().color = color;
-            HexGraphics[HexName] = HexGO;
-        }
-    }
-    public void DrawOrbit(Planet Planet, Color OrbitColor)
-    {
-        //changes the grid hex color for a certain planet so that the
-        //orbit is visible
-        foreach (Hex h in Planet.Orbit)
-        {
-            ChangeHexesColor(h, OrbitColor);
-        }
-    }
 
 
     private void DrawPlanetObject(Planet planet)

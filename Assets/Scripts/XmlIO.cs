@@ -11,9 +11,8 @@ public class XmlIO
     {
         XDocument doc;
         XElement XmlSolarsystem = null;
-        XElement XmlGalaxy = new XElement("Galaxy",
-                    new XElement("SolarSystems")
-                );
+        XElement XmlGalaxy = new XElement("Galaxy");
+        XElement XmlSolarSystems = new XElement("SolarSystems");
         foreach (KeyValuePair<int, SolarSystem> sol in Galaxy)
         {
             XmlSolarsystem = new XElement("solarsystem",
@@ -31,7 +30,6 @@ public class XmlIO
                             new XAttribute("orbitradius", p.Value.OrbitRadius),
                             new XAttribute("size", p.Value.Size),
                             new XAttribute("numberofmoves", p.Value.NumberOfMoves),
-                            new XAttribute("lastposition", p.Value.LastPosition),
                             new XAttribute("currentposition", p.Value.CurrentPosition),
                             new XAttribute("orbitdir", (int)p.Value.OrbitDirection),
                             new XAttribute("gravity", p.Value.Gravity),
@@ -51,28 +49,68 @@ public class XmlIO
                     )
                 );
 
-            XmlGalaxy.Add(XmlSolarsystem);
+            XmlSolarSystems.Add(XmlSolarsystem);
             
         }
+        XmlGalaxy.Add(XmlSolarSystems);
         doc = new XDocument(
                 XmlGalaxy
             );
 
         doc.Save(Application.dataPath + "/XMLdata/GalaxyData.xml");
     }
-    public void ReadXmlFile()
+    public Dictionary<int, SolarSystem> ReadXmlFile()
     {
-        XDocument doc = XDocument.Load("Test.xml");
-        List<XElement> test = (from e in doc.Elements()
-                                select e).ToList<XElement>();
+        XDocument doc = XDocument.Load(Application.dataPath + "/XMLdata/GalaxyData.xml");
+        Dictionary<int, SolarSystem> Sols = (from s in doc.Descendants("solarsystem")
+                                        select new SolarSystem
+                                        {
+                                            id = (int?)s.Attribute("id") ?? 0,
+                                            Name = (string)s.Attribute("name") ?? "unknownsol",
+                                            SunRadius = (int?)s.Attribute("sunradius") ?? 6,
+                                            Sun = new Hex(
+                                                (int?)s.Element("sunhex").Attribute("q") ?? 0,
+                                                (int?)s.Element("sunhex").Attribute("r") ?? 0,
+                                                (int?)s.Element("sunhex").Attribute("s") ?? 0
+                                                ),
+                                            Planets = (from t in s.Descendants("planet")
+                                                       select new Planet(
+                                                           name: (string)t.Attribute("name") ?? "unknownplanet",
+                                                           orbitRadius: (int?)t.Attribute("orbitradius") ?? 6,
+                                                           parent: new Hex(
+                                                                        (int?)t.Element("parenthex").Attribute("q") ?? 0,
+                                                                        (int?)t.Element("parenthex").Attribute("r") ?? 0,
+                                                                        (int?)t.Element("parenthex").Attribute("s") ?? 0
+                                                                        ),
+                                                           numberofmoves: (int?)t.Attribute("numberofmoves") ?? 1,
+                                                           color: new Color(
+                                                                        1f,
+                                                                        1f,
+                                                                        1f,
+                                                                        1f
+                                                                        ), 
+                                                           position: (int?)t.Attribute("currentposition") ?? 0, 
+                                                           size: (float?)t.Attribute("size") ?? 1.0f, 
+                                                           gravity: (float?)t.Attribute("gravity") ?? 1.0f, 
+                                                           OD: (OrbitDir)((int?)t.Attribute("orbitdir") ?? 0),
+                                                           rings: null)
+                                                       ).ToDictionary(x=>x.Name, x=>x)
 
-        foreach (XElement el in test)
+                                        }).ToDictionary(x => x.id, x => x);
+
+        foreach (KeyValuePair<int, SolarSystem> el in Sols)
         {
-            //
+            Debug.Log(el.Key + ": " + el.Value.Name);
+            foreach (KeyValuePair<string, Planet> p in el.Value.Planets)
+            {
+                Debug.Log("      Planet: " + p.Value.Name);
+            }
         }
+
+        return Sols;
     }
 }
 
-    
+
 
 

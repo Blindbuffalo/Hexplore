@@ -21,6 +21,7 @@ public class SolarSystem  {
     public Color OrbitColor = new Color(.05f, .05f, .05f, 1f);
 
     //xml attributes
+    public int id { get; set; }
     public string Name { get; set; }
     public int SunRadius { get; set; }
 

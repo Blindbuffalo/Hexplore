@@ -43,6 +43,8 @@ public class GalaxyController : MonoBehaviour {
         // Use this for initialization
    void Start () {
         Debug.Log("Galaxy Controller start()");
+
+        Galaxy = xmlio.ReadXmlFile();
         if (Galaxy == null)
         {
             Hex Sun = new Hex(0, 0, 0);
@@ -79,6 +81,8 @@ public class GalaxyController : MonoBehaviour {
             SolarSystem Sol2 = new SolarSystem("sol2", Sun, 3, Planets2, Ships);
 
             Galaxy.Add(1, Sol2);
+
+            
 
             //BlockedHexes.Instance.HexData.Add(new Hex(0, 0, 0));
         }
@@ -161,6 +165,10 @@ public class GalaxyController : MonoBehaviour {
         if (Input.GetKeyDown(KeyCode.F3))
         {
             xmlio.WriteXmlFile(Galaxy);
+        }
+        if (Input.GetKeyDown(KeyCode.F4))
+        {
+           Galaxy = xmlio.ReadXmlFile();
         }
 
     }
