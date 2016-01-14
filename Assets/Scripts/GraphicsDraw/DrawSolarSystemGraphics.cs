@@ -3,21 +3,23 @@ using System.Collections;
 using System.Collections.Generic;
 using System;
 
-public class DrawGraphics : MonoBehaviour {
+public class DrawSolarSystemGraphics : MonoBehaviour {
 
     public GameObject PlanetPrefab;
     public GameObject HexPrefab;
     public GameObject Rings;
     public GameObject AIship;
 
-    private DrawGraphics() { }
+    private DrawSolarSystemGraphics() { }
 
     private bool SystemDrawn = false;
+    private bool AdvanceTurn = false;
 
-    public static DrawGraphics Instance;
+
+    public static DrawSolarSystemGraphics Instance;
     void Awake()
     {
-        Debug.Log("Drawing System awake()");
+        Debug.Log("DrawSolarSystemGraphics awake()");
         if (Instance)
         {
             DestroyImmediate(gameObject);
@@ -30,7 +32,7 @@ public class DrawGraphics : MonoBehaviour {
     }
     void Start()
     {
-        Debug.Log("Drawing System start()");
+        Debug.Log("DrawSolarSystemGraphics start()");
         NextTurnController.Instance.RegisterGalaxyNextTurnsGraphicsDrawn(OnNextTurn);
         GalaxyController.Instance.RegisterSolarSystemChanged(OnSolarSystemChanged);
     }
@@ -41,6 +43,33 @@ public class DrawGraphics : MonoBehaviour {
             DrawSolarSystem(GalaxyController.Instance.GetCurrentSolarSystem());
             SystemDrawn = true;
         }
+        if(AdvanceTurn == true)
+        {
+
+
+
+
+            if (true)
+            {
+                //if all of the Orbiting objects (maybe ships?) have moved then set advanced turn to false
+                //will need some way to tell the NextTurnController that this is done...
+
+                SolarSystem Sol = GalaxyController.Instance.GetCurrentSolarSystem();
+
+                foreach (KeyValuePair<string, Planet> p in Sol.Planets)
+                {
+                    MovePlanetObject(p.Value);
+                    MovePlanetHex(p.Value);
+
+                }
+
+
+                AdvanceTurn = false;
+                NextTurnController.Instance.DrawingComplete();
+            }
+        }
+
+
     }
     void OnDestroy()
     {
@@ -58,14 +87,9 @@ public class DrawGraphics : MonoBehaviour {
         try
         {
             Debug.Log("Draw Next turn data");
-            SolarSystem Sol = GalaxyController.Instance.GetCurrentSolarSystem();
 
-            foreach (KeyValuePair<string, Planet> p in Sol.Planets)
-            {
-                MovePlanetObject(p.Value);
-                MovePlanetHex(p.Value);
 
-            }
+            AdvanceTurn = true;
             return true;
         }
         catch(Exception ex)
@@ -75,11 +99,11 @@ public class DrawGraphics : MonoBehaviour {
         }
 
     }
-    private void OnSolarSystemCreated(SolarSystem Sol)
-    {
-        Debug.Log("SolarSys Created CB fired");
-        DrawSolarSystem(Sol);
-    }
+    //private void OnSolarSystemCreated(SolarSystem Sol)
+    //{
+    //    Debug.Log("SolarSys Created CB fired");
+    //    DrawSolarSystem(Sol);
+    //}
     private void OnSolarSystemChanged()
     {
         Debug.Log("SolarSys Changed CB fired");
@@ -115,7 +139,7 @@ public class DrawGraphics : MonoBehaviour {
     public void EraseSolarSystem()
     {
         var children = new List<GameObject>();
-        foreach (Transform child in DrawGraphics.Instance.transform) children.Add(child.gameObject);
+        foreach (Transform child in DrawSolarSystemGraphics.Instance.transform) children.Add(child.gameObject);
 
         foreach (GameObject c in children)
         {
@@ -244,4 +268,7 @@ public class DrawGraphics : MonoBehaviour {
         }
         return null;
     }
+
+
+
 }

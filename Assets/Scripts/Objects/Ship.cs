@@ -3,6 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System;
 using System.Linq;
+using System.Xml;
+using System.Xml.Serialization;
 public class Ship  {
     Action CB_MovesLeftChanged;
 
@@ -26,6 +28,17 @@ public class Ship  {
         CurrentHexPosition = NewHexLocation;
         MovesLeft = MovesLeft - NumberOfMoves;
     }
+
+    public void MoveShip()
+    {
+        if (PathToTarget == null)
+        {
+            
+        }
+
+        
+    }
+
     public int Movement { get; private set; }
     private int _movesleft = 0;
     public int MovesLeft

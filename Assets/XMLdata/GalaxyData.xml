@@ -1,0 +1,58 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Galaxy>
+  <SolarSystems />
+  <solarsystem id="0" name="sol" sunradius="7">
+    <sunhex q="0" r="0" s="0" />
+    <planets>
+      <planet name="Mercury" orbitradius="2" size="1" numberofmoves="1" lastposition="4" currentposition="4" orbitdir="0" gravity="0.05">
+        <color r="0" g="1" b="1" a="1" />
+        <parenthex q="0" r="0" s="0" />
+      </planet>
+      <planet name="Venus" orbitradius="4" size="1" numberofmoves="1" lastposition="1" currentposition="1" orbitdir="0" gravity="0.01">
+        <color r="0" g="1" b="0" a="1" />
+        <parenthex q="0" r="0" s="0" />
+      </planet>
+      <planet name="Earth" orbitradius="6" size="1.5" numberofmoves="1" lastposition="6" currentposition="6" orbitdir="0" gravity="1">
+        <color r="0" g="0" b="1" a="1" />
+        <parenthex q="0" r="0" s="0" />
+      </planet>
+      <planet name="Mars" orbitradius="9" size="1.4" numberofmoves="1" lastposition="1" currentposition="1" orbitdir="0" gravity="0.01">
+        <color r="1" g="0" b="0" a="1" />
+        <parenthex q="0" r="0" s="0" />
+      </planet>
+      <planet name="Jupiter" orbitradius="31" size="3" numberofmoves="2" lastposition="1" currentposition="1" orbitdir="0" gravity="0.01">
+        <color r="1" g="0" b="1" a="1" />
+        <parenthex q="0" r="0" s="0" />
+      </planet>
+      <planet name="Saturn" orbitradius="57" size="3" numberofmoves="3" lastposition="1" currentposition="1" orbitdir="0" gravity="0.01">
+        <color r="0.6901961" g="0.623529434" b="0.447058827" a="1" />
+        <parenthex q="0" r="0" s="0" />
+      </planet>
+      <planet name="Uranus" orbitradius="85" size="1.6" numberofmoves="3" lastposition="1" currentposition="1" orbitdir="0" gravity="0.01">
+        <color r="1" g="0" b="1" a="1" />
+        <parenthex q="0" r="0" s="0" />
+      </planet>
+      <planet name="Neptune" orbitradius="110" size="1.6" numberofmoves="3" lastposition="1" currentposition="1" orbitdir="0" gravity="0.01">
+        <color r="1" g="0" b="1" a="1" />
+        <parenthex q="0" r="0" s="0" />
+      </planet>
+      <planet name="Pluto" orbitradius="145" size="0.5" numberofmoves="2" lastposition="1" currentposition="1" orbitdir="0" gravity="0.01">
+        <color r="1" g="0" b="1" a="1" />
+        <parenthex q="0" r="0" s="0" />
+      </planet>
+    </planets>
+  </solarsystem>
+  <solarsystem id="1" name="sol2" sunradius="3">
+    <sunhex q="0" r="0" s="0" />
+    <planets>
+      <planet name="1" orbitradius="4" size="3" numberofmoves="1" lastposition="4" currentposition="4" orbitdir="0" gravity="0.01">
+        <color r="1" g="0" b="0" a="1" />
+        <parenthex q="0" r="0" s="0" />
+      </planet>
+      <planet name="2" orbitradius="8" size="2" numberofmoves="1" lastposition="1" currentposition="1" orbitdir="0" gravity="0.01">
+        <color r="0" g="1" b="0" a="1" />
+        <parenthex q="0" r="0" s="0" />
+      </planet>
+    </planets>
+  </solarsystem>
+</Galaxy>

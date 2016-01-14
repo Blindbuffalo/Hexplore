@@ -24,11 +24,15 @@ public class AIshipController : MonoBehaviour {
     }
     // Use this for initialization
     void Start () {
-
+        NextTurnController.Instance.RegisterAIshipsNextTurnData(GenerateAIshipsNextTurnData);
     }
-	
-	// Update is called once per frame
-	void Update () {
+    void OnDestroy()
+    {
+        Debug.Log("Galaxy controller destroy()");
+        NextTurnController.Instance.UnregisterAIshipsNextTurnData(GenerateAIshipsNextTurnData);
+    }
+    // Update is called once per frame
+    void Update () {
         if(Input.GetKeyDown(KeyCode.F2))
         {
             Planet p = GalaxyController.Instance.GetSolarSystem(0).Planets["Saturn"];
@@ -40,7 +44,7 @@ public class AIshipController : MonoBehaviour {
                 run = true;
                 return;
             }
-            DrawGraphics.Instance.DrawHex(Hexs[0],"tttt", Color.red, offset: -1);
+            DrawSolarSystemGraphics.Instance.DrawHex(Hexs[0],"tttt", Color.red, offset: -1);
             //foreach (Hex h in p.Orbit)
             //{
             //    DrawGraphics.Instance.DrawHex(h, Utilites.Instance.HexNameStr(h), Color.blue, offset: 1);
@@ -52,7 +56,23 @@ public class AIshipController : MonoBehaviour {
             //}
             run = true;
         }
+
+
+
+
 	}
+    public bool GenerateAIshipsNextTurnData()
+    {
+        SolarSystem Sol = GalaxyController.Instance.GetCurrentSolarSystem();
+        Dictionary<string, Ship> Ships = Sol.Ships;
+
+        foreach (KeyValuePair<string, Ship> ShipKV in Ships) { }
+        {
+
+        }
+
+        return true;
+    }
     public List<Hex> RendevousWithOrbitingObject(OrbitalObject OO, Ship ship)
     {
         Hex TargetsCurrentHex = OO.Orbit[OO.CurrentPosition];

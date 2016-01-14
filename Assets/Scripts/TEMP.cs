@@ -10,7 +10,7 @@ public class TEMP : MonoBehaviour {
         GridData.Instance.GenerateGridData(10);
 
         Hexes = GridData.Instance.HexData;
-        DrawGraphics.Instance.GenerateGraphics(Hexes, Prefab);
+        DrawSolarSystemGraphics.Instance.GenerateGraphics(Hexes, Prefab);
 	}
 	
 	// Update is called once per frame

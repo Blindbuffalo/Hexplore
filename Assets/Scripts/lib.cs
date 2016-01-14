@@ -76,6 +76,75 @@ public struct Hex
     {
         return Hex.Add(hex, Hex.Direction(direction));
     }
+    static public List<Hex> AstarPath(Hex start, Hex Target)
+    {
+        Dictionary<Hex, Hex> cameFrom = Astar(start, Target);
+        List<Hex> Path = new List<Hex>();
+        Path.Add(Target);
+        int i = 0;
+        while (true)
+        {
+            Path.Add(cameFrom[Path[i]]);
+
+            i++;
+            if (Hex.Equals(Path[i], start))
+            {
+                //Path.Add(start);
+                break;
+            }
+        }
+        Path.Reverse();
+        return Path;
+    }
+    static public Dictionary<Hex, Hex> Astar(Hex start, Hex Target)
+    {
+        List<Hex> PathToTarget = new List<Hex>();
+        PriorityQueue Fringes = new PriorityQueue();
+
+        Dictionary<Hex, Hex> cameFrom = new Dictionary<Hex, Hex>();
+        Dictionary<Hex, int> costSoFar = new Dictionary<Hex, int>();
+
+        Fringes.Enqueue(start, 0);
+
+        cameFrom[start] = start;
+        costSoFar[start] = 0;
+
+
+        while (Fringes.Count > 0)
+        {
+            Hex current = Fringes.Dequeue();
+
+            if (Equals(current, Target))
+            {
+                break;
+            }
+
+            foreach (Hex n in Neighbors(current))
+            {
+                int newCost = costSoFar[current];
+
+
+                //if (BlockedHexes.Instance.HexData.Contains(current))
+                //{
+                //    newCost += 5;
+                //}
+                if (Equals(current, new Hex(0, 0, 0)))
+                {
+
+                }
+                if (!costSoFar.ContainsKey(n) || newCost < costSoFar[n])
+                {
+                    costSoFar[n] = newCost;
+                    int pri = newCost + Distance(n, Target);
+                    Fringes.Enqueue(n, pri);
+                    cameFrom[n] = current;
+                }
+            }
+        }
+
+
+        return cameFrom;
+    }
     static public List<Hex> Reachable(Hex start, int Movement)
     {
 
@@ -153,75 +222,7 @@ public struct Hex
             return bestItem;
         }
     }
-    static public List<Hex> AstarPath(Hex start, Hex Target)
-    {
-        Dictionary<Hex, Hex> cameFrom = Astar(start, Target);
-        List<Hex> Path = new List<Hex>();
-        Path.Add(Target);
-        int i = 0;
-        while (true)
-        {
-            Path.Add(cameFrom[Path[i]]);
-            
-            i++;
-            if(Hex.Equals(Path[i], start))
-            {
-                //Path.Add(start);
-                break;
-            }
-        }
-       Path.Reverse();
-        return Path;
-    }
-    static public Dictionary<Hex, Hex> Astar(Hex start, Hex Target)
-    {
-        List<Hex> PathToTarget = new List<Hex>();
-        PriorityQueue Fringes = new PriorityQueue();
 
-        Dictionary<Hex, Hex> cameFrom = new Dictionary<Hex, Hex>();
-        Dictionary<Hex, int> costSoFar = new Dictionary<Hex, int>();
-
-        Fringes.Enqueue(start, 0);
-
-        cameFrom[start] = start;
-        costSoFar[start] = 0;
-
-
-        while(Fringes.Count > 0)
-        { 
-            Hex current = Fringes.Dequeue();
-
-            if(Equals(current, Target))
-            {
-                break;
-            }
-
-            foreach (Hex  n in Neighbors(current))
-            {
-                int newCost = costSoFar[current];
-
-                
-                //if (BlockedHexes.Instance.HexData.Contains(current))
-                //{
-                //    newCost += 5;
-                //}
-                if (Equals(current, new Hex(0, 0, 0)))
-                {
-                    
-                }
-                if(!costSoFar.ContainsKey(n) || newCost < costSoFar[n])
-                {
-                    costSoFar[n] = newCost;
-                    int pri = newCost + Distance(n, Target);
-                    Fringes.Enqueue(n, pri);
-                    cameFrom[n] = current;
-                }
-            }
-        }
-
-        
-        return cameFrom;
-    }
     static public List<Hex> diagonals = new List<Hex>{new Hex(2, -1, -1), new Hex(1, -2, 1), new Hex(-1, -1, 2), new Hex(-2, 1, 1), new Hex(-1, 2, -1), new Hex(1, 1, -2)};
 
     static public Hex DiagonalNeighbor(Hex hex, int direction)

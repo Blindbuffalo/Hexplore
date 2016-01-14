@@ -21,7 +21,7 @@ public class RayCastTest : MonoBehaviour {
                 FractionalHex h = Layout.PixelToHex(L, HitInfo.point);
                 Hex MouseOverHex = FractionalHex.HexRound(h);
 
-                DrawGraphics.Instance.DrawHex(MouseOverHex, "test", Color.red);
+                DrawSolarSystemGraphics.Instance.DrawHex(MouseOverHex, "test", Color.red);
 
             }
         }
