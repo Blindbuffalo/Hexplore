@@ -121,13 +121,13 @@ public struct Hex
             List<Hex> Ns = Neighbors(current);
             foreach (Hex n in Ns)
             {
-                int newCost = costSoFar[current];
+                int newCost = costSoFar[current] + 5;
 
                 if (BlockedHexes.Instance.HexData != null)
                 {
                     if (BlockedHexes.Instance.HexData.Contains(current))
                     {
-                        newCost += 5;
+                        newCost += 50;
                     }
                 }
                 if (Equals(current, new Hex(0, 0, 0)))
