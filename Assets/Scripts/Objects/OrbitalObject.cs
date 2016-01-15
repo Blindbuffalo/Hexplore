@@ -14,6 +14,10 @@ public class OrbitalObject
     public int NumberOfMoves { get; protected set; }
     public OrbitDir OrbitDirection { get; protected set; }
     public float Gravity { get; protected set; }
+    public Atmosphere Atmosphere { get; protected set; }
+    public MineableResources MineableResources { get; protected set; }
+    public ResourceStockpile StockepiledResources { get; protected set; }
+
     public int LastPosition { get; protected set; }
     private int _currentPosition;
     public int CurrentPosition
@@ -104,7 +108,7 @@ public class Rings
     public Color RingColor { get; private set; }
 }
 public class Planet : OrbitalObject {
-    public Planet(string name, int orbitRadius, Hex parent, int numberofmoves, Color color, int position, float size, float gravity, OrbitDir OD = OrbitDir.CCW, Rings rings = null)
+    public Planet(string name, int orbitRadius, Hex parent, int numberofmoves, Color color, int position, float size, float gravity, Atmosphere atmosphere, OrbitDir OD = OrbitDir.CCW, Rings rings = null)
     {
         Name = name;
         OrbitRadius = orbitRadius;
@@ -124,6 +128,11 @@ public class Planet : OrbitalObject {
         Rings = rings;
 
         Gravity = gravity;
+
+        Atmosphere = (atmosphere==null ? new Atmosphere() : atmosphere);
+
+        MineableResources = new MineableResources();
+        StockepiledResources = new ResourceStockpile();
     }
     public Rings Rings {get; set;}
 }
@@ -147,11 +156,14 @@ public class Astroid : OrbitalObject
         OrbitDirection = OD;
 
         Gravity = gravity;
+
+        MineableResources = new MineableResources();
+        StockepiledResources = new ResourceStockpile();
     }
 }
 public class DwarfPlanet : OrbitalObject
 {
-    public DwarfPlanet(string name, int orbitRadius, Hex parent, int numberofmoves, Color color, int position, float size, float gravity, OrbitDir OD = OrbitDir.CCW)
+    public DwarfPlanet(string name, int orbitRadius, Hex parent, int numberofmoves, Color color, int position, float size, float gravity, Atmosphere atmosphere, OrbitDir OD = OrbitDir.CCW)
     {
         Name = name;
         OrbitRadius = orbitRadius;
@@ -169,5 +181,10 @@ public class DwarfPlanet : OrbitalObject
         OrbitDirection = OD;
 
         Gravity = gravity;
+
+        Atmosphere = (atmosphere == null ? new Atmosphere() : atmosphere);
+
+        MineableResources = new MineableResources();
+        StockepiledResources = new ResourceStockpile();
     }
 }

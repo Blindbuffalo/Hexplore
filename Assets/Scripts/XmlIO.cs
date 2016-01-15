@@ -43,6 +43,9 @@ public class XmlIO
                                     new XAttribute("q", p.Value.Parent.q),
                                     new XAttribute("r", p.Value.Parent.r),
                                     new XAttribute("s", p.Value.Parent.s)
+                                ),
+                            new XElement("atmoshpere",
+                                    new XAttribute("breathable", (bool)p.Value.Atmosphere.Breathable)
                                 )
                             )
                         )
@@ -93,7 +96,11 @@ public class XmlIO
                                                            size: (float?)t.Attribute("size") ?? 1.0f, 
                                                            gravity: (float?)t.Attribute("gravity") ?? 1.0f, 
                                                            OD: (OrbitDir)((int?)t.Attribute("orbitdir") ?? 0),
-                                                           rings: null)
+                                                           rings: null,
+                                                           atmosphere: new Atmosphere(
+                                                                        (bool?)t.Element("atmoshpere").Attribute("breathable") ?? false
+                                                                        )
+                                                               )
                                                        ).ToDictionary(x=>x.Name, x=>x)
 
                                         }).ToDictionary(x => x.id, x => x);

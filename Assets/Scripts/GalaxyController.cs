@@ -45,42 +45,43 @@ public class GalaxyController : MonoBehaviour {
         Debug.Log("Galaxy Controller start()");
 
         Galaxy = xmlio.ReadXmlFile();
+
         if (Galaxy == null)
         {
-            Hex Sun = new Hex(0, 0, 0);
-            //create the galaxy eventually this will load from a save file if one exists
+            //Hex Sun = new Hex(0, 0, 0);
+            ////create the galaxy eventually this will load from a save file if one exists
 
-            Galaxy = new Dictionary<int, SolarSystem>();
+            //Galaxy = new Dictionary<int, SolarSystem>();
 
-            Dictionary<string, Planet> Planets = new Dictionary<string, Planet>();
+            //Dictionary<string, Planet> Planets = new Dictionary<string, Planet>();
 
-            Planets.Add("Mercury", new Planet(name: "Mercury", orbitRadius: 2, parent: Sun, numberofmoves: 1, color: Color.cyan, position: 4, size: 1f, gravity: 0.05f ));
-            Planets.Add("Venus", new Planet("Venus", 4, Sun, 1, Color.green, 1, 1f, .01f ));
-            Planets.Add("Earth", new Planet("Earth", 6, Sun, 1, Color.blue, 6, 1.5f, 1f ));
-            Planets.Add("Mars", new Planet("Mars", 9, Sun, 1, Color.red, 1, 1.4f, .01f));
-            Planets.Add("Jupiter", new Planet("Jupiter", 31, Sun, 2, Color.magenta, 1, 3f, .01f));
-            Planets.Add("Saturn", new Planet("Saturn", 57, Sun, 3, Utilites.Instance.RGBcolor(176, 159, 114, 255), 1, 3f, .01f));
-            //Planets.Add(5, new Planet("Saturn", 57, Sun, 3, Utilites.Instance.RGBcolor(176, 159, 114, 255), 55, 1.5f, DrawHexGraphics.Instance.PlanetMoved, rings: new Rings(1f, Utilites.Instance.RGBcolor(159, 183, 195, 115))));
-            Planets.Add("Uranus", new Planet("Uranus", 85, Sun, 3, Color.magenta, 1, 1.6f, .01f));
-            Planets.Add("Neptune", new Planet("Neptune", 110, Sun, 3, Color.magenta, 1, 1.6f, .01f));
-            Planets.Add("Pluto", new Planet("Pluto", 145, Sun, 2, Color.magenta, 1, .5f, .01f));
+            //Planets.Add("Mercury", new Planet(name: "Mercury", orbitRadius: 2, parent: Sun, numberofmoves: 1, color: Color.cyan, position: 4, size: 1f, gravity: 0.05f ));
+            //Planets.Add("Venus", new Planet("Venus", 4, Sun, 1, Color.green, 1, 1f, .01f ));
+            //Planets.Add("Earth", new Planet("Earth", 6, Sun, 1, Color.blue, 6, 1.5f, 1f ));
+            //Planets.Add("Mars", new Planet("Mars", 9, Sun, 1, Color.red, 1, 1.4f, .01f));
+            //Planets.Add("Jupiter", new Planet("Jupiter", 31, Sun, 2, Color.magenta, 1, 3f, .01f));
+            //Planets.Add("Saturn", new Planet("Saturn", 57, Sun, 3, Utilites.Instance.RGBcolor(176, 159, 114, 255), 1, 3f, .01f));
+            ////Planets.Add(5, new Planet("Saturn", 57, Sun, 3, Utilites.Instance.RGBcolor(176, 159, 114, 255), 55, 1.5f, DrawHexGraphics.Instance.PlanetMoved, rings: new Rings(1f, Utilites.Instance.RGBcolor(159, 183, 195, 115))));
+            //Planets.Add("Uranus", new Planet("Uranus", 85, Sun, 3, Color.magenta, 1, 1.6f, .01f));
+            //Planets.Add("Neptune", new Planet("Neptune", 110, Sun, 3, Color.magenta, 1, 1.6f, .01f));
+            //Planets.Add("Pluto", new Planet("Pluto", 145, Sun, 2, Color.magenta, 1, .5f, .01f));
 
-            Dictionary<string, Ship> Ships = new Dictionary<string, Ship>();
-            Ship ship = new Ship("Intrepid", 4, new Hex(25, 10, -35), 500f, 500f);
-            Ships.Add(ship.Name, ship);
-            SolarSystem Sol = new SolarSystem("sol", Sun, 7, Planets, Ships);
+            //Dictionary<string, Ship> Ships = new Dictionary<string, Ship>();
+            //Ship ship = new Ship("Intrepid", 4, new Hex(25, 10, -35), 500f, 500f);
+            //Ships.Add(ship.Name, ship);
+            //SolarSystem Sol = new SolarSystem("sol", Sun, 7, Planets, Ships);
 
-            Galaxy.Add(0, Sol);
+            //Galaxy.Add(0, Sol);
 
-            Dictionary<string, Planet> Planets2 = new Dictionary<string, Planet>();
+            //Dictionary<string, Planet> Planets2 = new Dictionary<string, Planet>();
 
-            Planets2.Add("1", new Planet("1", 4, Sun, 1, Color.red, 4, 3f, .01f));
-            Planets2.Add("2", new Planet("2", 8, Sun, 1, Color.green, 1, 2f, .01f));
+            //Planets2.Add("1", new Planet("1", 4, Sun, 1, Color.red, 4, 3f, .01f));
+            //Planets2.Add("2", new Planet("2", 8, Sun, 1, Color.green, 1, 2f, .01f));
 
-            Ships = new Dictionary<string, Ship>();
-            SolarSystem Sol2 = new SolarSystem("sol2", Sun, 3, Planets2, Ships);
+            //Ships = new Dictionary<string, Ship>();
+            //SolarSystem Sol2 = new SolarSystem("sol2", Sun, 3, Planets2, Ships);
 
-            Galaxy.Add(1, Sol2);
+            //Galaxy.Add(1, Sol2);
 
             
 

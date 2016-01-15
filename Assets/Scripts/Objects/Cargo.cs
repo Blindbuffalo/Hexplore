@@ -80,3 +80,16 @@ public class Contraband : Cargo
     }
     public float Illegality { get; private set; }
 }
+public class CargoResource : Cargo
+{
+    public CargoResource(string name, float size, float weight, float value, string shortname)
+    {
+        Name = name;
+        Size = size;
+        Weight = weight;
+        Value = value;
+
+        ShortName = shortname;
+    }
+    public string ShortName { get; protected set; }
+}
