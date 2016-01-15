@@ -14,7 +14,7 @@
           <parenthex q="0" r="0" s="0" />
           <atmoshpere breathable="false" />
         </planet>
-        <planet name="Earth" orbitradius="6" size="1.5" numberofmoves="1" currentposition="6" orbitdir="0" gravity="1">
+        <planet name="Earth" orbitradius="6" size="1.5" numberofmoves="1" currentposition="24" orbitdir="0" gravity="1">
           <color r="1" g="1" b="1" a="1" />
           <parenthex q="0" r="0" s="0" />
           <atmoshpere breathable="true" />

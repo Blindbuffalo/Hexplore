@@ -118,23 +118,25 @@ public struct Hex
             {
                 break;
             }
-
-            foreach (Hex n in Neighbors(current))
+            List<Hex> Ns = Neighbors(current);
+            foreach (Hex n in Ns)
             {
                 int newCost = costSoFar[current];
 
-
-                //if (BlockedHexes.Instance.HexData.Contains(current))
-                //{
-                //    newCost += 5;
-                //}
+                if (BlockedHexes.Instance.HexData != null)
+                {
+                    if (BlockedHexes.Instance.HexData.Contains(current))
+                    {
+                        newCost += 5;
+                    }
+                }
                 if (Equals(current, new Hex(0, 0, 0)))
                 {
 
                 }
                 if (!costSoFar.ContainsKey(n) || newCost < costSoFar[n])
                 {
-                    costSoFar[n] = newCost;
+                    costSoFar[n] = newCost + Distance(n, Target);
                     int pri = newCost + Distance(n, Target);
                     Fringes.Enqueue(n, pri);
                     cameFrom[n] = current;

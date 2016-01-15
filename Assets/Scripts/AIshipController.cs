@@ -35,26 +35,26 @@ public class AIshipController : MonoBehaviour {
     void Update () {
         if(Input.GetKeyDown(KeyCode.F2))
         {
-            Planet p = GalaxyController.Instance.GetSolarSystem(0).Planets["Earth"];
+            Planet p = GalaxyController.Instance.GetSolarSystem(0).Planets["Saturn"];
             Ship s = GalaxyController.Instance.GetSolarSystem(0).Ships["Intrepid"];
 
-            List<Hex> Hexs = RendevousWithOrbitingObject(p, s);
+            List<Hex> Hexs = RendezvousWithOrbitingObject(p, s);
             if (Hexs == null)
             {
                 run = true;
                 return;
             }
-            DrawSolarSystemGraphics.Instance.DrawHex(Hexs[0], "tttt", Color.red, offset: -1);
-            DrawSolarSystemGraphics.Instance.DrawHex(s.CurrentHexPosition, "tttt", Color.red, offset: -1);
-            //foreach (Hex h in p.Orbit)
-            //{
-            //    DrawSolarSystemGraphics.Instance.DrawHex(h, Utilites.Instance.HexNameStr(h), Color.blue, offset: 1);
-            //}
-            //foreach (Hex h in Hexs)
-            //{
-            //    //  Debug.Log(Utilites.Instance.HexNameStr(h));
-            //    DrawSolarSystemGraphics.Instance.DrawHex(h, Utilites.Instance.HexNameStr(h), Color.red);
-            //}
+            DrawSolarSystemGraphics.Instance.DrawHex(Hexs[0], "tttt", Color.yellow, offset: -2);
+            DrawSolarSystemGraphics.Instance.DrawHex(s.CurrentHexPosition, "tttt", Color.yellow, offset: -2);
+            foreach (Hex h in p.Orbit)
+            {
+                DrawSolarSystemGraphics.Instance.DrawHex(h, Utilites.Instance.HexNameStr(h), Color.blue, offset: 1);
+            }
+            foreach (Hex h in Hexs)
+            {
+                //  Debug.Log(Utilites.Instance.HexNameStr(h));
+                DrawSolarSystemGraphics.Instance.DrawHex(h, Utilites.Instance.HexNameStr(h), Color.green);
+            }
             run = true;
         }
 
@@ -74,7 +74,7 @@ public class AIshipController : MonoBehaviour {
 
         return true;
     }
-    public int NumberOfTurnsToRendevous(OrbitalObject OO, Ship ship)
+    public int NumberOfTurnsToRendezvous(OrbitalObject OO, Ship ship)
     {
         Hex TargetsCurrentHex = OO.Orbit[OO.CurrentPosition];
 
@@ -84,38 +84,55 @@ public class AIshipController : MonoBehaviour {
 
         int InitialDist = distance;
 
-        int Intturns = (int)Mathf.Ceil(distance / ship.Movement);
-
+        int Intturns = (int)Mathf.Ceil((float)distance / (float)ship.Movement);
+        int test = 0;
         if (Intturns == 1)
         {
             //the number of moves the ship has left is enough to make it to the target this turn
             //just return the current hex of the target > this will be used as the ships target of movement
-            return Intturns;
+            return 0;
         }
-
-        for (int i = 0; i < InitialDist; i++)
+        int LowestPlanetTurns = -1;
+        int LowestShipTurns = 10000;
+        for (int i = 1; i < InitialDist; i++)
         {
-            distance = Hex.Distance(ShipsCurrentHex, TargetsCurrentHex);
+            distance = Hex.Distance(ShipsCurrentHex, OO.Orbit[OO.PredictPlanetPos(i)]);
 
-            Intturns = (int)Mathf.Ceil(distance / ship.Movement);
+            Intturns = (int)Mathf.Ceil((float)distance / (float)ship.Movement);
 
             if(Intturns == i)
             {
                 return Intturns;
             }
+            test = Mathf.Abs(Intturns - i);
 
+            if(LowestShipTurns < test)
+            {
+                return LowestPlanetTurns;
+            }
+
+            if (test <= 1)
+            {
+                LowestPlanetTurns = i;
+                LowestShipTurns = Intturns;
+            }
         }
 
-        return -1;
+
+        return LowestPlanetTurns;
     }
-    public List<Hex> RendevousWithOrbitingObject(OrbitalObject OO, Ship ship)
+    public List<Hex> RendezvousWithOrbitingObject(OrbitalObject OO, Ship ship)
     {
         Hex TargetsPredictedHex;
 
         Hex ShipsCurrentHex = ship.CurrentHexPosition;
 
-        int NumTurnsToRendevous = NumberOfTurnsToRendevous(OO, ship);
-
+        int NumTurnsToRendevous = NumberOfTurnsToRendezvous(OO, ship);
+        if(NumTurnsToRendevous == -1)
+        {
+            Debug.LogError("RendezvousWithOrbitingObject: Didnt find a path.");
+            return null;
+        }
         TargetsPredictedHex = OO.Orbit[OO.PredictPlanetPos(NumTurnsToRendevous)];
         List<Hex> Path = Hex.AstarPath(TargetsPredictedHex, ShipsCurrentHex);
         return Path;

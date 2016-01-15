@@ -46,9 +46,16 @@ public class GalaxyController : MonoBehaviour {
 
         Galaxy = xmlio.ReadXmlFile();
         Dictionary<string, Ship> Ships = new Dictionary<string, Ship>();
-        Ship ship = new Ship("Intrepid", 4, new Hex(25, 10, -35), 500f, 500f);
+        Ship ship = new Ship("Intrepid", 3, new Hex(-1, 6, -5), 500f, 500f);
         Ships.Add(ship.Name, ship);
         Galaxy[0].Ships = Ships;
+
+        BlockedHexes.Instance.HexData = new List<Hex>();
+        Hex Sun = new Hex(0, 0, 0);
+        BlockedHexes.Instance.HexData = (Hex.Neighbors(Sun));
+        BlockedHexes.Instance.HexData.Add(Sun);
+
+
         if (Galaxy == null)
         {
             //Hex Sun = new Hex(0, 0, 0);
