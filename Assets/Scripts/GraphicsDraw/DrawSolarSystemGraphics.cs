@@ -52,18 +52,35 @@ public class DrawSolarSystemGraphics : MonoBehaviour {
             if (true)
             {
                 //if all of the Orbiting objects (maybe ships?) have moved then set advanced turn to false
-                //will need some way to tell the NextTurnController that this is done...
 
                 SolarSystem Sol = GalaxyController.Instance.GetCurrentSolarSystem();
 
+                //move all planets
                 foreach (KeyValuePair<string, Planet> p in Sol.Planets)
                 {
                     MovePlanetObject(p.Value);
                     MovePlanetHex(p.Value);
 
                 }
-
-
+                //move or spawn all ships
+                Debug.Log("Drawing ships: begin");
+                foreach (KeyValuePair<string, Ship> s in Sol.Ships)
+                {
+                    
+                    if(GetGOHex(s.Value.Name ) == null)
+                    {
+                        Debug.Log("Drawing ships: Ship needs to be rendered");
+                        //ship has not been spawned yet, so we will need to do that
+                        DrawHex(s.Value.CurrentHexPosition, s.Value.Name, Color.yellow);
+                    }
+                    else
+                    {
+                        Debug.Log("Drawing ships: Ship needs to move");
+                        //ship has been spawned so just update its position
+                        MoveShipHex(s.Value);
+                    }
+                }
+                Debug.Log("Drawing ships: end");
                 AdvanceTurn = false;
                 NextTurnController.Instance.DrawingComplete();
             }
@@ -127,6 +144,7 @@ public class DrawSolarSystemGraphics : MonoBehaviour {
             DrawHex(h, "Sun_HEX_n", Color.red);
         }
 
+        //draw initial planets
         foreach ( KeyValuePair<string,Planet> p in Sol.Planets)
         {
             DrawPlanetObject(p.Value);
@@ -187,46 +205,59 @@ public class DrawSolarSystemGraphics : MonoBehaviour {
     }
     public void MovePlanetHex(Planet planet)
     {
-        GameObject pHex = GetPlanetHex(planet);
+        GameObject pHex = GetGOHex(planet.Name);
         if(pHex != null)
-            pHex.transform.position = Layout.HexToPixel(L, planet.Orbit[planet.CurrentPosition], 8f);
+            pHex.transform.position = Layout.HexToPixel(L, planet.GetCurrentHexPosition(), 8f);
 
     }
 
     public void MovePlanetObject(Planet planet)
     {       
-        GameObject pGO = GetPlanetGO(planet);
+        GameObject pGO = GetGO(planet.Name);
         if(pGO != null)
-            pGO.transform.position = Layout.HexToPixel(L, planet.Orbit[planet.CurrentPosition], 10f);
+            pGO.transform.position = Layout.HexToPixel(L, planet.GetCurrentHexPosition(), 10f);
 
     }
-    public GameObject GetPlanetGO(Planet planet)
+
+    public void MoveShipHex(Ship ship)
     {
-        string planetNameCheck = planet.Name + "_GO";
+        GameObject pGO = GetGOHex(ship.Name);
+        
+        if (pGO != null)
+        {
+            Debug.Log("!!!!");
+            pGO.transform.position = Layout.HexToPixel(L, ship.CurrentHexPosition, 8f);
+        }
+            
+
+    }
+    public GameObject GetGO(string GOname)
+    {
+        string NameCheck = GOname + "_GO";
         for (int i = 0; i < this.transform.childCount; i++)
         {
             GameObject pGO = this.transform.GetChild(i).gameObject;
-            if (pGO.name == planetNameCheck)
+            if (pGO.name == NameCheck)
             {
                 return pGO;
             }
         }
         return null;
     }
-    public GameObject GetPlanetHex(Planet planet)
+
+    public GameObject GetGOHex(string name)
     {
-        string planetNameCheck = planet.Name + "_Hex";
+        string NameCheck = name + "_Hex";
         for (int i = 0; i < this.transform.childCount; i++)
         {
             GameObject pHex = this.transform.GetChild(i).gameObject;
-            if (pHex.name == planetNameCheck)
+            if (pHex.name == NameCheck)
             {
                 return pHex;
             }
         }
         return null;
     }
-
 
 
 }

@@ -94,6 +94,10 @@ public class OrbitalObject
 
         return Hexes;
     }
+    public Hex GetCurrentHexPosition()
+    {
+        return this.Orbit[this.CurrentPosition];
+    }
     #endregion
 }
 

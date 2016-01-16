@@ -16,7 +16,7 @@ public class Ship  {
         MovesLeft = movement;
         CurrentHexPosition = hexposition;
         Cargohold = new CargoHold(CHsize, CHweight);
-
+        PositionOnPath = 0;
     }
     public void RegisterMovesLeftCB(Action A)
     {
@@ -63,8 +63,8 @@ public class Ship  {
         PathToTarget = Hex.AstarPath(this.CurrentHexPosition, TargetHex);
         
     }
-    public List<Hex> PathToTarget { get; protected set; }
-
+    public List<Hex> PathToTarget { get; set; }
+    public int PositionOnPath { get; set; }
     public CargoHold Cargohold { get; set; }
 }
 public class CargoHold

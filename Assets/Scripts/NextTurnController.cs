@@ -101,7 +101,13 @@ public class NextTurnController : MonoBehaviour {
         //generate AI ship data for the next turn
 
         //generate Main ship data for the next turn
-
+        if (AIshipsNextTurnDataGenerated != null)
+        {
+            if (AIshipsNextTurnDataGenerated() != true)
+            {
+                return false;
+            }
+        }
         //generate Enemy AI ship data for the next turn
 
 

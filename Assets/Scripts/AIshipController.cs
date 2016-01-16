@@ -5,7 +5,7 @@ using System.Collections.Generic;
 public class AIshipController : MonoBehaviour {
     private Ship ShipData;
 
-    bool run = false;
+    bool runAstar = false;
 
     private AIshipController() { }
     public static AIshipController Instance;
@@ -22,7 +22,7 @@ public class AIshipController : MonoBehaviour {
             Instance = this;
         }
     }
-    // Use this for initialization
+
     void Start () {
         NextTurnController.Instance.RegisterAIshipsNextTurnData(GenerateAIshipsNextTurnData);
     }
@@ -31,7 +31,7 @@ public class AIshipController : MonoBehaviour {
         Debug.Log("Galaxy controller destroy()");
         NextTurnController.Instance.UnregisterAIshipsNextTurnData(GenerateAIshipsNextTurnData);
     }
-    // Update is called once per frame
+
     void Update () {
         if(Input.GetKeyDown(KeyCode.F2))
         {
@@ -41,7 +41,7 @@ public class AIshipController : MonoBehaviour {
             List<Hex> Hexs = RendezvousWithOrbitingObject(p, s);
             if (Hexs == null)
             {
-                run = true;
+                runAstar = true;
                 return;
             }
             DrawSolarSystemGraphics.Instance.DrawHex(Hexs[0], "tttt", Color.yellow, offset: -2);
@@ -55,23 +55,51 @@ public class AIshipController : MonoBehaviour {
                 //  Debug.Log(Utilites.Instance.HexNameStr(h));
                 DrawSolarSystemGraphics.Instance.DrawHex(h, Utilites.Instance.HexNameStr(h), Color.green);
             }
-            run = true;
+            runAstar = true;
         }
 
+        //check to see if an AIship needs to be spawned
 
+        if (GalaxyController.Instance.empire.CanSpawnCargoShip())
+        {
+            //spawn an AI cargo ship
+            GalaxyController.Instance.empire.CurrentComercialCargoShips++;
+            Ship s = new Ship("Cargo 001", 3, new Hex(5, 0, -5), 500f, 500f);
+            s.SetTargetHex(GalaxyController.Instance.GetSolarSystem(0).Planets["Earth"].GetCurrentHexPosition());
+            s.PathToTarget = RendezvousWithOrbitingObject(GalaxyController.Instance.GetSolarSystem(0).Planets["Earth"], s);
+            GalaxyController.Instance.GetCurrentSolarSystem().Ships.Add(s.Name, s);
 
-
+        }
 	}
     public bool GenerateAIshipsNextTurnData()
     {
         SolarSystem Sol = GalaxyController.Instance.GetCurrentSolarSystem();
         Dictionary<string, Ship> Ships = Sol.Ships;
-
-        foreach (KeyValuePair<string, Ship> ShipKV in Ships) { }
+        Debug.Log("Ship next turn: begin");
+        foreach (KeyValuePair<string, Ship> ShipKV in Ships)
         {
-
+            Ship s = ShipKV.Value;
+            if (s.PathToTarget != null)
+            {
+                
+                s.PositionOnPath += s.Movement;
+                Debug.Log("Ship next turn: ship has a path " + s.PositionOnPath);
+                if (s.PositionOnPath >= s.PathToTarget.Count)
+                {
+                    s.CurrentHexPosition = s.PathToTarget[s.PathToTarget.Count - 1];
+                    s.PathToTarget.Clear();
+                    s.SetTargetHex (s.CurrentHexPosition);
+                    Debug.Log("Ship next turn: reached the end");
+                }
+                else
+                {
+                    s.CurrentHexPosition = s.PathToTarget[s.PositionOnPath];
+                    Debug.Log("Ship next turn: move " + Utilites.Instance.HexNameStr(s.CurrentHexPosition));
+                }
+                
+            }
         }
-
+        Debug.Log("Ship next turn: end");
         return true;
     }
     public int NumberOfTurnsToRendezvous(OrbitalObject OO, Ship ship)

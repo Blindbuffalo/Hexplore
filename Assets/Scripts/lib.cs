@@ -93,7 +93,7 @@ public struct Hex
                 break;
             }
         }
-        Path.Reverse();
+        //Path.Reverse();
         return Path;
     }
     static public Dictionary<Hex, Hex> Astar(Hex start, Hex Target)
