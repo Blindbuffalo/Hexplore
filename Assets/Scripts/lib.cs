@@ -130,14 +130,10 @@ public struct Hex
                         newCost += 50;
                     }
                 }
-                if (Equals(current, new Hex(0, 0, 0)))
-                {
-
-                }
                 if (!costSoFar.ContainsKey(n) || newCost < costSoFar[n])
                 {
-                    costSoFar[n] = newCost + Distance(n, Target);
-                    int pri = newCost + Distance(n, Target);
+                    costSoFar[n] = newCost;
+                    int pri = newCost + (Distance(n, Target) * 5);
                     Fringes.Enqueue(n, pri);
                     cameFrom[n] = current;
                 }

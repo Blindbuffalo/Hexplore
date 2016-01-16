@@ -35,7 +35,7 @@ public class AIshipController : MonoBehaviour {
     void Update () {
         if(Input.GetKeyDown(KeyCode.F2))
         {
-            Planet p = GalaxyController.Instance.GetSolarSystem(0).Planets["Mars"];
+            Planet p = GalaxyController.Instance.GetSolarSystem(0).Planets["Saturn"];
             Ship s = GalaxyController.Instance.GetSolarSystem(0).Ships["Intrepid"];
 
             List<Hex> Hexs = RendezvousWithOrbitingObject(p, s);
