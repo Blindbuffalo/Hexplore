@@ -58,27 +58,37 @@ public class AIshipController : MonoBehaviour {
             runAstar = true;
         }
 
+        
+
+    }
+    public bool GenerateAIshipsNextTurnData()
+    {
         //check to see if an AIship needs to be spawned
 
         if (GalaxyController.Instance.empire.CanSpawnCargoShip())
         {
             //spawn an AI cargo ship
             GalaxyController.Instance.empire.CurrentComercialCargoShips++;
-            Ship s = new Ship("Cargo 001", 3, new Hex(5, 0, -5), 500f, 500f);
+            Ship s = new Ship("Cargo 001", 3, GalaxyController.Instance.GetSolarSystem(0).Planets["Mars"].GetCurrentHexPosition(), 500f, 500f);
             s.SetTargetHex(GalaxyController.Instance.GetSolarSystem(0).Planets["Earth"].GetCurrentHexPosition());
             s.PathToTarget = RendezvousWithOrbitingObject(GalaxyController.Instance.GetSolarSystem(0).Planets["Earth"], s);
+            s.MovesLeft = 0;
             GalaxyController.Instance.GetCurrentSolarSystem().Ships.Add(s.Name, s);
 
         }
-	}
-    public bool GenerateAIshipsNextTurnData()
-    {
+
         SolarSystem Sol = GalaxyController.Instance.GetCurrentSolarSystem();
         Dictionary<string, Ship> Ships = Sol.Ships;
         Debug.Log("Ship next turn: begin");
         foreach (KeyValuePair<string, Ship> ShipKV in Ships)
         {
             Ship s = ShipKV.Value;
+            if(s.MovesLeft == 0)
+            {
+                s.MovesLeft = s.Movement;
+                continue;
+            }
+
             if (s.PathToTarget != null)
             {
                 
@@ -99,6 +109,7 @@ public class AIshipController : MonoBehaviour {
                 
             }
         }
+
         Debug.Log("Ship next turn: end");
         return true;
     }

@@ -111,28 +111,6 @@ public class GalaxyController : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
-
-
-        //Cycle all data for the next turn
-        //FIX: time intervals are temporary until i work our an actual next turn system
-        //CurrentTime += Time.deltaTime;
-        //if (CurrentTime >= Interval)
-        //{
-        //    //move all the planets into their "next turn" position in the data
-        //    //this does not directly move the gameobjects (visuals)
-        //    foreach(KeyValuePair<int, SolarSystem> Sol in Galaxy)
-        //    {
-        //        foreach (KeyValuePair<string, Planet> p in Sol.Value.Planets)
-        //        {
-        //            p.Value.MovePlanet();
-
-        //        }
-        //    }
-            
-        //    CurrentTime = 0f;
-        //}
-
-
         //check to see what scene we are in.
         //eventually this will be triggered by things like deploying on a planet
         //or maybe going onto the ships bridge.  this section calls the drawing 
@@ -173,14 +151,6 @@ public class GalaxyController : MonoBehaviour {
         }
 
 
-        if (Input.GetKeyDown(KeyCode.F3))
-        {
-            xmlio.WriteXmlFile(Galaxy);
-        }
-        if (Input.GetKeyDown(KeyCode.F4))
-        {
-           Galaxy = xmlio.ReadXmlFile();
-        }
 
     }
     void OnDestroy()

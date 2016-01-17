@@ -14,7 +14,7 @@ public class DrawSolarSystemGraphics : MonoBehaviour {
 
     private bool SystemDrawn = false;
     private bool AdvanceTurn = false;
-
+    private bool shipsAnimated = false;
 
     public static DrawSolarSystemGraphics Instance;
     void Awake()
@@ -63,26 +63,50 @@ public class DrawSolarSystemGraphics : MonoBehaviour {
 
                 }
                 //move or spawn all ships
-                Debug.Log("Drawing ships: begin");
-                foreach (KeyValuePair<string, Ship> s in Sol.Ships)
+                shipsAnimated = true;
+                foreach (KeyValuePair<string, Ship> sKV in Sol.Ships)
                 {
-                    
-                    if(GetGOHex(s.Value.Name ) == null)
+                    Ship s = sKV.Value;
+                    if(GetGOHex(s.Name ) == null)
                     {
-                        Debug.Log("Drawing ships: Ship needs to be rendered");
+
                         //ship has not been spawned yet, so we will need to do that
-                        DrawHex(s.Value.CurrentHexPosition, s.Value.Name, Color.yellow);
+                        DrawHex(s.CurrentHexPosition, s.Name, Color.yellow);
                     }
                     else
                     {
-                        Debug.Log("Drawing ships: Ship needs to move");
+
                         //ship has been spawned so just update its position
-                        MoveShipHex(s.Value);
+                        //MoveShipHex(s);
+
+                        if (s.PathToTarget == null)
+                        {
+
+
+                        }
+                        else
+                        {
+                            Vector3 dir = Layout.HexToPixel(L, s.PathToTarget[s.Movement + s.PositionOnPath], 8f) - Layout.HexToPixel(L, s.PathToTarget[s.PositionOnPath], 8f);
+                            Vector3 vel = dir.normalized * s.Movement * Time.deltaTime;
+                            vel = Vector3.ClampMagnitude(vel, dir.magnitude);
+                            GetGOHex(s.Name).transform.Translate(vel);
+                            if (GetGOHex(s.Name).transform.position != Layout.HexToPixel(L, s.PathToTarget[s.Movement + s.PositionOnPath], 8f))
+                            {
+                                shipsAnimated = false;
+                            }
+                            else
+                            {
+
+                            }
+                        }
                     }
                 }
-                Debug.Log("Drawing ships: end");
-                AdvanceTurn = false;
-                NextTurnController.Instance.DrawingComplete();
+
+                if (shipsAnimated)
+                {
+                    AdvanceTurn = false;
+                    NextTurnController.Instance.DrawingComplete();
+                }
             }
         }
 
@@ -151,6 +175,18 @@ public class DrawSolarSystemGraphics : MonoBehaviour {
             DrawHex(p.Value.Orbit[p.Value.CurrentPosition], p.Value.Name, p.Value.Col);
 
             
+        }
+        //draw some ships
+        foreach (KeyValuePair<string, Ship> s in Sol.Ships)
+        {
+
+            if (GetGOHex(s.Value.Name) == null)
+            {
+                Debug.Log("Drawing ships: Ship needs to be rendered");
+                //ship has not been spawned yet, so we will need to do that
+                DrawHex(s.Value.CurrentHexPosition, s.Value.Name, Color.yellow);
+            }
+
         }
     }
 
