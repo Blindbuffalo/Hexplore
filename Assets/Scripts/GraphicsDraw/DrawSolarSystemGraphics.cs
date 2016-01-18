@@ -19,7 +19,7 @@ public class DrawSolarSystemGraphics : MonoBehaviour {
     public static DrawSolarSystemGraphics Instance;
     void Awake()
     {
-        Debug.Log("DrawSolarSystemGraphics awake()");
+        //Debug.Log("DrawSolarSystemGraphics awake()");
         if (Instance)
         {
             DestroyImmediate(gameObject);
@@ -32,7 +32,7 @@ public class DrawSolarSystemGraphics : MonoBehaviour {
     }
     void Start()
     {
-        Debug.Log("DrawSolarSystemGraphics start()");
+        //Debug.Log("DrawSolarSystemGraphics start()");
         NextTurnController.Instance.RegisterGalaxyNextTurnsGraphicsDrawn(OnNextTurn);
         GalaxyController.Instance.RegisterSolarSystemChanged(OnSolarSystemChanged);
     }
@@ -69,8 +69,8 @@ public class DrawSolarSystemGraphics : MonoBehaviour {
                     Ship s = sKV.Value;
                     if(GetGOHex(s.Name ) == null)
                     {
-
                         //ship has not been spawned yet, so we will need to do that
+                        DrawAIShipObject(s);
                         DrawHex(s.CurrentHexPosition, s.Name, Color.yellow);
                     }
                     else
@@ -86,24 +86,40 @@ public class DrawSolarSystemGraphics : MonoBehaviour {
                         }
                         else
                         {
-                            Vector3 dir = Layout.HexToPixel(L, s.PathToTarget[s.Movement + s.PositionOnPath], 8f) - Layout.HexToPixel(L, s.PathToTarget[s.PositionOnPath], 8f);
-                            Vector3 vel = dir.normalized * s.Movement * Time.deltaTime;
+                            if (s.PositionOnPath > s.PathToTarget.Count)
+                                s.PositionOnPath = s.PathToTarget.Count - 1;
+                            Vector3 target = Layout.HexToPixel(L, s.PathToTarget[s.PositionOnPath], 10.5f);
+
+                            Vector3 currentpos = GetGO(s.Name).transform.position;
+
+                            Vector3 dir = target - currentpos;
+                            Vector3 vel = dir.normalized * (s.Movement * 5) * Time.deltaTime;
                             vel = Vector3.ClampMagnitude(vel, dir.magnitude);
+
+                            GetGO(s.Name).transform.Translate(vel);
                             GetGOHex(s.Name).transform.Translate(vel);
-                            if (GetGOHex(s.Name).transform.position != Layout.HexToPixel(L, s.PathToTarget[s.Movement + s.PositionOnPath], 8f))
+                            currentpos = GetGO(s.Name).transform.position;
+
+                            if (V3Equal(currentpos, target))
                             {
-                                shipsAnimated = false;
+                                //Debug.LogError(GetGOHex(s.Name).transform.position + " " + Layout.HexToPixel(L, s.PathToTarget[s.Movement + s.PositionOnPath], 8f));
+                                shipsAnimated = true;
                             }
                             else
                             {
-
+                                
+                                //Debug.Log(GetGOHex(s.Name).transform.position + " " + Layout.HexToPixel(L, s.PathToTarget[s.Movement + s.PositionOnPath], 8f));
+                                shipsAnimated = false;
                             }
+
+                            //MoveShipHex(s);
                         }
                     }
                 }
 
                 if (shipsAnimated)
                 {
+                    Debug.Log("thing");
                     AdvanceTurn = false;
                     NextTurnController.Instance.DrawingComplete();
                 }
@@ -112,9 +128,13 @@ public class DrawSolarSystemGraphics : MonoBehaviour {
 
 
     }
+    public bool V3Equal(Vector3 a, Vector3 b)
+    {
+        return Vector3.SqrMagnitude(a - b) < 0.00000001f;
+    }
     void OnDestroy()
     {
-        Debug.Log("Drawing System destroy()");
+        //Debug.Log("Drawing System destroy()");
         NextTurnController.Instance.UnregisterGalaxyNextTurnsGraphicsDrawn(OnNextTurn);
         GalaxyController.Instance.UnregisterSolarSystemChanged(OnSolarSystemChanged);
     }
@@ -127,7 +147,7 @@ public class DrawSolarSystemGraphics : MonoBehaviour {
     {
         try
         {
-            Debug.Log("Draw Next turn data");
+            //Debug.Log("Draw Next turn data");
 
 
             AdvanceTurn = true;
@@ -147,7 +167,7 @@ public class DrawSolarSystemGraphics : MonoBehaviour {
     //}
     private void OnSolarSystemChanged()
     {
-        Debug.Log("SolarSys Changed CB fired");
+        //Debug.Log("SolarSys Changed CB fired");
         EraseSolarSystem();
         SystemDrawn = false;
     }
@@ -155,7 +175,7 @@ public class DrawSolarSystemGraphics : MonoBehaviour {
 
     public void DrawSolarSystem(SolarSystem Sol)
     {
-        Debug.Log("Drawing Solar System");
+        //Debug.Log("Drawing Solar System");
 
         //size the sun object (the script is on the sun)
         this.transform.localScale = new Vector3(Sol.SunRadius, Sol.SunRadius, Sol.SunRadius);
@@ -182,7 +202,7 @@ public class DrawSolarSystemGraphics : MonoBehaviour {
 
             if (GetGOHex(s.Value.Name) == null)
             {
-                Debug.Log("Drawing ships: Ship needs to be rendered");
+                //Debug.Log("Drawing ships: Ship needs to be rendered");
                 //ship has not been spawned yet, so we will need to do that
                 DrawHex(s.Value.CurrentHexPosition, s.Value.Name, Color.yellow);
             }
@@ -207,7 +227,14 @@ public class DrawSolarSystemGraphics : MonoBehaviour {
 
 
 
+    private void DrawAIShipObject(Ship s)
+    {
+        Vector3 p = Layout.HexToPixel(L, s.CurrentHexPosition, 10.5f);
+        GameObject GO = (GameObject)Instantiate(PlanetPrefab, p, Quaternion.identity);
+        GO.name = s.Name + "_GO";
 
+        GO.transform.SetParent(this.transform);
+    }
 
     private void DrawPlanetObject(Planet planet)
     {
@@ -262,7 +289,7 @@ public class DrawSolarSystemGraphics : MonoBehaviour {
         if (pGO != null)
         {
             Debug.Log("!!!!");
-            pGO.transform.position = Layout.HexToPixel(L, ship.CurrentHexPosition, 8f);
+            pGO.transform.position = Layout.HexToPixel(L, ship.PathToTarget[ship.PositionOnPath ], 8f);
         }
             
 

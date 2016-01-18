@@ -28,7 +28,7 @@ public class GalaxyController : MonoBehaviour {
     public static GalaxyController Instance;
     void Awake()
     {
-        Debug.Log("Galaxy Controller awake()");
+        //Debug.Log("Galaxy Controller awake()");
         if (Instance)
         {
             DestroyImmediate(gameObject);
@@ -42,7 +42,7 @@ public class GalaxyController : MonoBehaviour {
 
         // Use this for initialization
    void Start () {
-        Debug.Log("Galaxy Controller start()");
+        //Debug.Log("Galaxy Controller start()");
 
         Galaxy = xmlio.ReadXmlFile();
         Dictionary<string, Ship> Ships = new Dictionary<string, Ship>();
@@ -155,12 +155,12 @@ public class GalaxyController : MonoBehaviour {
     }
     void OnDestroy()
     {
-        Debug.Log("Galaxy controller destroy()");
+        //Debug.Log("Galaxy controller destroy()");
         NextTurnController.Instance.UnregisterGalaxysNextTurnData(GenerateGalaxysNextTurnData);
     }
     public bool GenerateGalaxysNextTurnData()
     {
-        Debug.Log("Generate Galaxy Next turn data");
+        //Debug.Log("Generate Galaxy Next turn data");
 
         foreach (KeyValuePair<int, SolarSystem> Sol in Galaxy)
         {

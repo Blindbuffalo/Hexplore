@@ -22,7 +22,7 @@ public class NextTurnController : MonoBehaviour {
     public static NextTurnController Instance;
     void Awake()
     {
-        Debug.Log("NextTurnController awake()");
+        //Debug.Log("NextTurnController awake()");
         if (Instance)
         {
             DestroyImmediate(gameObject);
@@ -36,7 +36,7 @@ public class NextTurnController : MonoBehaviour {
         NextTurnController.Instance.PlanetTurnCount = 0;
     }
     void Start () {
-        Debug.Log("NextturnController Start()");
+        //Debug.Log("NextturnController Start()");
         
 	}
 	

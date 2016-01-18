@@ -11,7 +11,7 @@ public class AIshipController : MonoBehaviour {
     public static AIshipController Instance;
     void Awake()
     {
-        Debug.Log("AIshipController awake()");
+        //Debug.Log("AIshipController awake()");
         if (Instance)
         {
             DestroyImmediate(gameObject);
@@ -28,7 +28,7 @@ public class AIshipController : MonoBehaviour {
     }
     void OnDestroy()
     {
-        Debug.Log("Galaxy controller destroy()");
+        //Debug.Log("Galaxy controller destroy()");
         NextTurnController.Instance.UnregisterAIshipsNextTurnData(GenerateAIshipsNextTurnData);
     }
 
@@ -70,47 +70,55 @@ public class AIshipController : MonoBehaviour {
             //spawn an AI cargo ship
             GalaxyController.Instance.empire.CurrentComercialCargoShips++;
             Ship s = new Ship("Cargo 001", 3, GalaxyController.Instance.GetSolarSystem(0).Planets["Mars"].GetCurrentHexPosition(), 500f, 500f);
-            s.SetTargetHex(GalaxyController.Instance.GetSolarSystem(0).Planets["Earth"].GetCurrentHexPosition());
+            s.PositionOnPath = 0;
             s.PathToTarget = RendezvousWithOrbitingObject(GalaxyController.Instance.GetSolarSystem(0).Planets["Earth"], s);
             s.MovesLeft = 0;
+            s.justSpawned = true;
             GalaxyController.Instance.GetCurrentSolarSystem().Ships.Add(s.Name, s);
-
+            
         }
 
         SolarSystem Sol = GalaxyController.Instance.GetCurrentSolarSystem();
         Dictionary<string, Ship> Ships = Sol.Ships;
-        Debug.Log("Ship next turn: begin");
+        //Debug.Log("Ship next turn: begin");
         foreach (KeyValuePair<string, Ship> ShipKV in Ships)
         {
             Ship s = ShipKV.Value;
-            if(s.MovesLeft == 0)
-            {
-                s.MovesLeft = s.Movement;
-                continue;
-            }
+            s.MovesLeft = s.Movement;
 
-            if (s.PathToTarget != null)
+            if (s.justSpawned)
             {
-                
-                s.PositionOnPath += s.Movement;
-                Debug.Log("Ship next turn: ship has a path " + s.PositionOnPath);
-                if (s.PositionOnPath >= s.PathToTarget.Count)
+                s.justSpawned = false;
+            }
+            else
+            {
+                if (s.PathToTarget != null)
                 {
-                    s.CurrentHexPosition = s.PathToTarget[s.PathToTarget.Count - 1];
-                    s.PathToTarget.Clear();
-                    s.SetTargetHex (s.CurrentHexPosition);
-                    Debug.Log("Ship next turn: reached the end");
+
+                    
+                    Debug.Log("Ship next turn: ship has a path " + s.PositionOnPath);
+                    if (s.PositionOnPath >= s.PathToTarget.Count - 1)
+                    {
+                        s.CurrentHexPosition = s.PathToTarget[s.PathToTarget.Count - 1];
+                        s.MovesLeft = s.MovesLeft - (s.PositionOnPath - s.PathToTarget.Count);
+                        s.PathToTarget = null;
+                        //s.SetTargetHex (s.CurrentHexPosition);
+                        
+                        Debug.Log("Ship next turn: reached the end");
+                    }
+                    else
+                    {
+                        s.MovesLeft = 0;
+                        s.CurrentHexPosition = s.PathToTarget[s.PositionOnPath];
+                        Debug.Log("Ship next turn: move " + Utilites.Instance.HexNameStr(s.CurrentHexPosition));
+                        
+                    }
+                    s.PositionOnPath += s.Movement;
                 }
-                else
-                {
-                    s.CurrentHexPosition = s.PathToTarget[s.PositionOnPath];
-                    Debug.Log("Ship next turn: move " + Utilites.Instance.HexNameStr(s.CurrentHexPosition));
-                }
-                
             }
         }
 
-        Debug.Log("Ship next turn: end");
+        //Debug.Log("Ship next turn: end");
         return true;
     }
     public int NumberOfTurnsToRendezvous(OrbitalObject OO, Ship ship)

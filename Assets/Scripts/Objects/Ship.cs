@@ -29,16 +29,6 @@ public class Ship  {
         MovesLeft = MovesLeft - NumberOfMoves;
     }
 
-    public void MoveShip()
-    {
-        if (PathToTarget == null)
-        {
-            
-        }
-
-        
-    }
-
     public int Movement { get; private set; }
     private int _movesleft = 0;
     public int MovesLeft
@@ -55,17 +45,18 @@ public class Ship  {
         }
     }
     public Hex CurrentHexPosition { get; set; }
-    public Hex TargetHex { get; private set; }
-    public void SetTargetHex(Hex hex)
-    {
-        TargetHex = hex;
+    //public Hex TargetHex { get; private set; }
+    //public void SetTargetHex(Hex hex)
+    //{
+    //    TargetHex = hex;
         
-        PathToTarget = Hex.AstarPath(this.CurrentHexPosition, TargetHex);
+    //    PathToTarget = Hex.AstarPath(this.CurrentHexPosition, TargetHex);
         
-    }
+    //}
     public List<Hex> PathToTarget { get; set; }
     public int PositionOnPath { get; set; }
     public CargoHold Cargohold { get; set; }
+    public bool justSpawned { get; set; }
 }
 public class CargoHold
 {

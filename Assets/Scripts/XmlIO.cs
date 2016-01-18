@@ -105,14 +105,14 @@ public class XmlIO
 
                                         }).ToDictionary(x => x.id, x => x);
 
-        foreach (KeyValuePair<int, SolarSystem> el in Sols)
-        {
-            Debug.Log(el.Key + ": " + el.Value.Name);
-            foreach (KeyValuePair<string, Planet> p in el.Value.Planets)
-            {
-                Debug.Log("      Planet: " + p.Value.Name);
-            }
-        }
+        //foreach (KeyValuePair<int, SolarSystem> el in Sols)
+        //{
+        //    //Debug.Log(el.Key + ": " + el.Value.Name);
+        //    foreach (KeyValuePair<string, Planet> p in el.Value.Planets)
+        //    {
+        //        //Debug.Log("      Planet: " + p.Value.Name);
+        //    }
+        //}
 
         return Sols;
     }
