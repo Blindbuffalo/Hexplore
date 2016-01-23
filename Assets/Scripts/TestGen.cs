@@ -19,39 +19,38 @@ public class TestGen : MonoBehaviour {
 	    if(t == false)
         {
             GameObject go = null;
-            go = new GameObject("GameObject");
-
-            go.transform.SetParent(this.transform);
-            int count = 1;
             List<Hex> Orbits = new List<Hex>();
+            List<Hex> ThisRoundsOrbits = new List<Hex>();
             for (int Radius = RadiusStart; Radius <= radiusEnd; Radius++)
             {
-                Orbits.AddRange( CalcOrbit(Radius) );
-            }
-
-            foreach (Hex h in Orbits)
-            {
-                if (count >= 9300)
+                Orbits = CalcOrbit(Radius);
+                if(ThisRoundsOrbits.Count + Orbits.Count >= 9300)
                 {
-
-                    count = 0;
-
                     go = new GameObject("GameObject");
                     go.transform.SetParent(this.transform);
+                    foreach (Hex h in ThisRoundsOrbits)
+                    {
+
+
+                        GameObject g = (GameObject)Instantiate(HexPrefab, Layout.HexToPixel(L, h, 8), Quaternion.identity);
+
+                        g.name = Utilites.Instance.HexNameStr(h);
+                        //g.GetComponent<SpriteRenderer>().color = Planet.Col;
+                        //g.GetComponentInChildren<Renderer>().material.color = Color.red;
+                        g.transform.position = new Vector3(g.transform.position.x, g.transform.position.y, g.transform.position.z);
+                        g.transform.SetParent(go.transform);
+
+                    }
+                    ThisRoundsOrbits = null;
+                    ThisRoundsOrbits = new List<Hex>();
                 }
 
-                GameObject g = (GameObject)Instantiate(HexPrefab, Layout.HexToPixel(L, h, 8), Quaternion.identity);
+                
+                ThisRoundsOrbits.AddRange(Orbits);
 
-                g.name = Utilites.Instance.HexNameStr(h);
-                //g.GetComponent<SpriteRenderer>().color = Planet.Col;
-                //g.GetComponentInChildren<Renderer>().material.color = Color.red;
-                g.transform.position = new Vector3(g.transform.position.x, g.transform.position.y, g.transform.position.z);
-                g.transform.SetParent(go.transform);
-                count++;
             }
+            
 
-            Orbits = null;
-            count++;
             t = true;
             //Combine();
         }
