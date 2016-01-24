@@ -197,24 +197,31 @@ public class DrawSolarSystemGraphics : MonoBehaviour {
             
         }
         //draw some ships
-        foreach (KeyValuePair<string, Ship> s in Sol.Ships)
+        if(Sol.Ships != null)
         {
-
-            if (GetGOHex(s.Value.Name) == null)
+            foreach (KeyValuePair<string, Ship> s in Sol.Ships)
             {
-                //Debug.Log("Drawing ships: Ship needs to be rendered");
-                //ship has not been spawned yet, so we will need to do that
-                DrawHex(s.Value.CurrentHexPosition, s.Value.Name, Color.yellow);
-            }
 
+                if (GetGOHex(s.Value.Name) == null)
+                {
+                    //Debug.Log("Drawing ships: Ship needs to be rendered");
+                    //ship has not been spawned yet, so we will need to do that
+                    DrawHex(s.Value.CurrentHexPosition, s.Value.Name, Color.yellow);
+                }
+
+            }
         }
+
     }
 
     public void EraseSolarSystem()
     {
         var children = new List<GameObject>();
         foreach (Transform child in DrawSolarSystemGraphics.Instance.transform) children.Add(child.gameObject);
-
+        if(children == null)
+        {
+            return;
+        }
         foreach (GameObject c in children)
         {
             if (c.name.Contains("~DND~") == false)

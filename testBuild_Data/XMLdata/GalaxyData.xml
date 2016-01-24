@@ -1,0 +1,70 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Galaxy>
+  <SolarSystems>
+    <solarsystem id="0" name="sol" sunradius="7">
+      <sunhex q="0" r="0" s="0" />
+      <planets>
+        <planet name="Mercury" orbitradius="2" size="1" numberofmoves="1" currentposition="4" orbitdir="0" gravity="0.05">
+          <color r="1" g="1" b="1" a="1" />
+          <parenthex q="0" r="0" s="0" />
+          <atmoshpere breathable="false" />
+        </planet>
+        <planet name="Venus" orbitradius="4" size="1" numberofmoves="1" currentposition="1" orbitdir="0" gravity="0.01">
+          <color r="1" g="1" b="1" a="1" />
+          <parenthex q="0" r="0" s="0" />
+          <atmoshpere breathable="false" />
+        </planet>
+        <planet name="Earth" orbitradius="6" size="1.5" numberofmoves="1" currentposition="24" orbitdir="0" gravity="1">
+          <color r="1" g="1" b="1" a="1" />
+          <parenthex q="0" r="0" s="0" />
+          <atmoshpere breathable="true" />
+        </planet>
+        <planet name="Mars" orbitradius="9" size="1.4" numberofmoves="1" currentposition="49" orbitdir="0" gravity="0.01">
+          <color r="1" g="1" b="1" a="1" />
+          <parenthex q="0" r="0" s="0" />
+          <atmoshpere breathable="false" />
+        </planet>
+        <planet name="Jupiter" orbitradius="31" size="3" numberofmoves="2" currentposition="1" orbitdir="0" gravity="0.01">
+          <color r="1" g="1" b="1" a="1" />
+          <parenthex q="0" r="0" s="0" />
+          <atmoshpere breathable="false" />
+        </planet>
+        <planet name="Saturn" orbitradius="57" size="3" numberofmoves="3" currentposition="1" orbitdir="0" gravity="0.01">
+          <color r="1" g="1" b="1" a="1" />
+          <parenthex q="0" r="0" s="0" />
+          <atmoshpere breathable="false" />
+        </planet>
+        <planet name="Uranus" orbitradius="85" size="1.6" numberofmoves="3" currentposition="1" orbitdir="0" gravity="0.01">
+          <color r="1" g="1" b="1" a="1" />
+          <parenthex q="0" r="0" s="0" />
+          <atmoshpere breathable="false" />
+        </planet>
+        <planet name="Neptune" orbitradius="110" size="1.6" numberofmoves="3" currentposition="1" orbitdir="0" gravity="0.01">
+          <color r="1" g="1" b="1" a="1" />
+          <parenthex q="0" r="0" s="0" />
+          <atmoshpere breathable="false" />
+        </planet>
+        <planet name="Pluto" orbitradius="145" size="0.5" numberofmoves="2" currentposition="1" orbitdir="0" gravity="0.01">
+          <color r="1" g="1" b="1" a="1" />
+          <parenthex q="0" r="0" s="0" />
+          <atmoshpere breathable="false" />
+        </planet>
+      </planets>
+    </solarsystem>
+    <solarsystem id="1" name="sol2" sunradius="3">
+      <sunhex q="0" r="0" s="0" />
+      <planets>
+        <planet name="1" orbitradius="4" size="3" numberofmoves="1" currentposition="4" orbitdir="0" gravity="0.01">
+          <color r="1" g="1" b="1" a="1" />
+          <parenthex q="0" r="0" s="0" />
+          <atmoshpere breathable="false" />
+        </planet>
+        <planet name="2" orbitradius="8" size="2" numberofmoves="1" currentposition="1" orbitdir="0" gravity="0.01">
+          <color r="1" g="1" b="1" a="1" />
+          <parenthex q="0" r="0" s="0" />
+          <atmoshpere breathable="false" />
+        </planet>
+      </planets>
+    </solarsystem>
+  </SolarSystems>
+</Galaxy>

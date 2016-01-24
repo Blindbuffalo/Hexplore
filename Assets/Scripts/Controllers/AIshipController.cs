@@ -81,6 +81,7 @@ public class AIshipController : MonoBehaviour {
         SolarSystem Sol = GalaxyController.Instance.GetCurrentSolarSystem();
         Dictionary<string, Ship> Ships = Sol.Ships;
         //Debug.Log("Ship next turn: begin");
+        if (Sol.Ships == null) return false;
         foreach (KeyValuePair<string, Ship> ShipKV in Ships)
         {
             Ship s = ShipKV.Value;

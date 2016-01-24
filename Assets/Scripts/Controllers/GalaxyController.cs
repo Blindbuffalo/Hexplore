@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System;
 using System.Linq;
-using UnityEditor;
+//using UnityEditor;
 using UnityEngine.SceneManagement;
 using System.Xml;
 
@@ -45,17 +45,14 @@ public class GalaxyController : MonoBehaviour {
         //Debug.Log("Galaxy Controller start()");
 
         Galaxy = xmlio.ReadXmlFile();
-        Dictionary<string, Ship> Ships = new Dictionary<string, Ship>();
-        Ship ship = new Ship("Intrepid", 3, new Hex(-1, 6, -5), 500f, 500f);
-        Ships.Add(ship.Name, ship);
-        Galaxy[0].Ships = Ships;
+
 
         BlockedHexes.Instance.HexData = new List<Hex>();
         Hex Sun = new Hex(0, 0, 0);
         BlockedHexes.Instance.HexData = (Hex.Neighbors(Sun));
         BlockedHexes.Instance.HexData.Add(Sun);
 
-
+        Dictionary<string, Ship> Ships = new Dictionary<string, Ship>();
         if (Galaxy == null)
         {
             //Hex Sun = new Hex(0, 0, 0);
@@ -65,9 +62,9 @@ public class GalaxyController : MonoBehaviour {
 
             //Dictionary<string, Planet> Planets = new Dictionary<string, Planet>();
 
-            //Planets.Add("Mercury", new Planet(name: "Mercury", orbitRadius: 2, parent: Sun, numberofmoves: 1, color: Color.cyan, position: 4, size: 1f, gravity: 0.05f ));
-            //Planets.Add("Venus", new Planet("Venus", 4, Sun, 1, Color.green, 1, 1f, .01f ));
-            //Planets.Add("Earth", new Planet("Earth", 6, Sun, 1, Color.blue, 6, 1.5f, 1f ));
+            //Planets.Add("Mercury", new Planet(name: "Mercury", orbitRadius: 2, parent: Sun, numberofmoves: 1, color: Color.cyan, position: 4, size: 1f, gravity: 0.05f));
+            //Planets.Add("Venus", new Planet("Venus", 4, Sun, 1, Color.green, 1, 1f, .01f));
+            //Planets.Add("Earth", new Planet("Earth", 6, Sun, 1, Color.blue, 6, 1.5f, 1f));
             //Planets.Add("Mars", new Planet("Mars", 9, Sun, 1, Color.red, 1, 1.4f, .01f));
             //Planets.Add("Jupiter", new Planet("Jupiter", 31, Sun, 2, Color.magenta, 1, 3f, .01f));
             //Planets.Add("Saturn", new Planet("Saturn", 57, Sun, 3, Utilites.Instance.RGBcolor(176, 159, 114, 255), 1, 3f, .01f));
@@ -93,14 +90,25 @@ public class GalaxyController : MonoBehaviour {
 
             //Galaxy.Add(1, Sol2);
 
-            
+
 
             //BlockedHexes.Instance.HexData.Add(new Hex(0, 0, 0));
+        }
+        else
+        {
+
+            
+            Ship ship = new Ship("Intrepid", 3, new Hex(-1, 6, -5), 500f, 500f);
+            Ships.Add(ship.Name, ship);
+            Galaxy[0].Ships = Ships;
         }
         if(empire == null)
         {
             empire = new Empire("The Buffalo Empire", "Buffalo", 1, 1);
         }
+
+
+
         NextTurnController.Instance.RegisterGalaxysNextTurnData(GenerateGalaxysNextTurnData);
 
        
