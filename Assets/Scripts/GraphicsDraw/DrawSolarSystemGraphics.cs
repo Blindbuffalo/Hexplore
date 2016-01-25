@@ -206,6 +206,7 @@ public class DrawSolarSystemGraphics : MonoBehaviour {
                 {
                     //Debug.Log("Drawing ships: Ship needs to be rendered");
                     //ship has not been spawned yet, so we will need to do that
+                    DrawAIShipObject(s.Value);
                     DrawHex(s.Value.CurrentHexPosition, s.Value.Name, Color.yellow);
                 }
 
