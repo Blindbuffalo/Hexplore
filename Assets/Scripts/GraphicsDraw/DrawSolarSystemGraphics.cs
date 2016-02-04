@@ -51,8 +51,8 @@ public class DrawSolarSystemGraphics : MonoBehaviour {
 
             if (true)
             {
-                //if all of the Orbiting objects (maybe ships?) have moved then set advanced turn to false
 
+               // Debug.Log("drawing sol");
                 SolarSystem Sol = GalaxyController.Instance.GetCurrentSolarSystem();
 
                 //move all planets
@@ -63,63 +63,73 @@ public class DrawSolarSystemGraphics : MonoBehaviour {
 
                 }
                 //move or spawn all ships
+
                 shipsAnimated = true;
-                foreach (KeyValuePair<string, Ship> sKV in Sol.Ships)
+                if (Sol.Ships != null)
                 {
-                    Ship s = sKV.Value;
-                    if(GetGOHex(s.Name ) == null)
+                    foreach (KeyValuePair<string, Ship> sKV in Sol.Ships)
                     {
-                        //ship has not been spawned yet, so we will need to do that
-                        DrawAIShipObject(s);
-                        DrawHex(s.CurrentHexPosition, s.Name, Color.yellow);
-                    }
-                    else
-                    {
-
-                        //ship has been spawned so just update its position
-                        //MoveShipHex(s);
-
-                        if (s.PathToTarget == null)
+                        Ship s = sKV.Value;
+                        if (GetGOHex(s.Name) == null)
                         {
-
-
+                            //ship has not been spawned yet, so we will need to do that
+                            DrawAIShipObject(s);
+                            DrawHex(s.CurrentHexPosition, s.Name, Color.yellow);
                         }
                         else
                         {
-                            if (s.PositionOnPath > s.PathToTarget.Count)
-                                s.PositionOnPath = s.PathToTarget.Count - 1;
-                            Vector3 target = Layout.HexToPixel(L, s.PathToTarget[s.PositionOnPath], 10.5f);
 
-                            Vector3 currentpos = GetGO(s.Name).transform.position;
+                            //ship has been spawned so just update its position
+                            //MoveShipHex(s);
 
-                            Vector3 dir = target - currentpos;
-                            Vector3 vel = dir.normalized * (s.Movement * 5) * Time.deltaTime;
-                            vel = Vector3.ClampMagnitude(vel, dir.magnitude);
-
-                            GetGO(s.Name).transform.Translate(vel);
-                            GetGOHex(s.Name).transform.Translate(vel);
-                            currentpos = GetGO(s.Name).transform.position;
-
-                            if (V3Equal(currentpos, target))
+                            if (s.PathToTarget == null)
                             {
-                                //Debug.LogError(GetGOHex(s.Name).transform.position + " " + Layout.HexToPixel(L, s.PathToTarget[s.Movement + s.PositionOnPath], 8f));
-                                shipsAnimated = true;
+
+
                             }
                             else
                             {
-                                
-                                //Debug.Log(GetGOHex(s.Name).transform.position + " " + Layout.HexToPixel(L, s.PathToTarget[s.Movement + s.PositionOnPath], 8f));
-                                shipsAnimated = false;
-                            }
+                                if (s.PositionOnPath > s.PathToTarget.Count)
+                                    s.PositionOnPath = s.PathToTarget.Count - 1;
+                                Vector3 target = Layout.HexToPixel(L, s.PathToTarget[s.PositionOnPath], 10.5f);
 
-                            //MoveShipHex(s);
+                                Vector3 currentpos = GetGO(s.Name).transform.position;
+
+                                Vector3 dir = target - currentpos;
+                                Vector3 vel = dir.normalized * (s.Movement * 5) * Time.deltaTime;
+                                vel = Vector3.ClampMagnitude(vel, dir.magnitude);
+
+                                GetGO(s.Name).transform.Translate(vel);
+                                GetGOHex(s.Name).transform.Translate(vel);
+                                currentpos = GetGO(s.Name).transform.position;
+
+                                if (V3Equal(currentpos, target))
+                                {
+                                    //Debug.LogError(GetGOHex(s.Name).transform.position + " " + Layout.HexToPixel(L, s.PathToTarget[s.Movement + s.PositionOnPath], 8f));
+                                    shipsAnimated = true;
+                                }
+                                else
+                                {
+
+                                    //Debug.Log(GetGOHex(s.Name).transform.position + " " + Layout.HexToPixel(L, s.PathToTarget[s.Movement + s.PositionOnPath], 8f));
+                                    shipsAnimated = false;
+                                }
+
+                                //MoveShipHex(s);
+                            }
                         }
                     }
-                }
 
-                if (shipsAnimated)
+                    if (shipsAnimated)
+                    {
+                        Debug.Log("thing");
+                        AdvanceTurn = false;
+                        NextTurnController.Instance.DrawingComplete();
+                    }
+                }
+                else
                 {
-                    Debug.Log("thing");
+                    // there are no ships in this system
                     AdvanceTurn = false;
                     NextTurnController.Instance.DrawingComplete();
                 }
@@ -207,7 +217,7 @@ public class DrawSolarSystemGraphics : MonoBehaviour {
                     //Debug.Log("Drawing ships: Ship needs to be rendered");
                     //ship has not been spawned yet, so we will need to do that
                     DrawAIShipObject(s.Value);
-                    DrawHex(s.Value.CurrentHexPosition, s.Value.Name, Color.yellow);
+                    
                 }
 
             }
@@ -237,8 +247,20 @@ public class DrawSolarSystemGraphics : MonoBehaviour {
 
     private void DrawAIShipObject(Ship s)
     {
-        Vector3 p = Layout.HexToPixel(L, s.CurrentHexPosition, 10.5f);
+        Vector3 p;
+        if (s.PathToTarget == null)
+        {
+            p = Layout.HexToPixel(L, s.CurrentHexPosition, 10.5f);
+            DrawHex(s.CurrentHexPosition, s.Name, Color.yellow);
+        }
+        else
+        {
+            p = Layout.HexToPixel(L, s.PathToTarget[s.PositionOnPath], 10.5f);
+            DrawHex(s.PathToTarget[s.PositionOnPath], s.Name, Color.yellow);
+        }
+        
         GameObject GO = (GameObject)Instantiate(PlanetPrefab, p, Quaternion.identity);
+        
         GO.name = s.Name + "_GO";
 
         GO.transform.SetParent(this.transform);

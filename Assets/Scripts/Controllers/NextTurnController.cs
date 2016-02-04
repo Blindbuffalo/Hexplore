@@ -70,11 +70,11 @@ public class NextTurnController : MonoBehaviour {
         {
             WaitingForSystemToBeDrawn = true;
             //need to set ui to show that a turn is being processed
-
+            Debug.Log("Sol next turn: start");
 
             if (AdvanceGalaxyNextTurnData() == false)
                 return;
-
+            Debug.Log("Sol next turn: all data complete");
             //Draw all the things
             if (GalaxysNextTurnsGraphicsDrawn != null)
             {
@@ -83,6 +83,7 @@ public class NextTurnController : MonoBehaviour {
                     return;
                 }
             }
+            Debug.Log("Sol next turn: drawing advanced");
         }
 
         
@@ -98,9 +99,11 @@ public class NextTurnController : MonoBehaviour {
                 return false;
             }
         }
+        Debug.Log("Sol next turn: data advanced");
+
         //generate AI ship data for the next turn
 
-        //generate Main ship data for the next turn
+        
         if (AIshipsNextTurnDataGenerated != null)
         {
             if (AIshipsNextTurnDataGenerated() != true)
@@ -108,6 +111,8 @@ public class NextTurnController : MonoBehaviour {
                 return false;
             }
         }
+        Debug.Log("Sol next turn: ships advanced");
+        //generate Main ship data for the next turn
         //generate Enemy AI ship data for the next turn
 
 

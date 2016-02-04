@@ -64,6 +64,9 @@ public class AIshipController : MonoBehaviour {
     public bool GenerateAIshipsNextTurnData()
     {
         //check to see if an AIship needs to be spawned
+        //if (GalaxyController.Instance.GetCurrentSolarSystem().Ships == null)
+        //    return true;
+
 
         if (GalaxyController.Instance.empire.CanSpawnCargoShip())
         {
@@ -78,46 +81,51 @@ public class AIshipController : MonoBehaviour {
             
         }
 
-        SolarSystem Sol = GalaxyController.Instance.GetCurrentSolarSystem();
-        Dictionary<string, Ship> Ships = Sol.Ships;
-        //Debug.Log("Ship next turn: begin");
-        if (Sol.Ships == null) return false;
-        foreach (KeyValuePair<string, Ship> ShipKV in Ships)
+        //SolarSystem Sol = GalaxyController.Instance.GetCurrentSolarSystem();
+        foreach (SolarSystem Sol in GalaxyController.Instance.GetAllSolarsystems())
         {
-            Ship s = ShipKV.Value;
-            s.MovesLeft = s.Movement;
+            
+            //Debug.Log("Ship next turn: begin");
+            if (Sol.Ships == null) break;
+            Dictionary<string, Ship> Ships = Sol.Ships;
+            foreach (KeyValuePair<string, Ship> ShipKV in Ships)
+            {
+                Ship s = ShipKV.Value;
+                s.MovesLeft = s.Movement;
 
-            if (s.justSpawned)
-            {
-                s.justSpawned = false;
-            }
-            else
-            {
-                if (s.PathToTarget != null)
+                if (s.justSpawned)
                 {
+                    s.justSpawned = false;
+                }
+                else
+                {
+                    if (s.PathToTarget != null)
+                    {
 
-                    
-                    Debug.Log("Ship next turn: ship has a path " + s.PositionOnPath);
-                    if (s.PositionOnPath >= s.PathToTarget.Count - 1)
-                    {
-                        s.CurrentHexPosition = s.PathToTarget[s.PathToTarget.Count - 1];
-                        s.MovesLeft = s.MovesLeft - (s.PositionOnPath - s.PathToTarget.Count);
-                        s.PathToTarget = null;
-                        //s.SetTargetHex (s.CurrentHexPosition);
-                        
-                        Debug.Log("Ship next turn: reached the end");
+
+                        Debug.Log("Ship next turn: ship has a path " + s.PositionOnPath);
+                        if (s.PositionOnPath >= s.PathToTarget.Count - 1)
+                        {
+                            s.CurrentHexPosition = s.PathToTarget[s.PathToTarget.Count - 1];
+                            s.MovesLeft = s.MovesLeft - (s.PositionOnPath - s.PathToTarget.Count);
+                            s.PathToTarget = null;
+                            //s.SetTargetHex (s.CurrentHexPosition);
+
+                            Debug.Log("Ship next turn: reached the end");
+                        }
+                        else
+                        {
+                            s.MovesLeft = 0;
+                            s.CurrentHexPosition = s.PathToTarget[s.PositionOnPath];
+                            Debug.Log("Ship next turn: move " + Utilites.Instance.HexNameStr(s.CurrentHexPosition));
+
+                        }
+                        s.PositionOnPath += s.Movement;
                     }
-                    else
-                    {
-                        s.MovesLeft = 0;
-                        s.CurrentHexPosition = s.PathToTarget[s.PositionOnPath];
-                        Debug.Log("Ship next turn: move " + Utilites.Instance.HexNameStr(s.CurrentHexPosition));
-                        
-                    }
-                    s.PositionOnPath += s.Movement;
                 }
             }
         }
+
 
         //Debug.Log("Ship next turn: end");
         return true;

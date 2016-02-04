@@ -149,7 +149,10 @@ public class GalaxyController : MonoBehaviour {
         Galaxy[SystemID].Ships.Add(ship.Name, ship);
     }
 
-
+    public List<SolarSystem> GetAllSolarsystems()
+    {
+        return Galaxy.Select(x => x.Value).ToList<SolarSystem>();
+    }
     public SolarSystem GetSolarSystem(int SystemID)
     {
         return Galaxy[SystemID];
